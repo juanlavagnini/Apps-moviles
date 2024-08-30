@@ -22,7 +22,11 @@ To run this project locally, follow these steps:
    git clone https://github.com/yourusername/Apps-moviles.git
 
 2. Navigate to the project directory
-  ```bash
-  cd Apps-moviles
+3. Install dependecies
+   ```bash
+   npm install
+4. Run expo
+   ```bash
+   npm run start
 
 
