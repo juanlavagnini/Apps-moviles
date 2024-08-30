@@ -6,10 +6,14 @@ This repository is part of the Mobile Application Programming course at UCA (Uni
 
 The project is built using React Native with Expo for developing and emulating the mobile applications. Expo simplifies the development workflow by providing tools and services to build and deploy your React Native apps with ease.
 
+## Prerequisites
+
+- **Npm**
+
 ## Versions Used
 
+- **React:** "18.2.0"
 - **Expo:** 51.0.30
-- **npm:** 10.7.0
 
 ## Getting Started
 
