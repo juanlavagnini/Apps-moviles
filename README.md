@@ -1,6 +1,6 @@
 # Apps-moviles
 
-This repository is part of the Mobile Application Programming course at UCA (Universidad Centroamericana).
+This repository is part of the Mobile Application Programming course at UCA (Universidad Catolica Argentina).
 
 ## Project Overview
 
