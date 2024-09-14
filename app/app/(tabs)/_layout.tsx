@@ -1,14 +1,17 @@
+import CustomTabBar from "@/components/CustomTabBar";
+import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { Tabs } from "expo-router";
 
 export default function RootLayout() {
   return (
-    <Tabs>
-      <Tabs.Screen name="index" options={{href: null}}/>
-      <Tabs.Screen name="pantry"/>
-      <Tabs.Screen name="list"/>
-      <Tabs.Screen name="scanner"/>
-      <Tabs.Screen name="recipes"/>
-      <Tabs.Screen name="profile"/>
+    <Tabs tabBar={props => <CustomTabBar {...props} />}>
+      <Tabs.Screen name="index"   options={{ href: null }} />
+      <Tabs.Screen name="pantry"  options={{title: 'Pantry'}}/>
+      <Tabs.Screen name="list"    options={{title: 'List'}}/>
+      <Tabs.Screen name="scanner" options={{title: 'Snanner'}}/>
+      <Tabs.Screen name="recipes" options={{title: 'Recipes'}}/>
+      <Tabs.Screen name="profile" options={{title: 'Profile'}}/>
     </Tabs>
   );
 }
+
