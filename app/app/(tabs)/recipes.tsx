@@ -117,7 +117,7 @@ const Recipes = () => {
     console.log(index);
     sectionListRef.current?.scrollToLocation({
       sectionIndex: index,
-      itemIndex: index,
+      itemIndex: 1, //este deberia ser 0 para que vaya al principio de la sección
       animated: true,
     });
   };
