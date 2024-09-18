@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
   },
   categoryList: {
     marginVertical: 10,
-    flexGrow: 0,
+    //flexGrow: 0,
   },
   categoryButton: {
     paddingVertical: 10,
