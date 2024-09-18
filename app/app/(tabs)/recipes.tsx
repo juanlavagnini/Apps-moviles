@@ -114,7 +114,6 @@ const Recipes = () => {
   // Función para desplazarse a la sección
   //Hay que revisar esta función
   const scrollToSection = (index: number) => {
-    console.log(index);
     sectionListRef.current?.scrollToLocation({
       sectionIndex: index,
       itemIndex: 1, //este deberia ser 0 para que vaya al principio de la sección
@@ -163,7 +162,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: StatusBar.currentHeight,
     marginHorizontal: 16,
-    marginBottom:150,
+    marginBottom:50,
   },
   item: {
     backgroundColor: '#f9c2ff',
@@ -180,8 +179,8 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
   categoryList: {
+    minHeight: 40,
     marginVertical: 10,
-    flexGrow: 0,
   },
   categoryButton: {
     paddingVertical: 10,
