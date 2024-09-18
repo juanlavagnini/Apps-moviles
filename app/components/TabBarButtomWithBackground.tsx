@@ -26,10 +26,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         gap: 5,
         backgroundColor: '#673ab7',
-        padding: 20,
-        paddingVertical:30,
-        borderRadius: 20,
+        padding: 5,  //20
+        paddingVertical: 17,  //30
+        borderRadius: 100,  //20
         position: 'relative',
-        top: -30
+        top: -10, //-30
+        shadowColor: '#808080',
+        shadowOpacity: 0.6,
       }
 })
