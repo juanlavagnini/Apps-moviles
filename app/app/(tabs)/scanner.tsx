@@ -1,6 +1,7 @@
-import { StyleSheet, Text, View, Pressable, TouchableOpacity, Button } from 'react-native'
+import { StyleSheet, Text, View, Pressable, TouchableOpacity, Button, Image } from 'react-native'
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import React, { useState } from 'react'
+import { router } from 'expo-router';
 
 const scanner = () => {
   const [facing, setFacing] = useState<CameraType>('back');
@@ -33,12 +34,16 @@ const scanner = () => {
           </TouchableOpacity>
         </View>
       </CameraView>
+      <Pressable style={styles.closeButton} onPress={() => router.push({pathname: '/pantry'})}>
+        <Text style={styles.closeButtonText}>X</Text>
+      </Pressable>
       <Pressable style={styles.button}>
         <Text>Insert Product</Text>
       </Pressable>
       <Pressable style={styles.button}>
         <Text>Delete Product</Text>
       </Pressable>
+      
     </View>
   )
 }
@@ -62,6 +67,21 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: '80%',
     alignItems: 'center',
+  },
+  closeButton: {
+    backgroundColor: 'black',
+    padding: 10,
+    borderRadius: 50,
+    width: 30,
+    height: 30,
+    alignItems: 'center',
+    position: 'absolute',
+    justifyContent: 'center',
+  },
+  closeButtonText: {
+    color: 'white',
+    fontSize: 17,
+    alignContent: 'center',
   },
   facingButton: {
     flex: 1,
