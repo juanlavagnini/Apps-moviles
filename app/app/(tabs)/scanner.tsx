@@ -1,10 +1,38 @@
-import { StyleSheet, Text, View, Pressable } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, Pressable, TouchableOpacity, Button } from 'react-native'
+import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
+import React, { useState } from 'react'
 
 const scanner = () => {
+  const [facing, setFacing] = useState<CameraType>('back');
+  const [permission, requestPermission] = useCameraPermissions();
+
+  if (!permission) {
+    // Camera permissions are still loading.
+    return <View />;
+  }
+
+  if (!permission.granted) {
+    // Camera permissions are not granted yet.
+    return (
+      <View style={styles.container}>
+        <Text style={styles.message}>We need your permission to show the camera</Text>
+        <Button onPress={requestPermission} title="grant permission" />
+      </View>
+    );
+  }
+
+  function toggleCameraFacing() {
+    setFacing(current => (current === 'back' ? 'front' : 'back'));
+  }
   return (
     <View style={styles.container}>
-      <Text>scanner</Text>
+      <CameraView style={styles.camera} facing={facing}>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.facingButton} onPress={toggleCameraFacing}>
+            <Text style={styles.text}>Flip Camera</Text>
+          </TouchableOpacity>
+        </View>
+      </CameraView>
       <Pressable style={styles.button}>
         <Text>Insert Product</Text>
       </Pressable>
@@ -23,6 +51,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  message: {
+    textAlign: 'center',
+    paddingBottom: 10,
+  },
   button: {
     backgroundColor: '#9C4196',
     padding: 10,
@@ -30,5 +62,25 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: '80%',
     alignItems: 'center',
-  }
+  },
+  facingButton: {
+    flex: 1,
+    alignSelf: 'flex-end',
+    alignItems: 'center',
+  },
+  camera: {
+    flex: 1,
+    width: '100%',
+  },
+  buttonContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    backgroundColor: 'transparent',
+    margin: 64,
+  },
+  text: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white',
+  },
 })
