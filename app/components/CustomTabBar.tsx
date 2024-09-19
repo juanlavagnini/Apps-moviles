@@ -12,7 +12,9 @@ const CustomTabBar = ({ state, descriptors, navigation } : BottomTabBarProps) =>
   //Use esta funcion para detectar si el dispositivo esta en modo oscuro
   //devuelve "dark" si esta en modo oscuro y "light" si esta en modo claro
   //Lo trasnforme a un booleano para que sea mas facil de usar
-
+  if (state.routes[state.index].name === 'scanner') {
+    return null;
+  }
   return (
     <View style={styles.tabbar}>
       {state.routes.map((route, index) => {
@@ -24,6 +26,8 @@ const CustomTabBar = ({ state, descriptors, navigation } : BottomTabBarProps) =>
             ? options.title
             : route.name;
 
+       
+        
         const isFocused = state.index === index;
 
         const onPress = () => {
@@ -86,19 +90,19 @@ const CustomTabBar = ({ state, descriptors, navigation } : BottomTabBarProps) =>
 
 const styles = StyleSheet.create({
     tabbar: {
-        position: 'relative', 
-        width : '90%',
-        bottom: 25,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        backgroundColor: 'white',
-        marginHorizontal: 'auto',
-        borderRadius: 25,
-        shadowColor: 'black',
-        shadowOffset: {width: 0, height: 10},
-        shadowRadius: 10,
-        shadowOpacity: 0.1,
+      position: 'relative', 
+      width : '90%',
+      bottom: 25,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      backgroundColor: 'white',
+      marginHorizontal: 'auto',
+      borderRadius: 25,
+      shadowColor: 'black',
+      shadowOffset: {width: 0, height: 10},
+      shadowRadius: 10,
+      shadowOpacity: 0.1,
     }
 })
 
