@@ -2,11 +2,17 @@ import { StyleSheet, Text, View, Pressable, TouchableOpacity, Button, Image } fr
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import React, { useState } from 'react'
 import { router } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const scanner = () => {
   const [facing, setFacing] = useState<CameraType>('back');
   const [permission, requestPermission] = useCameraPermissions();
+
+  const [selectedButton, setSelectedButton] = useState<string>("insert");
+
+  const handleSelection = (button: string) => {
+    setSelectedButton(button);
+  };
 
   if (!permission) {
     // Camera permissions are still loading.
@@ -18,7 +24,7 @@ const scanner = () => {
     return (
       <View style={styles.container}>
         <Text style={styles.message}>We need your permission to show the camera</Text>
-        <Button onPress={requestPermission} title="grant permission" />
+        <Button onPress={requestPermission} title="Grant permission" />
       </View>
     );
   }
@@ -27,28 +33,30 @@ const scanner = () => {
     setFacing(current => (current === 'back' ? 'front' : 'back'));
   }
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <CameraView style={styles.camera} facing={facing}>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.facingButton} onPress={toggleCameraFacing}>
-            <Text style={styles.text}>Flip Camera</Text>
-          </TouchableOpacity>
+          <Pressable style={styles.closeButton} onPress={() => router.push({pathname: '/pantry'})}>
+            <Ionicons name="close-circle" size={50} color="white" />
+          </Pressable>
         </View>
+        <View style={styles.flipButtonContainer}>
+          <Pressable style={styles.facingButton} onPress={toggleCameraFacing}>
+              <Ionicons name="camera-reverse" size={50} color="white" />
+          </Pressable>
+        </View>
+        <View style={styles.functionButtonContainer}>
+          <Pressable style={selectedButton == "insert" ? styles.selectedButton : styles.button} onPress={() => handleSelection("insert")}>
+            <Text style={styles.buttonText}>Insert</Text>
+          </Pressable>
+          <Pressable style={selectedButton == "delete" ? styles.selectedButton : styles.button} onPress={() => handleSelection("delete")}>
+            <Text style={styles.buttonText}>Delete</Text>
+          </Pressable>
+        </View>  
       </CameraView>
-      <Pressable style={styles.closeButton} onPress={() => router.push({pathname: '/pantry'})}>
-        <Image source={require('../../assets/images/close.png')} style={{ width: 30, height: 30 }} />
-      </Pressable>
-      <View style={styles.functionButtonContainer}>
-        <Pressable style={styles.button}>
-          <Text style={styles.buttonText}>Insert</Text>
-        </Pressable>
-        <Pressable style={styles.button}>
-          <Text style={styles.buttonText}>Delete</Text>
-        </Pressable>
-      </View>
-
-      
-    </SafeAreaView>
+     
+          
+    </View>
   )
 }
 
@@ -56,16 +64,70 @@ export default scanner
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    height: '100%',
+    width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+    gap: 10,
   },
   message: {
+    justifyContent: 'center',
     textAlign: 'center',
     paddingBottom: 10,
   },
+
+  camera: {
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    flex: 1,
+    width: '100%',
+  },
+
+  //boton cancelar
+  buttonContainer: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+  },
+  closeButton: {
+    margin: 10,
+  },
+  image: {
+    width: 50,
+    height: 50,
+  },
+  // ----------------
+  //botones flip camera
+  flipButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: "center",
+    width: '100%',
+  },
+  facingButton: {
+    flex: 1,
+    width: '100%',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+
+  //botones insertar y eliminar
+  functionButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '85%',
+    marginBottom: 35,
+  },
   button: {
-    backgroundColor: '#9C4196',
+    backgroundColor: 'grey',
     padding: 10,
     borderRadius: 5,
     marginTop: 20,
@@ -76,50 +138,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     margin: 10,
   },
-  closeButton: {
+  
+  selectedButton: {
+    backgroundColor: 'purple',
     padding: 10,
-    borderRadius: 50,
-    width: 40,
-    height: 80,
-    alignItems: 'center',
-    position: 'absolute',
-    justifyContent: 'center',
-    top: 30,
-    left: 10,
-  },
-  facingButton: {
-    flex: 1,
-    alignSelf: 'flex-end',
-    alignItems: 'center',
-  },
-  camera: {
-    flex: 1,
-    width: '100%',
-  },
-  buttonContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    backgroundColor: 'transparent',
-    margin: 64,
-  },
-  functionButtonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
+    borderRadius: 5,
+    marginTop: 20,
+    width: '50%',
     height: 50,
-    padding: 20,
-    bottom: 20,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    margin: 10,
   },
+
   buttonText: {
     color: 'white',
     fontSize: 16,
     justifyContent: 'center',
     textAlign: 'center',
-  },
-  text: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: 'white',
-  },
+  }
 })
