@@ -181,7 +181,6 @@ const styles = StyleSheet.create({
   categoryList: {
     minHeight: 40,
     marginVertical: 10,
-    //flexGrow: 0,
   },
   categoryButton: {
     paddingVertical: 10,
