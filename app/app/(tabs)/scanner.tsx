@@ -38,12 +38,15 @@ const scanner = () => {
       <Pressable style={styles.closeButton} onPress={() => router.push({pathname: '/pantry'})}>
         <Image source={require('../../assets/images/close.png')} style={{ width: 30, height: 30 }} />
       </Pressable>
-      <Pressable style={styles.button}>
-        <Text>Insert Product</Text>
-      </Pressable>
-      <Pressable style={styles.button}>
-        <Text>Delete Product</Text>
-      </Pressable>
+      <View style={styles.functionButtonContainer}>
+        <Pressable style={styles.button}>
+          <Text style={styles.buttonText}>Insert</Text>
+        </Pressable>
+        <Pressable style={styles.button}>
+          <Text style={styles.buttonText}>Delete</Text>
+        </Pressable>
+      </View>
+
       
     </SafeAreaView>
   )
@@ -66,8 +69,12 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     marginTop: 20,
-    width: '80%',
+    width: '50%',
+    height: 50,
     alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    margin: 10,
   },
   closeButton: {
     padding: 10,
@@ -79,11 +86,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     top: 30,
     left: 10,
-  },
-  closeButtonText: {
-    color: 'white',
-    fontSize: 17,
-    alignContent: 'center',
   },
   facingButton: {
     flex: 1,
@@ -99,6 +101,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: 'transparent',
     margin: 64,
+  },
+  functionButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: 50,
+    padding: 20,
+    bottom: 20,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    justifyContent: 'center',
+    textAlign: 'center',
   },
   text: {
     fontSize: 24,
