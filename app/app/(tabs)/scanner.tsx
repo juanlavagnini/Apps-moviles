@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, Pressable, TouchableOpacity, Button, Image } fr
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import React, { useState } from 'react'
 import { router } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const scanner = () => {
   const [facing, setFacing] = useState<CameraType>('back');
@@ -26,7 +27,7 @@ const scanner = () => {
     setFacing(current => (current === 'back' ? 'front' : 'back'));
   }
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <CameraView style={styles.camera} facing={facing}>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.facingButton} onPress={toggleCameraFacing}>
@@ -35,7 +36,7 @@ const scanner = () => {
         </View>
       </CameraView>
       <Pressable style={styles.closeButton} onPress={() => router.push({pathname: '/pantry'})}>
-        <Text style={styles.closeButtonText}>X</Text>
+        <Image source={require('../../assets/images/close.png')} style={{ width: 30, height: 30 }} />
       </Pressable>
       <Pressable style={styles.button}>
         <Text>Insert Product</Text>
@@ -44,7 +45,7 @@ const scanner = () => {
         <Text>Delete Product</Text>
       </Pressable>
       
-    </View>
+    </SafeAreaView>
   )
 }
 
@@ -69,7 +70,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   closeButton: {
-    backgroundColor: 'black',
     padding: 10,
     borderRadius: 50,
     width: 40,
