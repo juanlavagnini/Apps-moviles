@@ -1,3 +1,4 @@
+import { Link } from 'expo-router';
 import React, { useRef } from 'react';
 import {
   FlatList,
@@ -145,7 +146,11 @@ const Recipes = () => {
         keyExtractor={(item, index) => item + index}
         renderItem={({ item }) => (
           <View style={styles.item}>
-            <Text style={styles.title}>{item}</Text>
+            <Link href={{
+              pathname: '/modal_recipe',
+              params: { name: item  },
+            }}
+            style={styles.title}>{item}</Link>
           </View>
         )}
         renderSectionHeader={({ section: { title } }) => (
