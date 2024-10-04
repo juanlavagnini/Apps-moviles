@@ -11,7 +11,9 @@ export default function RootLayout() {
         name="modal_recipe"
         options={{
           title: "Recipe",
-          presentation: 'modal',
+          presentation: 'modal', //"transparentModal"
+          //animation: "none",
+          //headerShown: false,
           headerLeft: () => (
             <Button
               onPress={() => navigation.goBack()}

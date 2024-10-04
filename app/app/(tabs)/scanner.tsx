@@ -34,7 +34,7 @@ const scanner = () => {
   }
   return (
     <View style={styles.container}>
-      <CameraView style={styles.camera} facing={facing}>
+      <CameraView style={styles.camera} facing={facing} onBarcodeScanned={(result)=> console.log(result.data)} autofocus='on'>
         <View style={styles.buttonContainer}>
           <Pressable style={styles.closeButton} onPress={() => router.push({pathname: '/pantry'})}>
             <Ionicons name="close-circle" size={50} color="white" />
