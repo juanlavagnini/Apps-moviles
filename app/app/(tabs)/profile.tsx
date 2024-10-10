@@ -1,11 +1,57 @@
-import { StyleSheet, Text, View, Image } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, Image, TextInput, Pressable } from 'react-native'
+import React, { useState } from 'react'
+import { Colors } from '@/constants/Colors'
 
 const profile = () => {
+
+  const signUpHandler = (nombre:string, apellido:string, correo:string, contrasena:string) => {
+    //console.log(nombre, apellido, correo, contrasena)
+    fetch('http://localhost:3000/user/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: nombre,
+        lastname: apellido,
+        email: correo,
+        password: contrasena
+      }),
+    })
+  }
+  const [nombre, setNombre] = useState('')
+  const [apellido, setApellido] = useState('')
+  const [correo, setCorreo] = useState('')
+  const [contrasena, setContrasena] = useState('')
+  
+
   return (
-    <View style={styles.container}>
+    /*<View style={styles.container}>
       <Image source={{uri: 'https://reactnative.dev/img/tiny_logo.png'}} style={styles.image}/>
       <Text style={styles.text}>Trini</Text>
+    </View>*/
+    <View style={styles.container}>
+      <Text style={{fontSize:50, marginVertical:25}}>Registro</Text>
+      <Text>Nombre</Text>
+      <TextInput value={nombre} onChangeText={setNombre}
+        style={styles.input}
+      />
+      <Text>Apellido</Text>
+      <TextInput value={apellido} onChangeText={setApellido}
+        style={styles.input}
+      />
+      <Text>Correo</Text>
+      <TextInput value={correo} onChangeText={setCorreo}
+        style={styles.input}
+      />
+      <Text>Contraseña</Text>
+      <TextInput value={contrasena} onChangeText={setContrasena}
+        style={styles.input}
+      />
+      <Pressable style={styles.button} onPress={() => signUpHandler(nombre, apellido, correo, contrasena)}>
+        <Text>Registrarse</Text>
+      </Pressable>
+
     </View>
   )
 }
@@ -15,6 +61,7 @@ export default profile
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    margin: 10,
     marginTop: 50,
     alignItems: "center",
     gap: 20,  
@@ -32,5 +79,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
+  input: {
+    width: '60%',
+    height: 40,
+    borderWidth: 3,
+  },
+  button: {
+    marginTop: 20,
+    width: '60%',
+    height: 40,
+    backgroundColor: Colors.dark.icon,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 })
