@@ -20,7 +20,23 @@ const profile = () => {
       }),
     })
     //si es true, redirigir a la pagina de inicio, false cambio el color de los recuadros
-    .then(response => (response.ok? router.push({pathname: "/profile/user"}): setIsIncorrect(true)))
+    .then(response => {
+      if (!response.ok) {
+        setIsIncorrect(true); // Manejar error si la respuesta no es OK
+        return null; // Asegurarse de no procesar más
+      }
+      return response.json(); // Convertir a JSON si es exitoso
+    })
+    .then(data => {
+      if (data) {
+        console.log(data.id); // Asegúrate de que la respuesta tenga la propiedad 'user'
+        router.push({ pathname: "/profile/user", params: { id: data.id }
+         }); // Redirigir si es necesario
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error); // Manejar errores de red
+    });
   }
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')

@@ -5,15 +5,17 @@
 import { StyleSheet, Text, View, Image, TextInput, Pressable } from 'react-native'
 import React, { useState } from 'react'
 import { Colors } from '@/constants/Colors'
+import { useLocalSearchParams } from 'expo-router';
     
     
 const user = () => {
-    return (
-        <View style={styles.container}>
-            <Image source={{uri: 'https://reactnative.dev/img/tiny_logo.png'}} style={styles.image}/>
-            <Text>Trini</Text>
-        </View>
-    )
+  const {id = 'id'} = useLocalSearchParams();
+  return (
+      <View style={styles.container}>
+          <Image source={{uri: 'https://reactnative.dev/img/tiny_logo.png'}} style={styles.image}/>
+          <Text>{id}</Text>
+      </View>
+  )
 }
 
 export default user
