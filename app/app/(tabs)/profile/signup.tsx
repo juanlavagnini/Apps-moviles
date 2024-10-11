@@ -2,18 +2,19 @@ import { StyleSheet, Text, View, Image, TextInput, Pressable } from 'react-nativ
 import React, { useState } from 'react'
 import { Colors } from '@/constants/Colors'
 
+
 const profile = () => {
 
   const signUpHandler = (nombre:string, apellido:string, correo:string, contrasena:string) => {
-    //console.log(nombre, apellido, correo, contrasena)
-    fetch('http://localhost:3000/user/signup', {
+    console.log(nombre, apellido, correo, contrasena)
+    fetch('http://192.168.1.43:3000/user/signup', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         name: nombre,
-        lastname: apellido,
+        surname: apellido,
         email: correo,
         password: contrasena
       }),
