@@ -7,6 +7,8 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 const scanner = () => {
   const [facing, setFacing] = useState<CameraType>('back');
   const [permission, requestPermission] = useCameraPermissions();
+  //producto escaneado
+  const [isScanned, setisScanned] = useState<boolean>(false);
 
   const [selectedButton, setSelectedButton] = useState<string>("insert");
 
@@ -34,11 +36,19 @@ const scanner = () => {
   }
   return (
     <View style={styles.container}>
-      <CameraView style={styles.camera} facing={facing} onBarcodeScanned={(result)=> console.log(result.data)} autofocus='on'>
+      <CameraView style={styles.camera} facing={facing} onBarcodeScanned={(result) => {
+              setisScanned(true);
+              if (isScanned) return;
+              router.push({
+                pathname: '/modal_scanner_product',
+                params: { product: result.data },
+              });
+            }} autofocus='on'>
         <View style={styles.buttonContainer}>
-          <Pressable style={styles.closeButton} onPress={() => router.push({pathname: '/pantry'})}>
+          {!isScanned &&
+          (<Pressable style={styles.closeButton} onPress={() => router.push({pathname: '/pantry'})} >
             <Ionicons name="close-circle" size={50} color="white" />
-          </Pressable>
+          </Pressable>)}
         </View>
         <View style={styles.flipButtonContainer}>
           <Pressable style={styles.facingButton} onPress={toggleCameraFacing}>
