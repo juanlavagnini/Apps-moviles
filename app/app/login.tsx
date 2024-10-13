@@ -2,14 +2,17 @@ import { StyleSheet, Text, View, Image, TextInput, Pressable } from 'react-nativ
 import React, { useState } from 'react'
 import { Colors } from '@/constants/Colors'
 import { router } from 'expo-router'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const profile = () => {
 
+  const ip = process.env.EXPO_PUBLIC_IP
   const [isIncorrect, setIsIncorrect] = useState(false)
 
   const signInHandler = (email: string, password: string) => {
-    fetch('http://192.168.1.43:3000/user/login', {
+    console.log(`http://${ip}:3000/user/login`)
+    fetch(`http://${ip}:3000/user/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -27,13 +30,21 @@ const profile = () => {
       }
       return response.json(); // Convertir a JSON si es exitoso
     })
-    .then(data => {
+    .then(async data => {
       if (data) {
-        console.log(data.id); // Asegúrate de que la respuesta tenga la propiedad 'user'
-        router.push({ pathname: "/profile/user", params: { id: data.id }
-         }); // Redirigir si es necesario
+        const id = data.id;
+        const jsonValue = JSON.stringify(id);
+        try {
+          await AsyncStorage.setItem('id', jsonValue);
+        }
+        catch (error) {
+          console.error('Error:', error);
+        }
+        router.push({ pathname: "/(tabs)"
+         });
       }
     })
+    
     .catch(error => {
       console.error('Error:', error); // Manejar errores de red
     });
@@ -41,11 +52,9 @@ const profile = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
  
-  
-
   return (
     <View style={styles.container}>
-      <Text style={{fontSize:50, marginVertical:25}}>Login</Text>
+      <Text style={{fontSize:50}}>Login</Text>
       <Text>Email</Text>
       <TextInput value={email} onChangeText={setEmail}
         style={isIncorrect? styles.inputIncorrect: styles.input}
@@ -57,7 +66,7 @@ const profile = () => {
       <Pressable style={styles.button} onPress={() => signInHandler(email,password)}>
         <Text>Sign in</Text>
       </Pressable>
-      <Pressable onPress={() => (router.push({pathname: "/profile/signup"}))}>
+      <Pressable onPress={() => (router.push({pathname: "/signup"}))}>
         <Text style={styles.buttonText} >Create an account</Text>
       </Pressable>
     </View> 
@@ -71,6 +80,7 @@ const styles = StyleSheet.create({
     flex: 1,
     margin: 10,
     marginTop: 50,
+    justifyContent: "center",
     alignItems: "center",
     gap: 20,  
   },

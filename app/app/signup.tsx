@@ -4,10 +4,11 @@ import { Colors } from '@/constants/Colors'
 
 
 const profile = () => {
+  const ip = process.env.EXPO_PUBLIC_IP
 
   const signUpHandler = (nombre:string, apellido:string, correo:string, contrasena:string) => {
-    console.log(nombre, apellido, correo, contrasena)
-    fetch('http://192.168.1.43:3000/user/signup', {
+    
+    fetch(`http://${ip}:3000/user/signup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -32,7 +33,7 @@ const profile = () => {
       <Text style={styles.text}>Trini</Text>
     </View>*/
     <View style={styles.container}>
-      <Text style={{fontSize:50, marginVertical:25}}>Registro</Text>
+      <Text style={{fontSize:50}}>Registro</Text>
       <Text>Nombre</Text>
       <TextInput value={nombre} onChangeText={setNombre}
         style={styles.input}
@@ -63,7 +64,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     margin: 10,
-    marginTop: 50,
+    justifyContent: "center",
     alignItems: "center",
     gap: 20,  
   },

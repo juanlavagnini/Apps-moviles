@@ -1,15 +1,25 @@
-/*<View style={styles.container}>
-      <Image source={{uri: 'https://reactnative.dev/img/tiny_logo.png'}} style={styles.image}/>
-      <Text style={styles.text}>Trini</Text>
-    </View>*/
 import { StyleSheet, Text, View, Image, TextInput, Pressable } from 'react-native'
 import React, { useState } from 'react'
 import { Colors } from '@/constants/Colors'
-import { useLocalSearchParams } from 'expo-router';
-    
-    
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
 const user = () => {
-  const {id = 'id'} = useLocalSearchParams();
+  const [id, setId] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    const fetchId = async () => {
+      try {
+        const jsonValue = await AsyncStorage.getItem('id');
+        setId(jsonValue != null ? JSON.parse(jsonValue) : null);
+      } catch (e) {
+        console.error('Error:', e);
+      }
+    };
+
+    fetchId();
+  }, []);
+
   return (
       <View style={styles.container}>
           <Image source={{uri: 'https://reactnative.dev/img/tiny_logo.png'}} style={styles.image}/>
