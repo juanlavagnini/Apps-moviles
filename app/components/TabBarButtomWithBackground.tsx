@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
         borderRadius: 100,  //20
         position: 'relative',
         top: -10, //-30
-        shadowColor: '#808080',
         shadowOpacity: 0.6,
+        aspectRatio: 1,
       }
 })
