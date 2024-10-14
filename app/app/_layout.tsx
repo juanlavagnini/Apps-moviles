@@ -7,7 +7,7 @@ export default function RootLayout() {
   return (
     <Stack>
       <Stack.Screen name="index" options={{headerShown: false}}/>
-      <Stack.Screen name="(tabs)" options={{headerShown: false}}/>
+      <Stack.Screen name="(tabs)" options={{headerShown: false , gestureEnabled: false}}/>
       <Stack.Screen
         name="modal_recipe"
         options={{
@@ -32,8 +32,8 @@ export default function RootLayout() {
           headerShown: false,
         }}
       />
-      <Stack.Screen name="login" options={{headerShown: false}}/>
-      <Stack.Screen name="signup"/>
+      <Stack.Screen name="login" options={{headerShown: false, gestureEnabled: false}}/>
+      <Stack.Screen name="signup" options={{gestureEnabled: false}}/>
     </Stack>
   );
 }
