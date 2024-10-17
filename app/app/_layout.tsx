@@ -7,7 +7,9 @@ export const ScanContext = createContext({
   scan: false
 });
 
-export const ScanContexProvider = ({children}) => {
+import { ReactNode } from "react";
+
+export const ScanContexProvider = ({children}: {children: ReactNode}) => {
   const [scan, setScan] = useState(false);
   return (
     <ScanContext.Provider value={{scan, setScan}}>
