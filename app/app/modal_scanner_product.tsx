@@ -1,10 +1,12 @@
 import { Link, router, useLocalSearchParams} from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
+import { useScanContext } from './_layout';
 
 export default function Modal() {
 
     const {product = ""} = useLocalSearchParams();
+    const {setScan} = useScanContext();
     //const animation = new Animated.Value(0);
 
     return (
@@ -12,7 +14,7 @@ export default function Modal() {
             <Text>Product</Text>
             <Text>{product}</Text>
             <View style={styles.buttonContainer}>
-                <Pressable style={styles.closeButton} onPress={() => router.navigate({pathname: '/scanner'}) }>
+                <Pressable style={styles.closeButton} onPress={() => {setScan(false); router.navigate({pathname: '/scanner'})} }>
                     <Text style={styles.buttonText}>Cancel</Text>
                 </Pressable>
                 <Pressable style={styles.addButton}>

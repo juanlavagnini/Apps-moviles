@@ -3,12 +3,14 @@ import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import React, { useState } from 'react'
 import { router } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useScanContext } from '../_layout';
 
 const scanner = () => {
   const [facing, setFacing] = useState<CameraType>('back');
   const [permission, requestPermission] = useCameraPermissions();
   //producto escaneado
   const [isScanned, setisScanned] = useState<boolean>(false);
+  const {scan, setScan} = useScanContext();
 
   const [selectedButton, setSelectedButton] = useState<string>("insert");
 
@@ -37,15 +39,15 @@ const scanner = () => {
   return (
     <View style={styles.container}>
       <CameraView style={styles.camera} facing={facing} onBarcodeScanned={(result) => {
-              setisScanned(true);
-              if (isScanned) return;
+              setScan(true);
+              if (scan) return;
               router.push({
                 pathname: '/modal_scanner_product',
                 params: { product: result.data },
               });
             }} autofocus='on'>
         <View style={styles.buttonContainer}>
-          {!isScanned &&
+          {!scan &&
           (<Pressable style={styles.closeButton} onPress={() => router.push({pathname: '/pantry'})} >
             <Ionicons name="close-circle" size={50} color="white" />
           </Pressable>)}
