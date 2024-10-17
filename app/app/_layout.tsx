@@ -1,13 +1,33 @@
 import { Stack, useNavigation } from "expo-router";
+import { createContext, useContext, useState } from "react";
 import { Button } from "react-native";
+
+export const ScanContext = createContext({
+  setScan : (scan: boolean) => {},
+  scan: false
+});
+
+export const ScanContexProvider = ({children}) => {
+  const [scan, setScan] = useState(false);
+  return (
+    <ScanContext.Provider value={{scan, setScan}}>
+      {children}
+    </ScanContext.Provider>
+  );
+}
+
+export const useScanContext = () => {
+  return useContext(ScanContext);
+}
 
 export default function RootLayout() {
   const navigation = useNavigation();
   
   return (
+    <ScanContexProvider>
     <Stack>
       <Stack.Screen name="index" options={{headerShown: false}}/>
-      <Stack.Screen name="(tabs)" options={{headerShown: false}}/>
+      <Stack.Screen name="(tabs)" options={{headerShown: false , gestureEnabled: false}}/>
       <Stack.Screen
         name="modal_recipe"
         options={{
@@ -24,8 +44,17 @@ export default function RootLayout() {
           ),
         }}
       />
-      <Stack.Screen name="login" options={{headerShown: false}}/>
-      <Stack.Screen name="signup"/>
+      <Stack.Screen
+        name="modal_scanner_product"
+        options={{
+          title: "add_product",
+          presentation: 'transparentModal',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen name="login" options={{headerShown: false, gestureEnabled: false}}/>
+      <Stack.Screen name="signup" options={{gestureEnabled: false}}/>
     </Stack>
+    </ScanContexProvider>
   );
 }
