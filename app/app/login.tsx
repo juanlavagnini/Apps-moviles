@@ -54,21 +54,25 @@ const profile = () => {
  
   return (
     <View style={styles.container}>
-      <Text style={{fontSize:50}}>Login</Text>
-      <Text>Email</Text>
-      <TextInput value={email} onChangeText={setEmail}
+      <Text style={styles.title}>Welcome Back!</Text>
+      <Text style={styles.subtitle}>Log in to the account</Text>
+      <TextInput placeholder='Email' value={email} onChangeText={setEmail}
         style={isIncorrect? styles.inputIncorrect: styles.input}
+        placeholderTextColor="#666"
       />
-      <Text>Password</Text>
-      <TextInput value={password} onChangeText={setPassword}
+      <TextInput placeholder='Password' value={password} onChangeText={setPassword}
         style={isIncorrect? styles.inputIncorrect: styles.input}
+        placeholderTextColor="#666"
       />
       <Pressable style={styles.button} onPress={() => signInHandler(email,password)}>
-        <Text>Sign in</Text>
+        <Text style={styles.buttonText}>Log In</Text>
       </Pressable>
-      <Pressable onPress={() => (router.push({pathname: "/signup"}))}>
-        <Text style={styles.buttonText} >Create an account</Text>
-      </Pressable>
+      <View style={styles.signUpContainer}>
+        <Text style={styles.newAccountText} >Don't have an account? </Text>
+        <Pressable onPress={() => (router.push({pathname: "/signup"}))}>
+          <Text style={styles.signUpText} >Sign up here</Text>
+        </Pressable>
+      </View>  
     </View> 
   )
 }
@@ -91,7 +95,18 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     borderRadius: 100,
   },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: "#000",
+    marginBottom: 10,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: "#666",
+    marginBottom: 30,
 
+  },
   text: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -99,28 +114,50 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input: {
-    width: '60%',
-    height: 40,
-    borderWidth: 3,
+    width: '80%',
+    height: 50,
+    borderBottomWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginBottom: 20,
   },
   inputIncorrect: {
-    width: '60%',
-    height: 40,
-    borderWidth: 3,
-    borderColor: "red"
+    width: '80%',
+    height: 50,
+    borderBottomWidth: 1,
+    borderColor: "red",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginBottom: 20,
+
   },
   button: {
-    marginTop: 20,
-    width: '60%',
+    width: '20%',
     height: 40,
-    backgroundColor: Colors.dark.icon,
+    backgroundColor: "#673ab7",
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: 8,
+    marginBottom: 15,
   },
   buttonText: {
-    width: '60%',
-    color: Colors.light.buttonWithBackground,
-    justifyContent: 'center',
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  signUpText: {
+    color: "#673ab7",
+    fontSize: 16,
+    textDecorationLine: 'underline',
+  },
+  newAccountText: {
+    color: "#666",
+    fontSize: 16,
+  },
+  signUpContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
-  }
+    marginTop: 10,
+  },
 })
