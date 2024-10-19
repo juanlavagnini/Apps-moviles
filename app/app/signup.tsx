@@ -33,25 +33,25 @@ const profile = () => {
       <Text style={styles.text}>Trini</Text>
     </View>*/
     <View style={styles.container}>
-      <Text style={{fontSize:50}}>Registro</Text>
-      <Text>Nombre</Text>
-      <TextInput value={nombre} onChangeText={setNombre}
+      <Text style={styles.title}>Create an account</Text>
+      <TextInput placeholder='Name' value={nombre} onChangeText={setNombre}
         style={styles.input}
+        placeholderTextColor="#666"
       />
-      <Text>Apellido</Text>
-      <TextInput value={apellido} onChangeText={setApellido}
+      <TextInput placeholder='Lastname' value={apellido} onChangeText={setApellido}
         style={styles.input}
+        placeholderTextColor="#666"
       />
-      <Text>Correo</Text>
-      <TextInput value={correo} onChangeText={setCorreo}
+      <TextInput placeholder='Email' value={correo} onChangeText={setCorreo}
         style={styles.input}
+        placeholderTextColor="#666"
       />
-      <Text>Contraseña</Text>
-      <TextInput value={contrasena} onChangeText={setContrasena}
+      <TextInput placeholder='Password' value={contrasena} onChangeText={setContrasena}
         style={styles.input}
+        placeholderTextColor="#666"
       />
       <Pressable style={styles.button} onPress={() => signUpHandler(nombre, apellido, correo, contrasena)}>
-        <Text>Registrarse</Text>
+        <Text style={styles.buttonText}>Sign Up</Text>
       </Pressable>
 
     </View>
@@ -75,7 +75,12 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     borderRadius: 100,
   },
-
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: "#000",
+    marginBottom: 10,
+  },
   text: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -83,16 +88,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input: {
-    width: '60%',
-    height: 40,
-    borderWidth: 3,
+    width: '80%',
+    height: 50,
+    borderBottomWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginBottom: 20,
   },
   button: {
-    marginTop: 20,
-    width: '60%',
+    width: '25%',
     height: 40,
-    backgroundColor: Colors.dark.icon,
+    backgroundColor: "#673ab7",
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: 8,
+    marginBottom: 15,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 })
