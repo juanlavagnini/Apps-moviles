@@ -63,6 +63,8 @@ const profile = () => {
       <TextInput placeholder='Password' value={password} onChangeText={setPassword}
         style={isIncorrect? styles.inputIncorrect: styles.input}
         placeholderTextColor="#666"
+        onSubmitEditing={() => signInHandler(email,password)}
+        returnKeyType="done"
       />
       <Pressable style={styles.button} onPress={() => signInHandler(email,password)}>
         <Text style={styles.buttonText}>Log In</Text>

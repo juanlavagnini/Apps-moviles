@@ -49,6 +49,8 @@ const profile = () => {
       <TextInput placeholder='Password' value={contrasena} onChangeText={setContrasena}
         style={styles.input}
         placeholderTextColor="#666"
+        returnKeyType='done'
+        onSubmitEditing={() => signUpHandler(nombre, apellido, correo, contrasena)}
       />
       <Pressable style={styles.button} onPress={() => signUpHandler(nombre, apellido, correo, contrasena)}>
         <Text style={styles.buttonText}>Sign Up</Text>
