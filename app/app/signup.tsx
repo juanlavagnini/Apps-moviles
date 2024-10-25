@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TextInput, Pressable } from 'react-native'
+import { StyleSheet, Text, View, Image, TextInput, Pressable, ScrollView, KeyboardAvoidingView, Platform } from 'react-native'
 import React, { useState } from 'react'
 import { Colors } from '@/constants/Colors'
 
@@ -32,29 +32,36 @@ const profile = () => {
       <Image source={{uri: 'https://reactnative.dev/img/tiny_logo.png'}} style={styles.image}/>
       <Text style={styles.text}>Trini</Text>
     </View>*/
-    <View style={styles.container}>
-      <Text style={{fontSize:50}}>Registro</Text>
-      <Text>Nombre</Text>
-      <TextInput value={nombre} onChangeText={setNombre}
-        style={styles.input}
-      />
-      <Text>Apellido</Text>
-      <TextInput value={apellido} onChangeText={setApellido}
-        style={styles.input}
-      />
-      <Text>Correo</Text>
-      <TextInput value={correo} onChangeText={setCorreo}
-        style={styles.input}
-      />
-      <Text>Contraseña</Text>
-      <TextInput value={contrasena} onChangeText={setContrasena}
-        style={styles.input}
-      />
-      <Pressable style={styles.button} onPress={() => signUpHandler(nombre, apellido, correo, contrasena)}>
-        <Text>Registrarse</Text>
-      </Pressable>
-
-    </View>
+    <KeyboardAvoidingView 
+          style={styles.keyboardAvoidingView} 
+          behavior={Platform.OS === "ios" ? "padding" : "height"}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <View style={styles.container}>
+            <Text style={styles.title}>Create an account</Text>
+            <TextInput placeholder='Name' value={nombre} onChangeText={setNombre}
+              style={styles.input}
+              placeholderTextColor="#666"
+            />
+            <TextInput placeholder='Lastname' value={apellido} onChangeText={setApellido}
+              style={styles.input}
+              placeholderTextColor="#666"
+            />
+            <TextInput placeholder='Email' value={correo} onChangeText={setCorreo}
+              style={styles.input}
+              placeholderTextColor="#666"
+            />
+            <TextInput placeholder='Password' value={contrasena} onChangeText={setContrasena}
+              style={styles.input}
+              placeholderTextColor="#666"
+              returnKeyType='done'
+              onSubmitEditing={() => signUpHandler(nombre, apellido, correo, contrasena)}
+            />
+            <Pressable style={styles.button} onPress={() => signUpHandler(nombre, apellido, correo, contrasena)}>
+              <Text style={styles.buttonText}>Sign Up</Text>
+            </Pressable>
+          </View>
+        </ScrollView>
+    </KeyboardAvoidingView>
   )
 }
 
@@ -68,6 +75,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 20,  
   },
+  scrollContainer: {
+    flex: 1,
+    margin: 10,
+    justifyContent: "center",
+    gap: 20,  
+  },
+  keyboardAvoidingView: {
+    flex: 1,
+  },
   image: {
     width: 200,
     height: 200,
@@ -75,7 +91,12 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     borderRadius: 100,
   },
-
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: "#000",
+    marginBottom: 10,
+  },
   text: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -83,16 +104,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input: {
-    width: '60%',
-    height: 40,
-    borderWidth: 3,
+    width: '80%',
+    height: 50,
+    borderBottomWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginBottom: 20,
   },
   button: {
-    marginTop: 20,
-    width: '60%',
+    width: '25%',
     height: 40,
-    backgroundColor: Colors.dark.icon,
+    backgroundColor: "#673ab7",
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: 8,
+    marginBottom: 15,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 })
