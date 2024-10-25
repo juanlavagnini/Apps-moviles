@@ -1,28 +1,60 @@
-import { Link, router, useLocalSearchParams} from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { Link, router, useLocalSearchParams } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useScanContext } from './_layout';
 
 export default function Modal() {
+  const { product = "" } = useLocalSearchParams();
+  const { setScan } = useScanContext();
+  const [productData, setProductData] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-    const {product = ""} = useLocalSearchParams();
-    const {setScan} = useScanContext();
-    //const animation = new Animated.Value(0);
+  useEffect(() => {
+    if (product) {
+      fetch(`https://world.openfoodfacts.org/api/v0/product/${product}.json`)
+        .then((response) => response.json())
+        .then((data) => {
+          setProductData(data);
+          setLoading(false);
+        })
+        .catch((error) => {
+          setError(error.message);
+          setLoading(false);
+        });
+    }
+  }, [product]);
 
-    return (
-        <View style={styles.container}>
-            <Text>Product</Text>
-            <Text>{product}</Text>
-            <View style={styles.buttonContainer}>
-                <Pressable style={styles.closeButton} onPress={() => {setScan(false); router.navigate({pathname: '/scanner'})} }>
-                    <Text style={styles.buttonText}>Cancel</Text>
-                </Pressable>
-                <Pressable style={styles.addButton}>
-                    <Text style={styles.buttonText}>Add</Text> 
-                </Pressable>
-            </View>
+  return (
+    <View style={styles.container}>
+      <Text>Product</Text>
+      <Text>{product}</Text>
+      {loading && <Text>Loading...</Text>}
+      {error && <Text>Error: {error}</Text>}
+      {productData && (
+        <View>
+          <Text>Product Name: {productData.product.product_name}</Text>
+          <Text>Brand: {productData.product.brands}</Text>
+          <Text>Ingredients: {productData.product.ingredients_text}</Text>
         </View>
-    );
+      )}
+      <View style={styles.buttonContainer}>
+        <Pressable
+          style={styles.closeButton}
+          onPress={() => {
+            setScan(false);
+            router.navigate({ pathname: '/scanner' });
+          }}
+        >
+          <Text style={styles.buttonText}>Cancel</Text>
+        </Pressable>
+        <Pressable style={styles.addButton}>
+          <Text style={styles.buttonText}>Add</Text>
+        </Pressable>
+      </View>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
