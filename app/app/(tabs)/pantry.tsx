@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   View,
@@ -7,21 +7,8 @@ import {
   Text,
   StatusBar,
 } from 'react-native';
+import { useScanContext, useUserContext } from '../_layout';
 
-const DATA = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    title: 'First Item',
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    title: 'Second Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    title: 'Third Item',
-  },
-];
 
 type ItemProps = {title: string};
 
@@ -32,6 +19,34 @@ const Item = ({title}: ItemProps) => (
 );
 
 const Pantry = () => {
+
+  const { user } = useUserContext();
+  const { scan } = useScanContext();
+  const ip = process.env.EXPO_PUBLIC_IP;
+  const [DATA, setDATA] = useState<any>([]);
+
+
+
+  useEffect(() => {
+    fetch(`http://${ip}:3000/userProduct/products/${user?.id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const DATA = data.map((item: { id: string; name: string }) => {
+          return { id: item.id, title: item.name };
+        });
+        setDATA(DATA);
+      })
+      .catch((error: any) => {
+        console.error('Error:', error);
+      });
+  }, [scan]);
+
+
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
