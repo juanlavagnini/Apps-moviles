@@ -1,6 +1,8 @@
 import { StyleSheet, Text, View, Image, TextInput, Pressable, ScrollView, KeyboardAvoidingView, Platform } from 'react-native'
 import React, { useState } from 'react'
 import { Colors } from '@/constants/Colors'
+import { useUserContext } from './_layout'
+import { router } from 'expo-router'
 
 
 const profile = () => {
@@ -20,11 +22,18 @@ const profile = () => {
         password: contrasena
       }),
     })
+    .then(response => {
+      if (response.ok) {
+        router.push({ pathname: "/login" });
+      }
+    })
   }
   const [nombre, setNombre] = useState('')
   const [apellido, setApellido] = useState('')
   const [correo, setCorreo] = useState('')
   const [contrasena, setContrasena] = useState('')
+
+  const { setUser } = useUserContext();
   
 
   return (

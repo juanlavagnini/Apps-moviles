@@ -3,12 +3,14 @@ import React, { useState } from 'react'
 import { Colors } from '@/constants/Colors'
 import { router } from 'expo-router'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useUserContext } from './_layout';
 
 
 const profile = () => {
 
   const ip = process.env.EXPO_PUBLIC_IP
   const [isIncorrect, setIsIncorrect] = useState(false)
+  const { setUser } = useUserContext();
 
   const signInHandler = (email: string, password: string) => {
     console.log(`http://${ip}:3000/user/login`)
@@ -33,8 +35,10 @@ const profile = () => {
     .then(async data => {
       if (data) {
         const id = data.id;
+        const email = data.email;
         const jsonValue = JSON.stringify(id);
         try {
+          setUser({id, email});
           await AsyncStorage.setItem('id', jsonValue);
         }
         catch (error) {
