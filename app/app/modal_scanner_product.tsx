@@ -1,28 +1,83 @@
-import { Link, router, useLocalSearchParams} from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { Link, router, useLocalSearchParams } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
-import { useScanContext } from './_layout';
+import { useScanContext, useUserContext } from './_layout';
+import user from './(tabs)/profile/user';
 
 export default function Modal() {
+  const { product = "" } = useLocalSearchParams();
+  const { setScan } = useScanContext();
+  const { user } = useUserContext();
+  const [productData, setProductData] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-    const {product = ""} = useLocalSearchParams();
-    const {setScan} = useScanContext();
-    //const animation = new Animated.Value(0);
+  const ip = process.env.EXPO_PUBLIC_IP
 
-    return (
-        <View style={styles.container}>
-            <Text>Product</Text>
-            <Text>{product}</Text>
-            <View style={styles.buttonContainer}>
-                <Pressable style={styles.closeButton} onPress={() => {setScan(false); router.navigate({pathname: '/scanner'})} }>
-                    <Text style={styles.buttonText}>Cancel</Text>
-                </Pressable>
-                <Pressable style={styles.addButton}>
-                    <Text style={styles.buttonText}>Add</Text> 
-                </Pressable>
-            </View>
+  useEffect(() => {
+    if (product) {
+      fetch(`https://world.openfoodfacts.org/api/v0/product/${product}.json`)
+        .then((response) => response.json())
+        .then((data) => {
+          setProductData(data);
+          setLoading(false);
+        })
+        .catch((error) => {
+          setError(error.message);
+          setLoading(false);
+        });
+    }
+  }, [product]);
+
+  const handleAddProduct = (productId: string | string []) => () => {
+    console.log('Add product', productId);
+    fetch(`http://${ip}:3000/userProduct/addProduct`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: user?.id,
+        productId: productId,
+      }),
+    })
+    setScan(false);
+    router.navigate({ pathname: '/scanner' });
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text>Product</Text>
+      <Text>{product}</Text>
+      {loading && <Text>Loading...</Text>}
+      {error && <Text>Error: {error}</Text>}
+      {productData && (
+        <View>
+          <Text>Product Name: {productData.product.product_name}</Text>
+          <Text>Brand: {productData.product.brands}</Text>
+          <Text>Ingredients: {productData.product.ingredients_text}</Text>
         </View>
-    );
+      )}
+      <View style={styles.buttonContainer}>
+        <Pressable
+          style={styles.closeButton}
+          onPress={() => {
+            setScan(false);
+            router.navigate({ pathname: '/scanner' });
+          }}
+        >
+          <Text style={styles.buttonText}>Cancel</Text>
+        </Pressable>
+        <Pressable 
+          style={styles.addButton}
+          onPress={handleAddProduct(product)}
+        >
+          <Text style={styles.buttonText}>Add</Text>
+        </Pressable>
+      </View>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
