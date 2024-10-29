@@ -46,15 +46,15 @@ const Pantry = () => {
       });
   }, [scan]);
 
-
   return (
-    <SafeAreaView style={styles.container}>
-      <FlatList
+    <View style={styles.container}>
+      <FlatList 
         data={DATA}
         renderItem={({item}) => <Item title={item.title} />}
         keyExtractor={item => item.id}
+        ListFooterComponent={<View style={{height: 50}} />}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
