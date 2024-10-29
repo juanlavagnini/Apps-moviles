@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Link, router, useLocalSearchParams } from 'expo-router';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import Animated from 'react-native-reanimated';
-import { useScanContext, useUserContext } from './_layout';
+import { useModalContext, useScanContext, useUserContext } from './_layout';
 import user from './(tabs)/profile/user';
 
 export default function Modal() {
   const { product = "" } = useLocalSearchParams();
   const { setScan } = useScanContext();
   const { user } = useUserContext();
+  const { modalActive, setModalActive } = useModalContext();
   const [productData, setProductData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -77,6 +78,7 @@ export default function Modal() {
         <Pressable
           style={styles.closeButton}
           onPress={() => {
+            setModalActive(false);
             setScan(false);
             router.navigate({ pathname: '/scanner' });
           }}

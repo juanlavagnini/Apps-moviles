@@ -3,7 +3,7 @@ import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import React, { useEffect, useState } from 'react'
 import { router } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useScanContext } from '../_layout';
+import { useModalContext, useScanContext } from '../_layout';
 import { useFocusEffect } from '@react-navigation/native';
 
 const scanner = () => {
@@ -15,6 +15,8 @@ const scanner = () => {
   const [selectedButton, setSelectedButton] = useState<string>("insert");
 
   const [isCameraActive, setIsCameraActive] = useState<boolean>(true);
+  //const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const {modalActive, setModalActive} = useModalContext();
 
   const handleSelection = (button: string) => {
     setSelectedButton(button);
@@ -26,8 +28,11 @@ const scanner = () => {
       setIsCameraActive(true);
 
       // Desactiva la cámara cuando la pantalla pierde el enfoque
-      return () => setIsCameraActive(false);
-    }, [])
+      return () => {
+        if (!modalActive) {setIsCameraActive(true)}
+        else{setIsCameraActive(false);}  
+      }
+    }, [modalActive])
   );
 
   useEffect(() => {
@@ -58,6 +63,7 @@ const scanner = () => {
         style={styles.camera} 
         facing={facing} 
         onBarcodeScanned={(result) => {
+              setModalActive(true);
               setScan(true);
               if (scan) return;
               router.push({

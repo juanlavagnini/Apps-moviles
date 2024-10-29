@@ -20,6 +20,24 @@ export const useScanContext = () => {
   return useContext(ScanContext);
 }
 
+export const ModalContext = createContext({
+  setModalActive : (modal: boolean) => {},
+  modalActive: false
+});
+
+export const ModalContexProvider = ({children}: {children: ReactNode}) => {
+  const [modalActive, setModalActive] = useState(false);
+  return (
+    <ModalContext.Provider value={{modalActive, setModalActive}}>
+      {children}
+    </ModalContext.Provider>
+  );
+}
+
+export const useModalContext = () => {
+  return useContext(ModalContext);
+}
+
 //UserContext
 
 //objeto user
@@ -55,6 +73,7 @@ export default function RootLayout() {
   return (
     <UserContextProvider>
     <ScanContexProvider>
+    <ModalContexProvider>
     <Stack>
       <Stack.Screen name="index" options={{headerShown: false}}/>
       <Stack.Screen name="(tabs)" options={{headerShown: false , gestureEnabled: false}}/>
@@ -85,6 +104,7 @@ export default function RootLayout() {
       <Stack.Screen name="login" options={{headerShown: false, gestureEnabled: false}}/>
       <Stack.Screen name="signup" options={{gestureEnabled: false}}/>
     </Stack>
+    </ModalContexProvider>
     </ScanContexProvider>
     </UserContextProvider>
   );
