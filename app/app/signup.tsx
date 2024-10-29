@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Image, TextInput, Pressable, ScrollView, KeyboardAvoidingView, Platform } from 'react-native'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { Colors } from '@/constants/Colors'
 import { useUserContext } from './_layout'
 import { router } from 'expo-router'
@@ -33,7 +33,10 @@ const profile = () => {
   const [correo, setCorreo] = useState('')
   const [contrasena, setContrasena] = useState('')
 
-  const { setUser } = useUserContext();
+  const apellidoInputRef = useRef<TextInput>(null);
+  const correoInputRef = useRef<TextInput>(null);
+  const contrasenaInputRef = useRef<TextInput>(null);
+
   
 
   return (
@@ -47,19 +50,40 @@ const profile = () => {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={styles.container}>
             <Text style={styles.title}>Create an account</Text>
-            <TextInput placeholder='Name' value={nombre} onChangeText={setNombre}
+            <TextInput 
+              placeholder='Name' 
+              value={nombre} 
+              onChangeText={setNombre}
+              returnKeyType="next"
+              onSubmitEditing={() => apellidoInputRef.current?.focus()}
               style={styles.input}
               placeholderTextColor="#666"
             />
-            <TextInput placeholder='Lastname' value={apellido} onChangeText={setApellido}
+            <TextInput 
+              ref={apellidoInputRef}
+              placeholder='Lastname' 
+              value={apellido} 
+              onChangeText={setApellido}
+              returnKeyType="next"
+              onSubmitEditing={() => correoInputRef.current?.focus()}
               style={styles.input}
               placeholderTextColor="#666"
             />
-            <TextInput placeholder='Email' value={correo} onChangeText={setCorreo}
+            <TextInput 
+              ref={correoInputRef}
+              placeholder='Email' 
+              value={correo} 
+              onChangeText={setCorreo}
+              returnKeyType="next"
+              onSubmitEditing={() => contrasenaInputRef.current?.focus()}
               style={styles.input}
               placeholderTextColor="#666"
             />
-            <TextInput placeholder='Password' value={contrasena} onChangeText={setContrasena}
+            <TextInput 
+              ref={contrasenaInputRef}
+              placeholder='Password' 
+              value={contrasena} 
+              onChangeText={setContrasena}
               style={styles.input}
               placeholderTextColor="#666"
               returnKeyType='done'

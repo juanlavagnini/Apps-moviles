@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Image, TextInput, Pressable } from 'react-native'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { Colors } from '@/constants/Colors'
 import { router } from 'expo-router'
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -11,6 +11,9 @@ const profile = () => {
   const ip = process.env.EXPO_PUBLIC_IP
   const [isIncorrect, setIsIncorrect] = useState(false)
   const { setUser } = useUserContext();
+
+  const passwordInputRef = useRef<TextInput>(null);
+
 
   const signInHandler = (email: string, password: string) => {
     console.log(`http://${ip}:3000/user/login`)
@@ -60,11 +63,20 @@ const profile = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Welcome Back!</Text>
       <Text style={styles.subtitle}>Log in to the account</Text>
-      <TextInput placeholder='Email' value={email} onChangeText={setEmail}
+      <TextInput 
+        placeholder='Email' 
+        value={email} 
+        onChangeText={setEmail}
+        returnKeyType='next'
+        onSubmitEditing={() => passwordInputRef.current?.focus()}
         style={isIncorrect? styles.inputIncorrect: styles.input}
         placeholderTextColor="#666"
       />
-      <TextInput placeholder='Password' value={password} onChangeText={setPassword}
+      <TextInput 
+        ref={passwordInputRef}
+        placeholder='Password' 
+        value={password} 
+        onChangeText={setPassword}
         style={isIncorrect? styles.inputIncorrect: styles.input}
         placeholderTextColor="#666"
         onSubmitEditing={() => signInHandler(email,password)}
