@@ -1,23 +1,39 @@
 import { StyleSheet, Text, View, Pressable, TouchableOpacity, Button, Image } from 'react-native'
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { router } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useScanContext } from '../_layout';
+import { useFocusEffect } from '@react-navigation/native';
 
 const scanner = () => {
+
   const [facing, setFacing] = useState<CameraType>('back');
   const [permission, requestPermission] = useCameraPermissions();
   //producto escaneado
-  const [isScanned, setisScanned] = useState<boolean>(false);
   const {scan, setScan} = useScanContext();
-
   const [selectedButton, setSelectedButton] = useState<string>("insert");
+
+  const [isCameraActive, setIsCameraActive] = useState<boolean>(true);
 
   const handleSelection = (button: string) => {
     setSelectedButton(button);
   };
 
+  useFocusEffect(
+    React.useCallback(() => {
+      // Activa la cámara cuando la pantalla está enfocada
+      setIsCameraActive(true);
+
+      // Desactiva la cámara cuando la pantalla pierde el enfoque
+      return () => setIsCameraActive(false);
+    }, [])
+  );
+
+  useEffect(() => {
+    if (!permission) requestPermission();
+  }, [permission]);
+  
   if (!permission) {
     // Camera permissions are still loading.
     return <View />;
@@ -38,14 +54,18 @@ const scanner = () => {
   }
   return (
     <View style={styles.container}>
-      <CameraView style={styles.camera} facing={facing} onBarcodeScanned={(result) => {
+      {isCameraActive && (<CameraView 
+        style={styles.camera} 
+        facing={facing} 
+        onBarcodeScanned={(result) => {
               setScan(true);
               if (scan) return;
               router.push({
                 pathname: '/modal_scanner_product',
                 params: { product: result.data },
               });
-            }} autofocus='on'>
+            }} 
+        >
         <View style={styles.buttonContainer}>
           {!scan &&
           (<Pressable style={styles.closeButton} onPress={() => router.push({pathname: '/pantry'})} >
@@ -65,7 +85,7 @@ const scanner = () => {
             <Text style={styles.buttonText}>Delete</Text>
           </Pressable>
         </View>  
-      </CameraView>
+      </CameraView>)}
      
           
     </View>
