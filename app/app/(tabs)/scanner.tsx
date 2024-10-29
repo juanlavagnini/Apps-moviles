@@ -15,7 +15,6 @@ const scanner = () => {
   const [selectedButton, setSelectedButton] = useState<string>("insert");
 
   const [isCameraActive, setIsCameraActive] = useState<boolean>(true);
-  //const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const {modalActive, setModalActive} = useModalContext();
 
   const handleSelection = (button: string) => {
