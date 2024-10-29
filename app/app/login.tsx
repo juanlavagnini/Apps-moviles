@@ -61,6 +61,7 @@ const profile = () => {
  
   return (
     <View style={styles.container}>
+      <Image source={require('@/assets/images/logo_app.jpeg')} style={styles.logo} />
       <Text style={styles.title}>Welcome Back!</Text>
       <Text style={styles.subtitle}>Log in to the account</Text>
       <TextInput 
@@ -101,10 +102,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     margin: 10,
-    marginTop: 50,
     justifyContent: "center",
     alignItems: "center",
     gap: 20,  
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    borderRadius: 100,
   },
   image: {
     width: 200,
