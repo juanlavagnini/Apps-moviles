@@ -4,6 +4,7 @@ import { Colors } from '@/constants/Colors'
 import { router } from 'expo-router'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUserContext } from './_layout';
+import Logbutton from '@/components/Logbutton';
 
 
 const profile = () => {
@@ -97,9 +98,7 @@ const profile = () => {
         onSubmitEditing={() => signInHandler(email,password)}
         returnKeyType="done"
       />
-      <Pressable style={styles.button} onPress={() => signInHandler(email,password)}>
-        <Text style={styles.buttonText}>Log In</Text>
-      </Pressable>
+      <Logbutton title="Log In" onPress={() => signInHandler(email,password)} />
       <View style={styles.signUpContainer}>
         <Text style={styles.newAccountText} >Don't have an account? </Text>
         <Pressable onPress={() => (router.push({pathname: "/signup"}))}>
@@ -168,20 +167,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 20,
 
-  },
-  button: {
-    width: '20%',
-    height: 40,
-    backgroundColor: "#673ab7",
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 8,
-    marginBottom: 15,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: 'bold',
   },
   signUpText: {
     color: "#673ab7",

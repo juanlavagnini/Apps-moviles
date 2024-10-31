@@ -4,24 +4,18 @@ import { Colors } from '@/constants/Colors'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUserContext } from '@/app/_layout';
 import QRCode from 'react-native-qrcode-svg';
+import { router } from 'expo-router';
+import Logbutton from '@/components/Logbutton';
 
 
 const user = () => {
-  const [id, setId] = useState<string | null>(null);
-  const { user } = useUserContext();
+  const { user, setUser } = useUserContext();
 
-  React.useEffect(() => {
-    const fetchId = async () => {
-      try {
-        const jsonValue = await AsyncStorage.getItem('id');
-        setId(jsonValue != null ? JSON.parse(jsonValue) : null);
-      } catch (e) {
-        console.error('Error:', e);
-      }
-    };
 
-    fetchId();
-  }, []);
+  const handleLogout = () => {
+    setUser(null);
+    router.navigate({ pathname: '/login' });
+  }
 
   return (
     //El comportamiento deberia ser el siguiente:
@@ -38,6 +32,7 @@ const user = () => {
           user?.owner ? <QRCode value={user?.houseId.toString()} size={200} /> : 
                         <Pressable onPress={() => {}}><Text>Join another house</Text></Pressable>
           }
+          <Logbutton onPress={handleLogout} title="Logout" />
       </View>
   )
 }

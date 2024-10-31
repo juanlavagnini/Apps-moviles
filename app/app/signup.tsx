@@ -3,6 +3,7 @@ import React, { useRef, useState } from 'react'
 import { Colors } from '@/constants/Colors'
 import { useUserContext } from './_layout'
 import { router } from 'expo-router'
+import Logbutton from '@/components/Logbutton'
 
 
 const profile = () => {
@@ -89,9 +90,7 @@ const profile = () => {
               returnKeyType='done'
               onSubmitEditing={() => signUpHandler(nombre, apellido, correo, contrasena)}
             />
-            <Pressable style={styles.button} onPress={() => signUpHandler(nombre, apellido, correo, contrasena)}>
-              <Text style={styles.buttonText}>Sign Up</Text>
-            </Pressable>
+            <Logbutton title="Sign Up" onPress={() => signUpHandler(nombre, apellido, correo, contrasena)} />
           </View>
         </ScrollView>
     </KeyboardAvoidingView>
@@ -144,19 +143,5 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 10,
     marginBottom: 20,
-  },
-  button: {
-    width: '25%',
-    height: 40,
-    backgroundColor: "#673ab7",
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 8,
-    marginBottom: 15,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: 'bold',
   },
 })
