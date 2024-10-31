@@ -52,7 +52,7 @@ const profile = () => {
           setUser({id, email, houseId});
         }
         catch (error) {
-          console.error('E:', error);
+          console.error('ErrorLogin:', error);
         }
         router.push({ pathname: "/(tabs)"
          });
