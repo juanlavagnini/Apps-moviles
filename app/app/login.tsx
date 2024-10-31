@@ -10,6 +10,7 @@ const profile = () => {
 
   const ip = process.env.EXPO_PUBLIC_IP
   const [isIncorrect, setIsIncorrect] = useState(false)
+  const [isOwner, setIsOwner] = useState(false)
   const { setUser } = useUserContext();
 
   const passwordInputRef = useRef<TextInput>(null);
@@ -47,9 +48,15 @@ const profile = () => {
         const id = data.id;
         const email = data.email;
         const houseId = data.houseId;
-        const owner = false;
+        const owner = data.ownedHouse;
+        if (data.ownedHouse==null){
+          setIsOwner(false);
+        }
+        else{
+          setIsOwner(true);
+        }
         try {
-          setUser({id, email, houseId});
+          setUser({id, email, houseId, owner});
         }
         catch (error) {
           console.error('ErrorLogin:', error);

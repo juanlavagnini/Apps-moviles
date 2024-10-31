@@ -45,6 +45,7 @@ interface User {
   id: number;
   email: string;
   houseId: number;
+  owner: boolean;
 }
 
 export const UserContext = createContext<{

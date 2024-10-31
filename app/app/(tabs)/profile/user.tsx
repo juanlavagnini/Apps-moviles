@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { Colors } from '@/constants/Colors'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUserContext } from '@/app/_layout';
+import QRCode from 'react-native-qrcode-svg';
 
 
 const user = () => {
@@ -23,9 +24,20 @@ const user = () => {
   }, []);
 
   return (
+    //El comportamiento deberia ser el siguiente:
+    //Si el usuario es propietario de una casa, se le muestra el QR de su casa (a travez de un presable)
+    //Si el usuario no es propietario de una casa, se le muestra un boton para unirse a una casa
+    //Por defecto siempre es propietario de una casa, asi que deberia tener un boton para unirse a otra casa
+    //Realmente deberia tener algun tipo de seguridad el QR para que solo se pueda unir a la casa si se escanea el QR
       <View style={styles.container}>
           <Image source={{uri: 'https://reactnative.dev/img/tiny_logo.png'}} style={styles.image}/>
-          <Text>{user?.houseId}</Text>
+          <Text>Email {user?.email}</Text>
+          <Text>Your House ID is: {user?.houseId}</Text>
+          <Text>Owner: {user?.owner ? 'Yes' : 'No'}</Text>
+          {
+          user?.owner ? <QRCode value={user?.houseId.toString()} size={200} /> : 
+                        <Pressable onPress={() => {}}><Text>Join another house</Text></Pressable>
+          }
       </View>
   )
 }
