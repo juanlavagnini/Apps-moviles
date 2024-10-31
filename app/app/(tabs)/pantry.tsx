@@ -28,7 +28,7 @@ const Pantry = () => {
 
 
   useEffect(() => {
-    fetch(`http://${ip}:3000/userProduct/products/${user?.id}`, {
+    fetch(`http://${ip}:3000/houseProduct/products/${user?.houseId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -42,7 +42,7 @@ const Pantry = () => {
         setDATA(DATA);
       })
       .catch((error: any) => {
-        console.error('Error:', error);
+        console.error('ErrorPantry:', error);
       });
   }, [scan]);
 

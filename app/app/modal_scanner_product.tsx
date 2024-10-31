@@ -37,13 +37,13 @@ export default function Modal() {
     const name = (productData.status == 1) ? productData.product.product_name : manualName;
 
     console.log('Add product', productId);
-    fetch(`http://${ip}:3000/userProduct/addProduct`, {
+    fetch(`http://${ip}:3000/houseProduct/addProduct`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        userId: user?.id,
+        houseId: user?.houseId,
         productId: productId,
         name: name ,
       }),

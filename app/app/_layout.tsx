@@ -44,6 +44,7 @@ export const useModalContext = () => {
 interface User {
   id: number;
   email: string;
+  houseId: number;
 }
 
 export const UserContext = createContext<{
@@ -72,40 +73,40 @@ export default function RootLayout() {
   
   return (
     <UserContextProvider>
-    <ScanContexProvider>
-    <ModalContexProvider>
-    <Stack>
-      <Stack.Screen name="index" options={{headerShown: false}}/>
-      <Stack.Screen name="(tabs)" options={{headerShown: false , gestureEnabled: false}}/>
-      <Stack.Screen
-        name="modal_recipe"
-        options={{
-          title: "Recipe",
-          presentation: 'modal', //"transparentModal"
-          //animation: "none",
-          //headerShown: false,
-          headerLeft: () => (
-            <Button
-              onPress={() => navigation.goBack()}
-              title="Close"
-              color="#000"
+      <ScanContexProvider>
+        <ModalContexProvider>
+          <Stack>
+            <Stack.Screen name="index" options={{headerShown: false}}/>
+            <Stack.Screen name="(tabs)" options={{headerShown: false , gestureEnabled: false}}/>
+            <Stack.Screen
+              name="modal_recipe"
+              options={{
+                title: "Recipe",
+                presentation: 'modal', //"transparentModal"
+                //animation: "none",
+                //headerShown: false,
+                headerLeft: () => (
+                  <Button
+                    onPress={() => navigation.goBack()}
+                    title="Close"
+                    color="#000"
+                  />
+                ),
+              }}
             />
-          ),
-        }}
-      />
-      <Stack.Screen
-        name="modal_scanner_product"
-        options={{
-          title: "add_product",
-          presentation: 'transparentModal',
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen name="login" options={{headerShown: false, gestureEnabled: false}}/>
-      <Stack.Screen name="signup" options={{gestureEnabled: false}}/>
-    </Stack>
-    </ModalContexProvider>
-    </ScanContexProvider>
+            <Stack.Screen
+              name="modal_scanner_product"
+              options={{
+                title: "add_product",
+                presentation: 'transparentModal',
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen name="login" options={{headerShown: false, gestureEnabled: false}}/>
+            <Stack.Screen name="signup" options={{gestureEnabled: false}}/>
+          </Stack>
+        </ModalContexProvider>
+      </ScanContexProvider>
     </UserContextProvider>
   );
 }

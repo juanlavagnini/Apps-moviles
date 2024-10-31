@@ -33,19 +33,26 @@ const profile = () => {
         setIsIncorrect(true); // Manejar error si la respuesta no es OK
         return null; // Asegurarse de no procesar más
       }
-      return response.json(); // Convertir a JSON si es exitoso
+      //return response.json(); // Convertir a JSON si es exitoso
+      const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          return response.json(); // Convertir a JSON si es exitoso
+        } else {
+          throw new Error('Received non-JSON response');
+        }
     })
     .then(async data => {
       if (data) {
+        console.log(data)
         const id = data.id;
         const email = data.email;
-        const jsonValue = JSON.stringify(id);
+        const houseId = data.houseId;
+        const owner = false;
         try {
-          setUser({id, email});
-          await AsyncStorage.setItem('id', jsonValue);
+          setUser({id, email, houseId});
         }
         catch (error) {
-          console.error('Error:', error);
+          console.error('E:', error);
         }
         router.push({ pathname: "/(tabs)"
          });

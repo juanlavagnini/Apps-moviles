@@ -25,7 +25,7 @@ const user = () => {
   return (
       <View style={styles.container}>
           <Image source={{uri: 'https://reactnative.dev/img/tiny_logo.png'}} style={styles.image}/>
-          <Text>{user?.email}</Text>
+          <Text>{user?.houseId}</Text>
       </View>
   )
 }
