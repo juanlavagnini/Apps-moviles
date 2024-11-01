@@ -78,7 +78,6 @@ export default function Modal() {
         <Pressable
           style={styles.closeButton}
           onPress={() => {
-            setModalActive(false);
             setScan(false);
             router.navigate({ pathname: '/scanner' });
           }}

@@ -14,7 +14,7 @@ const scanner = () => {
   const {scan, setScan} = useScanContext();
   const [selectedButton, setSelectedButton] = useState<string>("insert");
 
-  const [isCameraActive, setIsCameraActive] = useState<boolean>(true);
+  const [isCameraActive, setIsCameraActive] = useState<boolean>(false);
   const {modalActive, setModalActive} = useModalContext();
 
   const handleSelection = (button: string) => {
@@ -28,10 +28,10 @@ const scanner = () => {
 
       // Desactiva la cámara cuando la pantalla pierde el enfoque
       return () => {
-        if (!modalActive) {setIsCameraActive(true)}
-        else{setIsCameraActive(false);}  
+        setIsCameraActive(false);
+        
       }
-    }, [modalActive])
+    }, [])
   );
 
   useEffect(() => {
@@ -62,7 +62,6 @@ const scanner = () => {
         style={styles.camera} 
         facing={facing} 
         onBarcodeScanned={(result) => {
-              setModalActive(true);
               setScan(true);
               if (scan) return;
               router.push({
