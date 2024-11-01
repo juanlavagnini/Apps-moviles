@@ -10,11 +10,12 @@ import {
 import { useScanContext, useUserContext } from '../_layout';
 
 
-type ItemProps = {title: string};
+type ItemProps = {title: string, quantity: number};
 
-const Item = ({title}: ItemProps) => (
+const Item = ({title, quantity}: ItemProps) => (
   <View style={styles.item}>
     <Text style={styles.title}>{title}</Text>
+    <Text>Quantity: {quantity}</Text>
   </View>
 );
 
@@ -36,8 +37,9 @@ const Pantry = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        const DATA = data.map((item: { id: string; name: string }) => {
-          return { id: item.id, title: item.name };
+        console.log(data)
+        const DATA = data.map((item: { id: string; name: string, quantity: number }) => {
+          return { id: item.id, title: item.name, quantity: item.quantity };
         });
         setDATA(DATA);
       })
@@ -46,11 +48,12 @@ const Pantry = () => {
       });
   }, [scan]);
 
+  console.log(DATA);
   return (
     <View style={styles.container}>
       <FlatList 
         data={DATA}
-        renderItem={({item}) => <Item title={item.title} />}
+        renderItem={({item}) => <Item title={item.title} quantity={item.quantity} />}
         keyExtractor={item => item.id}
         ListFooterComponent={<View style={{height: 50}} />}
       />
