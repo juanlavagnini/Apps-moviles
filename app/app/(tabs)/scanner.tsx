@@ -3,8 +3,7 @@ import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import React, { useEffect, useState } from 'react'
 import { router } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useModalContext, useScanContext } from '../_layout';
-import { useFocusEffect } from '@react-navigation/native';
+import { useScanContext } from '../_layout';
 
 const scanner = () => {
 
@@ -14,25 +13,12 @@ const scanner = () => {
   const {scan, setScan} = useScanContext();
   const [selectedButton, setSelectedButton] = useState<string>("insert");
 
-  const [isCameraActive, setIsCameraActive] = useState<boolean>(false);
-  const {modalActive, setModalActive} = useModalContext();
+  //Cuando apretamos la cruz de exit en el scanner, se desactiva la camara
+  const [isCameraActive, setIsCameraActive] = useState<boolean>(true);
 
   const handleSelection = (button: string) => {
     setSelectedButton(button);
   };
-
-  useFocusEffect(
-    React.useCallback(() => {
-      // Activa la cámara cuando la pantalla está enfocada
-      setIsCameraActive(true);
-
-      // Desactiva la cámara cuando la pantalla pierde el enfoque
-      return () => {
-        setIsCameraActive(false);
-        
-      }
-    }, [])
-  );
 
   useEffect(() => {
     if (!permission) requestPermission();
@@ -72,7 +58,11 @@ const scanner = () => {
         >
         <View style={styles.buttonContainer}>
           {!scan &&
-          (<Pressable style={styles.closeButton} onPress={() => router.push({pathname: '/pantry'})} >
+          (<Pressable style={styles.closeButton} 
+            onPress={() => {
+              router.push({pathname: '/pantry'});
+              setIsCameraActive(false);
+              }} >
             <Ionicons name="close-circle" size={50} color="white" />
           </Pressable>)}
         </View>
