@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Pressable, TouchableOpacity, Button, Image } from 'react-native'
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import React, { useEffect, useState } from 'react'
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useScanContext } from '../_layout';
 
@@ -20,10 +20,17 @@ const scanner = () => {
     setSelectedButton(button);
   };
 
+  //Lo ponemos en true para que se active la camara cuando volvemos a la pantalla
+  useFocusEffect(() => {
+    setIsCameraActive(true);
+  });
+
   useEffect(() => {
     if (!permission) requestPermission();
   }, [permission]);
   
+  //Permisos de la camara
+  // ------------------------------------------------------------
   if (!permission) {
     // Camera permissions are still loading.
     return <View />;
@@ -38,10 +45,13 @@ const scanner = () => {
       </View>
     );
   }
+  // ----------------------------------------------------------
 
   function toggleCameraFacing() {
     setFacing(current => (current === 'back' ? 'front' : 'back'));
   }
+
+  
   return (
     <View style={styles.container}>
       {isCameraActive && (<CameraView 
@@ -70,15 +80,7 @@ const scanner = () => {
           <Pressable style={styles.facingButton} onPress={toggleCameraFacing}>
               <Ionicons name="camera-reverse" size={50} color="white" />
           </Pressable>
-        </View>
-        <View style={styles.functionButtonContainer}>
-          <Pressable style={selectedButton == "insert" ? styles.selectedButton : styles.button} onPress={() => handleSelection("insert")}>
-            <Text style={styles.buttonText}>Insert</Text>
-          </Pressable>
-          <Pressable style={selectedButton == "delete" ? styles.selectedButton : styles.button} onPress={() => handleSelection("delete")}>
-            <Text style={styles.buttonText}>Delete</Text>
-          </Pressable>
-        </View>  
+        </View> 
       </CameraView>)}
      
           
@@ -131,6 +133,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: "center",
     width: '100%',
+    marginBottom: 35,
   },
   facingButton: {
     flex: 1,
@@ -142,40 +145,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: 'white',
-  },
-
-  //botones insertar y eliminar
-  functionButtonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '85%',
-    marginBottom: 35,
-  },
-  button: {
-    backgroundColor: 'grey',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 20,
-    width: '50%',
-    height: 50,
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    margin: 10,
-  },
-  
-  selectedButton: {
-    backgroundColor: 'purple',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 20,
-    width: '50%',
-    height: 50,
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    margin: 10,
   },
 
   buttonText: {
