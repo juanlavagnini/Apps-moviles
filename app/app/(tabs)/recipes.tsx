@@ -157,6 +157,7 @@ const Recipes = () => {
           <Text style={styles.header}>{title}</Text>
         )}
         stickySectionHeadersEnabled={true}
+        ListFooterComponent={<View style={{height: 50}} />}
       />
     </View>
   );
@@ -167,7 +168,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: StatusBar.currentHeight,
     marginHorizontal: 16,
-    marginBottom:50,
   },
   item: {
     backgroundColor: '#f9c2ff',

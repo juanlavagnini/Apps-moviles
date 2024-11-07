@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, router, useLocalSearchParams } from 'expo-router';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useScanContext, useUserContext } from './_layout';
 import user from './(tabs)/profile/user';
@@ -12,6 +12,7 @@ export default function Modal() {
   const [productData, setProductData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [manualName, setManualName] = useState<String>("");
 
   const ip = process.env.EXPO_PUBLIC_IP
 
@@ -30,16 +31,20 @@ export default function Modal() {
     }
   }, [product]);
 
-  const handleAddProduct = (productId: string | string []) => () => {
+  const handleAddProduct = (productId: string | string [], productData: any) => () => {
+    //Si la API no tiene nombre, se usa el nombre manual
+    const name = (productData.status == 1) ? productData.product.product_name : manualName;
+
     console.log('Add product', productId);
-    fetch(`http://${ip}:3000/userProduct/addProduct`, {
+    fetch(`http://${ip}:3000/houseProduct/addProduct`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        userId: user?.id,
+        houseId: user?.houseId,
         productId: productId,
+        name: name ,
       }),
     })
     setScan(false);
@@ -52,13 +57,22 @@ export default function Modal() {
       <Text>{product}</Text>
       {loading && <Text>Loading...</Text>}
       {error && <Text>Error: {error}</Text>}
-      {productData && (
+      {productData && productData.status == 1 && productData.product.product_name != "" ? (
         <View>
           <Text>Product Name: {productData.product.product_name}</Text>
           <Text>Brand: {productData.product.brands}</Text>
           <Text>Ingredients: {productData.product.ingredients_text}</Text>
         </View>
-      )}
+      ) : null}
+      {productData && productData.status == 0 ?(
+        <View>
+          <Text>Product not found</Text>    
+          <TextInput
+            style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+            onChangeText={(text: string) => setManualName(text)}
+          />
+        </View>
+      ): null }
       <View style={styles.buttonContainer}>
         <Pressable
           style={styles.closeButton}
@@ -71,7 +85,7 @@ export default function Modal() {
         </Pressable>
         <Pressable 
           style={styles.addButton}
-          onPress={handleAddProduct(product)}
+          onPress={handleAddProduct(product, productData)}
         >
           <Text style={styles.buttonText}>Add</Text>
         </Pressable>

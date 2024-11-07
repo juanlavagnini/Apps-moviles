@@ -1,16 +1,21 @@
 import { StyleSheet, Text, View, Image, TextInput, Pressable } from 'react-native'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { Colors } from '@/constants/Colors'
 import { router } from 'expo-router'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUserContext } from './_layout';
+import Logbutton from '@/components/Logbutton';
 
 
 const profile = () => {
 
   const ip = process.env.EXPO_PUBLIC_IP
   const [isIncorrect, setIsIncorrect] = useState(false)
+  const [isOwner, setIsOwner] = useState(false)
   const { setUser } = useUserContext();
+
+  const passwordInputRef = useRef<TextInput>(null);
+
 
   const signInHandler = (email: string, password: string) => {
     console.log(`http://${ip}:3000/user/login`)
@@ -30,19 +35,32 @@ const profile = () => {
         setIsIncorrect(true); // Manejar error si la respuesta no es OK
         return null; // Asegurarse de no procesar más
       }
-      return response.json(); // Convertir a JSON si es exitoso
+      //return response.json(); // Convertir a JSON si es exitoso
+      const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          return response.json(); // Convertir a JSON si es exitoso
+        } else {
+          throw new Error('Received non-JSON response');
+        }
     })
     .then(async data => {
       if (data) {
+        console.log(data)
         const id = data.id;
         const email = data.email;
-        const jsonValue = JSON.stringify(id);
+        const houseId = data.houseId;
+        const owner = data.ownedHouse;
+        if (data.ownedHouse==null){
+          setIsOwner(false);
+        }
+        else{
+          setIsOwner(true);
+        }
         try {
-          setUser({id, email});
-          await AsyncStorage.setItem('id', jsonValue);
+          setUser({id, email, houseId, owner});
         }
         catch (error) {
-          console.error('Error:', error);
+          console.error('ErrorLogin:', error);
         }
         router.push({ pathname: "/(tabs)"
          });
@@ -58,21 +76,29 @@ const profile = () => {
  
   return (
     <View style={styles.container}>
+      <Image source={require('@/assets/images/logo_app.jpeg')} style={styles.logo} />
       <Text style={styles.title}>Welcome Back!</Text>
       <Text style={styles.subtitle}>Log in to the account</Text>
-      <TextInput placeholder='Email' value={email} onChangeText={setEmail}
+      <TextInput 
+        placeholder='Email' 
+        value={email} 
+        onChangeText={setEmail}
+        returnKeyType='next'
+        onSubmitEditing={() => passwordInputRef.current?.focus()}
         style={isIncorrect? styles.inputIncorrect: styles.input}
         placeholderTextColor="#666"
       />
-      <TextInput placeholder='Password' value={password} onChangeText={setPassword}
+      <TextInput 
+        ref={passwordInputRef}
+        placeholder='Password' 
+        value={password} 
+        onChangeText={setPassword}
         style={isIncorrect? styles.inputIncorrect: styles.input}
         placeholderTextColor="#666"
         onSubmitEditing={() => signInHandler(email,password)}
         returnKeyType="done"
       />
-      <Pressable style={styles.button} onPress={() => signInHandler(email,password)}>
-        <Text style={styles.buttonText}>Log In</Text>
-      </Pressable>
+      <Logbutton title="Log In" onPress={() => signInHandler(email,password)} />
       <View style={styles.signUpContainer}>
         <Text style={styles.newAccountText} >Don't have an account? </Text>
         <Pressable onPress={() => (router.push({pathname: "/signup"}))}>
@@ -89,10 +115,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     margin: 10,
-    marginTop: 50,
     justifyContent: "center",
     alignItems: "center",
     gap: 20,  
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    borderRadius: 100,
   },
   image: {
     width: 200,
@@ -137,20 +167,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 20,
 
-  },
-  button: {
-    width: '20%',
-    height: 40,
-    backgroundColor: "#673ab7",
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 8,
-    marginBottom: 15,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: 'bold',
   },
   signUpText: {
     color: "#673ab7",
