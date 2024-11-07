@@ -11,14 +11,11 @@ const scanner = () => {
   const [permission, requestPermission] = useCameraPermissions();
   //producto escaneado
   const {scan, setScan} = useScanContext();
-  const [selectedButton, setSelectedButton] = useState<string>("insert");
 
   //Cuando apretamos la cruz de exit en el scanner, se desactiva la camara
   const [isCameraActive, setIsCameraActive] = useState<boolean>(true);
 
-  const handleSelection = (button: string) => {
-    setSelectedButton(button);
-  };
+
 
   //Lo ponemos en true para que se active la camara cuando volvemos a la pantalla
   useFocusEffect(() => {
