@@ -1,14 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  SafeAreaView,
-  View,
-  FlatList,
-  StyleSheet,
-  Text,
-  StatusBar,
-  PanResponder,
-  Animated,
-} from 'react-native';
+import { SafeAreaView, View,  FlatList,  StyleSheet,  Text,  StatusBar,  PanResponder,  Animated, Easing,} from 'react-native';
 import { useScanContext, useUserContext } from '../_layout';
 
 
@@ -21,6 +12,7 @@ const Pantry = () => {
   const ip = process.env.EXPO_PUBLIC_IP;
   const [DATA, setDATA] = useState<any>([]);
   const [refresh, setRefresh] = useState(false);
+  
 
   //Quiero agregar gestos de swipe para eliminar (izquierda) o agregar (derecha) productos
   //https://reactnative.dev/docs/flatlist#onswipableleft
@@ -68,7 +60,8 @@ const Pantry = () => {
           handleSwipeLeft(id);
         }
         // Reset position
-        Animated.spring(pan, { toValue: { x: 0, y: 0 }, useNativeDriver: false }).start();
+        Animated.spring(pan, { toValue: { x: 0, y: 0 }, tension: 60, useNativeDriver: false }).start();
+        //Animated.timing(pan, { toValue: { x: 0, y: 0 }, duration:200, easing: Easing.out(Easing.ease), useNativeDriver: false }).start();
       },
     });
 
