@@ -27,7 +27,7 @@ const Pantry = () => {
 
   const handleSwipeLeft = (id: string) => {
     console.log('Delete product', id);
-    /*fetch(`http://${ip}:3000/houseProduct/deleteProduct`, {
+    fetch(`http://${ip}:3000/houseProduct/deleteProduct`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -36,7 +36,7 @@ const Pantry = () => {
         houseId: user?.houseId,
         productId: id,
       }),
-    })*/
+    });
    setRefresh(!refresh); //es una flag para que se actualice la lista
   }
 
