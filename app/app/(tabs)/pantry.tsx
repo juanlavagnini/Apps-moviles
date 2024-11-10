@@ -13,7 +13,7 @@ const Pantry = () => {
   const ip = process.env.EXPO_PUBLIC_IP;
   const [DATA, setDATA] = useState<any>([]);
   const [refresh, setRefresh] = useState(false);
-  
+  const [isSwiping, setIsSwiping] = useState(false); 
 
   //Quiero agregar gestos de swipe para eliminar (izquierda) o agregar (derecha) productos
   //https://reactnative.dev/docs/flatlist#onswipableleft
@@ -45,6 +45,7 @@ const Pantry = () => {
       }),
     })
     setRefresh(!refresh);
+    return;
   }
 
   const Item = ({ id, title, quantity }: { id: string; title: string; quantity: number }) => {
@@ -53,6 +54,9 @@ const Pantry = () => {
     const panResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onMoveShouldSetPanResponder: () => true,
+      onPanResponderGrant: () => {
+        setIsSwiping(true); // Bloquea el scroll al iniciar el gesto
+      },
       onPanResponderMove: Animated.event([null, { dx: pan.x }], { useNativeDriver: false }),
       onPanResponderRelease: (evt, gestureState) => {
         if (gestureState.dx > 50) {
@@ -61,8 +65,8 @@ const Pantry = () => {
           handleSwipeLeft(id);
         }
         // Reset position
-        Animated.spring(pan, { toValue: { x: 0, y: 0 }, tension: 60, useNativeDriver: false }).start();
-        //Animated.timing(pan, { toValue: { x: 0, y: 0 }, duration:200, easing: Easing.out(Easing.ease), useNativeDriver: false }).start();
+        Animated.spring(pan, { toValue: { x: 0, y: 0 }, useNativeDriver: false }).start(() => {
+          setIsSwiping(false);}); //desbloquea el scroll al finalizar la animación
       },
     });
 
@@ -107,6 +111,7 @@ const Pantry = () => {
         data={DATA}
         renderItem={({item}) => <Item title={item.title} quantity={item.quantity} id={item.id}/>}
         keyExtractor={item => item.id}
+        scrollEnabled={!isSwiping} // Bloquea el scroll mientras se está realizando un gesto
         ListFooterComponent={<View style={{height: 50}} />}
       />
     </View>
