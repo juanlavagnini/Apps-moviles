@@ -5,7 +5,7 @@ import { router } from 'expo-router'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUserContext } from './_layout';
 import Logbutton from '@/components/Logbutton';
-
+import { useColorScheme } from 'react-native';
 
 const profile = () => {
 
@@ -15,6 +15,9 @@ const profile = () => {
   const { setUser } = useUserContext();
 
   const passwordInputRef = useRef<TextInput>(null);
+
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
 
 
   const signInHandler = (email: string, password: string) => {
@@ -75,17 +78,17 @@ const profile = () => {
   const [password, setPassword] = useState('')
  
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
       <Image source={require('@/assets/images/logo_app.jpeg')} style={styles.logo} />
-      <Text style={styles.title}>Welcome Back!</Text>
-      <Text style={styles.subtitle}>Log in to the account</Text>
+      <Text style={[styles.title, {color: theme.text}]}>Welcome Back!</Text>
+      <Text style={[styles.subtitle,{color: theme.subTitle}]}>Log in to the account</Text>
       <TextInput 
         placeholder='Email' 
         value={email} 
         onChangeText={setEmail}
         returnKeyType='next'
         onSubmitEditing={() => passwordInputRef.current?.focus()}
-        style={isIncorrect? styles.inputIncorrect: styles.input}
+        style={[isIncorrect? styles.inputIncorrect: styles.input, {color: theme.text}]}
         placeholderTextColor="#666"
       />
       <TextInput 
@@ -100,9 +103,9 @@ const profile = () => {
       />
       <Logbutton title="Log In" onPress={() => signInHandler(email,password)} />
       <View style={styles.signUpContainer}>
-        <Text style={styles.newAccountText} >Don't have an account? </Text>
+        <Text style={[styles.subtitle,{color: theme.subTitle}]} >Don't have an account? </Text>
         <Pressable onPress={() => (router.push({pathname: "/signup"}))}>
-          <Text style={styles.signUpText} >Sign up here</Text>
+          <Text style={[styles.signUpText, {color: theme.tint}]}>Sign up here</Text>
         </Pressable>
       </View>  
     </View> 
@@ -114,7 +117,6 @@ export default profile
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    margin: 10,
     justifyContent: "center",
     alignItems: "center",
     gap: 20,  
@@ -139,10 +141,8 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 16,
-    color: "#666",
-    marginBottom: 30,
-
   },
+
   text: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -169,13 +169,8 @@ const styles = StyleSheet.create({
 
   },
   signUpText: {
-    color: "#673ab7",
     fontSize: 16,
     textDecorationLine: 'underline',
-  },
-  newAccountText: {
-    color: "#666",
-    fontSize: 16,
   },
   signUpContainer: {
     flexDirection: 'row',
