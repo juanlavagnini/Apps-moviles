@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, View,  FlatList,  StyleSheet,  Text,  StatusBar,  PanResponder,  Animated, Easing,} from 'react-native';
+import { SafeAreaView, View,  FlatList,  StyleSheet,  Text,  StatusBar,  PanResponder,  Animated, Easing, Pressable,} from 'react-native';
 import { useScanContext, useUserContext } from '../_layout';
 
 
@@ -69,12 +69,13 @@ const Pantry = () => {
       <Animated.View style={[styles.item, { transform: [{ translateX: pan.x }] }]} {...panResponder.panHandlers}>
         <Text style={styles.title}>{title}</Text>
         <Text>Quantity: {quantity}</Text>
+        <Pressable style={styles.editButton}>
+          <Text>Edit Alert</Text>
+        </Pressable>
       </Animated.View>
+
     );
   };
-
-
-
 
   useEffect(() => {
     fetch(`http://${ip}:3000/houseProduct/products/${user?.houseId}`, {
@@ -118,9 +119,20 @@ const styles = StyleSheet.create({
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 16,
+    flex: 1,
   },
   title: {
     fontSize: 32,
+  },
+  editButton: {
+    backgroundColor: '#f9c2ff',
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
   },
 });
 
