@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, View,  FlatList,  StyleSheet,  Text,  StatusBar,  PanResponder,  Animated, Easing, Pressable,} from 'react-native';
 import { useScanContext, useUserContext } from '../_layout';
+import { router } from 'expo-router';
 
 
 const Pantry = () => {
@@ -69,7 +70,10 @@ const Pantry = () => {
       <Animated.View style={[styles.item, { transform: [{ translateX: pan.x }] }]} {...panResponder.panHandlers}>
         <Text style={styles.title}>{title}</Text>
         <Text>Quantity: {quantity}</Text>
-        <Pressable style={styles.editButton}>
+        <Pressable style={styles.editButton} onPress={()=> router.push({
+                pathname: '/modal_product',
+                params: { productId: id },
+              })}>
           <Text>Edit Alert</Text>
         </Pressable>
       </Animated.View>
