@@ -13,6 +13,7 @@ export default function Modal() {
   const [DBData, setDBData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [showInputAlert, setshowInputAlert] = useState<Boolean>(false);
 
   useEffect(() => {
     if (productId) {
@@ -38,6 +39,7 @@ export default function Modal() {
 
 
   function handleNewalert(min: number) {
+    setshowInputAlert(true);
     fetch(`http://${ip}:3000/houseProduct/setAlert`, {
       method: 'POST',
       headers: {
@@ -74,6 +76,10 @@ export default function Modal() {
         <Text>Name: {DBData.name}</Text>
         <Text>Brand: {DBData.brand}</Text>
         <Text>Stored quantity: {DBData.quantity}</Text>
+
+        <View style={{ borderBottomColor: 'grey',
+                        borderBottomWidth: 1,
+                        marginVertical: 10,}}/>
         {DBData.hasAlert ? (
           <View style={{gap:5}}>
             <Text>Has alert set for: {DBData.minimum}</Text>
@@ -84,10 +90,20 @@ export default function Modal() {
               <Text>Remove Alert</Text>
             </Pressable>
           </View>
-        ) : (
+        ) : showInputAlert ? 
+        <View>
+          <TextInput 
+            placeholder='Minimum Quantity' 
+            style={styles.input} 
+            placeholderTextColor="#666"/> 
+            <Pressable style={styles.addButton} onPress={() => handleNewalert(0)}>
+              <Text>Set Alert</Text>
+            </Pressable>
+        </View> :           
+        (
           <View style={{gap:5}}>
             <Text>No alert set</Text>
-            <Pressable style={styles.addButton} onPress={handleNewalert()}>
+            <Pressable style={styles.addButton} onPress={() => setshowInputAlert(true)}>
               <Text>Add Alert</Text>
             </Pressable>
           </View>
@@ -148,5 +164,13 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
+  input: {
+    width: '100%',
+    height: 50,
+    borderBottomWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginBottom: 10,},
 });
