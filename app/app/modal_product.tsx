@@ -10,41 +10,54 @@ export default function Modal() {
   const ip = process.env.EXPO_PUBLIC_IP
   const { user } = useUserContext();
   const { productId = "" } = useLocalSearchParams();
-  const [productData, setProductData] = useState<any>(null);
   const [DBData, setDBData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (productId) {
-      fetch(`https://world.openfoodfacts.org/api/v0/product/${productId}.json`)
-        .then((response) => response.json())
-        .then((data) => {
-          setProductData(data);
-          setLoading(false);
-        })
-        .catch((error) => {
-          setError(error.message);
-          setLoading(false);
-        });
-      
-        fetch(`http://${ip}:3000/houseProduct/product/${user?.houseId}/${productId}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then((response) => response.json())
-        .then((data) => {
-          setDBData(data);
-        })
-        .catch((error) => {
-          setError(error.message);
-          setLoading(false);
-        })
+      fetch(`http://${ip}:3000/houseProduct/product/${user?.houseId}/${productId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        setDBData(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setError(error.message);
+        setLoading(false);
+      })
     }
-  }, [productId]);
-  console.log(productData);
+  }, []);
+
+  console.log(DBData);
+
+
+  function handleNewalert(min: number) {
+    fetch(`http://${ip}:3000/houseProduct/setAlert`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        houseId: user?.houseId,
+        productId: productId,
+        minimum: min
+      }),
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      setDBData(data);
+    })
+    .catch((error) => {
+      setError(error.message);
+    })
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.buttonContainer}>
@@ -56,18 +69,32 @@ export default function Modal() {
         </Pressable>
       </View>
       {loading && <Text>Loading...</Text>}
-      {productData && productData.status == 1 && productData.product.product_name != "" ? (
-        <View>
-          <Text>Product Name: {productData.product.product_name}</Text>
-          <Text>Brand: {productData.product.brands}</Text>
-          <Text>Ingredients: {productData.product.ingredients_text}</Text>
-        </View>
-      ) : null}
-      {productData && productData.status == 0 ? (
-        <View>
-          <Text>Product Name: {DBData.name}</Text>
-        </View>
-      ) : null}
+      {DBData && (
+      <View>
+        <Text>Name: {DBData.name}</Text>
+        <Text>Brand: {DBData.brand}</Text>
+        <Text>Stored quantity: {DBData.quantity}</Text>
+        {DBData.hasAlert ? (
+          <View style={{gap:5}}>
+            <Text>Has alert set for: {DBData.minimum}</Text>
+            <Pressable style={styles.updateButton}>
+              <Text>Update Alert</Text>
+            </Pressable>
+            <Pressable style={styles.removeButton}>
+              <Text>Remove Alert</Text>
+            </Pressable>
+          </View>
+        ) : (
+          <View style={{gap:5}}>
+            <Text>No alert set</Text>
+            <Pressable style={styles.addButton} onPress={handleNewalert()}>
+              <Text>Add Alert</Text>
+            </Pressable>
+          </View>
+        )}
+      </View>
+      )}
+      
       <View>
       </View>
     </View>
@@ -102,11 +129,24 @@ const styles = StyleSheet.create({
     height: 50,
   },
   addButton: {
-    flex: 1,
     backgroundColor: 'green',
     padding: 10,
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
   },
+  updateButton: {
+    backgroundColor: 'blue',
+    padding: 10,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  removeButton: {
+    backgroundColor: 'red',
+    padding: 10,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
 });
