@@ -85,6 +85,14 @@ export default function RootLayout() {
                 headerShown: false,
               }}
             />
+            <Stack.Screen
+              name="modal_product"
+              options={{
+                title: "product_info",
+                presentation: 'transparentModal',
+                headerShown: false,
+              }}
+            />
             <Stack.Screen name="login" options={{headerShown: false, gestureEnabled: false}}/>
             <Stack.Screen name="signup" options={{gestureEnabled: false}}/>
           </Stack>
