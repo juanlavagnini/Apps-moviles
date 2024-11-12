@@ -73,7 +73,7 @@ export default function Modal() {
           />
         </View>
       ): null }
-      <View style={styles.buttonContainer}>
+      {!loading ? <View style={styles.buttonContainer}>
         <Pressable
           style={styles.closeButton}
           onPress={() => {
@@ -89,7 +89,25 @@ export default function Modal() {
         >
           <Text style={styles.buttonText}>Add</Text>
         </Pressable>
-      </View>
+      </View> : null}
+      {/*<View style={styles.buttonContainer}>
+        <Pressable
+          style={styles.closeButton}
+          onPress={() => {
+            setScan(false);
+            router.navigate({ pathname: '/scanner' });
+          }}
+        >
+          <Text style={styles.buttonText}>Cancel</Text>
+        </Pressable>
+        <Pressable 
+          style={styles.addButton}
+          onPress={handleAddProduct(product, productData)}
+        >
+          <Text style={styles.buttonText}>Add</Text>
+        </Pressable>
+      </View>*/
+      }
     </View>
   );
 }
