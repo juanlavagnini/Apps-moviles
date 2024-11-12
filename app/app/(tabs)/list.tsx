@@ -1,44 +1,25 @@
-import React, { useRef } from 'react';
-import {
-  SafeAreaView,
-  View,
-  FlatList,
-  StyleSheet,
-  Text,
-  StatusBar,
-  SectionList,
-  TouchableOpacity,
-} from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { View,FlatList,StyleSheet,Text,StatusBar,SectionList } from 'react-native';
+import { useRefreshContext, useUserContext } from '../_layout';
 
-const DATA = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    title: 'First Item',
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    title: 'Second Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    title: 'Third Item',
-  }
-];
+type ItemProps = {title: string, brand: string};
 
-
-
-
-type ItemProps = {title: string};
-
-const Item = ({title}: ItemProps) => (
+const Item = ({title, brand}: ItemProps) => (
   <View style={styles.item}>
     <Text style={styles.title}>{title}</Text>
+    <Text >{brand}</Text>
   </View>
 );
 
+
+
+
 const List = () => {
-  // Declare and initialize sectionListRef
+  const { user } = useUserContext();
+  const { refresh, setRefresh } = useRefreshContext();
+  const ip = process.env.EXPO_PUBLIC_IP;
   const sectionListRef = useRef<SectionList<any>>(null);
+  const [DATA, setDATA] = useState<any>([]);
 
   // Función para desplazarse a la sección
   const scrollToSection = (index: any) => {
@@ -48,11 +29,31 @@ const List = () => {
     });
   };
 
+  useEffect(() => {
+    fetch(`http://${ip}:3000/houseProduct/supermarketList/${user?.houseId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const DATA = data.map((item: { productId: number; name: string, brand: string }) => {
+          return { id: item.productId, title: item.name, brand: item.brand };
+        });
+        setDATA(DATA);
+        console.log('DATA:', DATA);
+      })
+      .catch((error: any) => {
+        console.error('ErrorPantry:', error);
+      });
+  }, [refresh]);
+
   return (
     <View style={styles.container}>
       <FlatList
         data={DATA}
-        renderItem={({item}) => <Item title={item.title} />}
+        renderItem={({item}) => <Item title={item.title} brand={item.brand} />}
         keyExtractor={item => item.id}
         ListFooterComponent={<View style={{height: 50}} />}
         ListEmptyComponent={<Text style = {styles.textEmpty}>It is not necessary to go to the supermarket!</Text>}

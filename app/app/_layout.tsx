@@ -20,6 +20,24 @@ export const useScanContext = () => {
   return useContext(ScanContext);
 }
 
+export const RefreshContext = createContext({
+  refresh: false,
+  setRefresh: (refresh: boolean) => {}
+});
+
+export const RefreshContextProvider = ({children}: {children: ReactNode}) => {
+  const [refresh, setRefresh] = useState(false);
+  return (
+    <RefreshContext.Provider value={{refresh, setRefresh}}>
+      {children}
+    </RefreshContext.Provider>
+  );
+}
+
+export const useRefreshContext = () => {
+  return useContext(RefreshContext);
+}
+
 
 //UserContext
 
@@ -57,46 +75,33 @@ export default function RootLayout() {
   
   return (
     <UserContextProvider>
-      <ScanContexProvider>
-          <Stack>
-            <Stack.Screen name="index" options={{headerShown: false}}/>
-            <Stack.Screen name="(tabs)" options={{headerShown: false , gestureEnabled: false}}/>
-            <Stack.Screen
-              name="modal_recipe"
-              options={{
-                title: "Recipe",
-                presentation: 'modal', //"transparentModal"
-                //animation: "none",
-                //headerShown: false,
-                headerLeft: () => (
-                  <Button
-                    onPress={() => navigation.goBack()}
-                    title="Close"
-                    color="#000"
-                  />
-                ),
-              }}
-            />
-            <Stack.Screen
-              name="modal_scanner_product"
-              options={{
-                title: "add_product",
-                presentation: 'transparentModal',
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name="modal_product"
-              options={{
-                title: "product_info",
-                presentation: 'transparentModal',
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen name="login" options={{headerShown: false, gestureEnabled: false}}/>
-            <Stack.Screen name="signup" options={{gestureEnabled: false}}/>
-          </Stack>
-      </ScanContexProvider>
+      <RefreshContextProvider>
+        <ScanContexProvider>
+            <Stack>
+              <Stack.Screen name="index" options={{headerShown: false}}/>
+              <Stack.Screen name="(tabs)" options={{headerShown: false , gestureEnabled: false}}/>
+
+              <Stack.Screen
+                name="modal_scanner_product"
+                options={{
+                  title: "add_product",
+                  presentation: 'transparentModal',
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="modal_product"
+                options={{
+                  title: "product_info",
+                  presentation: 'transparentModal',
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen name="login" options={{headerShown: false, gestureEnabled: false}}/>
+              <Stack.Screen name="signup" options={{gestureEnabled: false}}/>
+            </Stack>
+        </ScanContexProvider>
+      </RefreshContextProvider>
     </UserContextProvider>
   );
 }
