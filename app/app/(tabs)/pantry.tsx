@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, View,  FlatList,  StyleSheet,  Text,  StatusBar,  PanResponder,  Animated, Easing, Pressable,} from 'react-native';
-import { useScanContext, useUserContext } from '../_layout';
+import { useRefreshContext, useScanContext, useUserContext } from '../_layout';
 import { router } from 'expo-router';
 
 
@@ -12,7 +12,7 @@ const Pantry = () => {
   const { scan } = useScanContext();
   const ip = process.env.EXPO_PUBLIC_IP;
   const [DATA, setDATA] = useState<any>([]);
-  const [refresh, setRefresh] = useState(false);
+  const { refresh, setRefresh } = useRefreshContext();
   const [isSwiping, setIsSwiping] = useState(false); 
 
   //Quiero agregar gestos de swipe para eliminar (izquierda) o agregar (derecha) productos

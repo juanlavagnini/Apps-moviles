@@ -2,18 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { Link, router, useLocalSearchParams } from 'expo-router';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import Animated from 'react-native-reanimated';
-import { useScanContext, useUserContext } from './_layout';
+import { useRefreshContext, useScanContext, useUserContext } from './_layout';
 import user from './(tabs)/profile/user';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function Modal() {
   const ip = process.env.EXPO_PUBLIC_IP
   const { user } = useUserContext();
+  const { refresh, setRefresh } = useRefreshContext();
   const { productId = "" } = useLocalSearchParams();
   const [DBData, setDBData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [showInputAlert, setshowInputAlert] = useState<Boolean>(false);
+  const [minQuantity, setMinQuantity] = useState<number>(0);
 
   useEffect(() => {
     if (productId) {
@@ -39,8 +41,7 @@ export default function Modal() {
 
 
   function handleNewalert(min: number) {
-    setshowInputAlert(true);
-    fetch(`http://${ip}:3000/houseProduct/setAlert`, {
+    fetch(`http://${ip}:3000/houseProduct/updateAlert`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -54,11 +55,34 @@ export default function Modal() {
     .then((response) => response.json())
     .then((data) => {
       setDBData(data);
+      setRefresh(!refresh);
     })
     .catch((error) => {
       setError(error.message);
     })
   }
+
+  function handleRemoveAlert() {
+    fetch(`http://${ip}:3000/houseProduct/removeAlert`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        houseId: user?.houseId,
+        productId: productId,
+      }),
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      setDBData(data);
+      setRefresh(!refresh);
+    })
+    .catch((error) => {
+      setError(error.message);
+    })
+  }
+
 
   return (
     <View style={styles.container}>
@@ -80,34 +104,42 @@ export default function Modal() {
         <View style={{ borderBottomColor: 'grey',
                         borderBottomWidth: 1,
                         marginVertical: 10,}}/>
-        {DBData.hasAlert ? (
+        {DBData.hasAlert ? showInputAlert ? 
+          (<View>
+            <TextInput 
+              placeholder='Minimum Quantity' 
+              style={styles.input} 
+              placeholderTextColor="#666"
+              onChange={(e) => setMinQuantity(Number(e.nativeEvent.text))}/> 
+              <Pressable style={styles.updateButton} onPress={() => {
+              handleNewalert(minQuantity)
+              setshowInputAlert(false)
+              }
+              }>
+                <Text>Update Alert</Text>
+              </Pressable>
+          </View> ) : 
+        (
           <View style={{gap:5}}>
             <Text>Has alert set for: {DBData.minimum}</Text>
-            <Pressable style={styles.updateButton}>
+            <Pressable style={styles.updateButton} onPress={()=> setshowInputAlert(true)}>
               <Text>Update Alert</Text>
             </Pressable>
-            <Pressable style={styles.removeButton}>
+            <Pressable style={styles.removeButton} onPress={() => handleRemoveAlert()}>
               <Text>Remove Alert</Text>
             </Pressable>
           </View>
-        ) : showInputAlert ? 
-        <View>
+        ) : 
+        (<View>
           <TextInput 
             placeholder='Minimum Quantity' 
             style={styles.input} 
-            placeholderTextColor="#666"/> 
-            <Pressable style={styles.addButton} onPress={() => handleNewalert(0)}>
+            placeholderTextColor="#666"
+            onChange={(e) => setMinQuantity(Number(e.nativeEvent.text))}/> 
+            <Pressable style={styles.addButton} onPress={() => handleNewalert(minQuantity)}>
               <Text>Set Alert</Text>
             </Pressable>
-        </View> :           
-        (
-          <View style={{gap:5}}>
-            <Text>No alert set</Text>
-            <Pressable style={styles.addButton} onPress={() => setshowInputAlert(true)}>
-              <Text>Add Alert</Text>
-            </Pressable>
-          </View>
-        )}
+        </View> )}         
       </View>
       )}
       
