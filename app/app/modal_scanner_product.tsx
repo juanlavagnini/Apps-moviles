@@ -48,7 +48,7 @@ export default function Modal() {
       }),
     })
     setScan(false);
-    router.navigate({ pathname: '/scanner' });
+    router.back();
   };
 
   return (
@@ -78,7 +78,7 @@ export default function Modal() {
           style={styles.closeButton}
           onPress={() => {
             setScan(false);
-            router.navigate({ pathname: '/scanner' });
+            router.back();
           }}
         >
           <Text style={styles.buttonText}>Cancel</Text>
