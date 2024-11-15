@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, View,  FlatList,  StyleSheet,  Text,  StatusBar,  PanResponder,  Animated, Easing, Pressable,} from 'react-native';
-import { useRefreshContext, useScanContext, useUserContext } from '../_layout';
+import { useRefreshContext, useScanContext, useUserContext } from '../../_layout';
 import { router } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 
 
 const Pantry = () => {
@@ -45,7 +46,6 @@ const Pantry = () => {
       }),
     })
     setRefresh(!refresh);
-    return;
   }
 
   const Item = ({ id, title, quantity }: { id: string; title: string; quantity: number }) => {
@@ -78,7 +78,7 @@ const Pantry = () => {
                 pathname: '/modal_product',
                 params: { productId: id },
               })}>
-          <Text>Edit Alert</Text>
+          <Ionicons name="create-outline" size={30} color="black" />
         </Pressable>
       </Animated.View>
 
@@ -104,7 +104,6 @@ const Pantry = () => {
       });
   }, [scan, refresh]); //aca agregue la flag refresh
 
-  console.log(DATA);
   return (
     <View style={styles.container}>
       <FlatList 
@@ -112,7 +111,14 @@ const Pantry = () => {
         renderItem={({item}) => <Item title={item.title} quantity={item.quantity} id={item.id}/>}
         keyExtractor={item => item.id}
         scrollEnabled={!isSwiping} // Bloquea el scroll mientras se está realizando un gesto
-        ListFooterComponent={<View style={{height: 50}} />}
+        ListFooterComponent={
+        <View>
+          <Pressable style={styles.pastproducts} onPress={()=> router.push("/pantry/pastProducts")}>
+            <Text style={{color: "#666"}}>See past products</Text>
+          </Pressable>
+          <View style={{height: 50}} />
+        </View>
+      }
       />
     </View>
   );
@@ -142,6 +148,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 10,
+  },
+  pastproducts: {
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

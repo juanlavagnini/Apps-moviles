@@ -6,7 +6,7 @@ export default function RootLayout() {
   return (
     <Tabs tabBar={props => <CustomTabBar {...props} />}>
       <Tabs.Screen name="index"   options={{ href: null }} />
-      <Tabs.Screen name="pantry"  options={{title: 'Pantry'}}/>
+      <Tabs.Screen name="pantry"  options={{headerShown: false}}/>
       <Tabs.Screen name="list"    options={{headerTitle: "Grocery List" ,title: 'List'}}/>
       <Tabs.Screen name="scanner" options={{title: 'Scanner'}}/>
       <Tabs.Screen name="recipes" options={{title: 'Recipes'}}/>
