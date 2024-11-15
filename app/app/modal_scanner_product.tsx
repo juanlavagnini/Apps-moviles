@@ -48,7 +48,7 @@ export default function Modal() {
       }),
     })
     setScan(false);
-    router.navigate({ pathname: '/scanner' });
+    router.back();
   };
 
   return (
@@ -73,7 +73,24 @@ export default function Modal() {
           />
         </View>
       ): null }
-      <View style={styles.buttonContainer}>
+      {!loading ? <View style={styles.buttonContainer}>
+        <Pressable
+          style={styles.closeButton}
+          onPress={() => {
+            setScan(false);
+            router.back();
+          }}
+        >
+          <Text style={styles.buttonText}>Cancel</Text>
+        </Pressable>
+        <Pressable 
+          style={styles.addButton}
+          onPress={handleAddProduct(product, productData)}
+        >
+          <Text style={styles.buttonText}>Add</Text>
+        </Pressable>
+      </View> : null}
+      {/*<View style={styles.buttonContainer}>
         <Pressable
           style={styles.closeButton}
           onPress={() => {
@@ -89,7 +106,8 @@ export default function Modal() {
         >
           <Text style={styles.buttonText}>Add</Text>
         </Pressable>
-      </View>
+      </View>*/
+      }
     </View>
   );
 }

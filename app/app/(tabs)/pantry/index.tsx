@@ -1,15 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import {
-  SafeAreaView,
-  View,
-  FlatList,
-  StyleSheet,
-  Text,
-  StatusBar,
-  PanResponder,
-  Animated,
-} from 'react-native';
-import { useScanContext, useUserContext } from '../_layout';
+import { SafeAreaView, View,  FlatList,  StyleSheet,  Text,  StatusBar,  PanResponder,  Animated, Easing, Pressable,} from 'react-native';
+import { useRefreshContext, useScanContext, useUserContext } from '../../_layout';
+import { router } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 
 
 const Pantry = () => {
@@ -20,14 +13,15 @@ const Pantry = () => {
   const { scan } = useScanContext();
   const ip = process.env.EXPO_PUBLIC_IP;
   const [DATA, setDATA] = useState<any>([]);
-  const [refresh, setRefresh] = useState(false);
+  const { refresh, setRefresh } = useRefreshContext();
+  const [isSwiping, setIsSwiping] = useState(false); 
 
   //Quiero agregar gestos de swipe para eliminar (izquierda) o agregar (derecha) productos
   //https://reactnative.dev/docs/flatlist#onswipableleft
 
   const handleSwipeLeft = (id: string) => {
     console.log('Delete product', id);
-    /*fetch(`http://${ip}:3000/houseProduct/deleteProduct`, {
+    fetch(`http://${ip}:3000/houseProduct/deleteProduct`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -36,7 +30,7 @@ const Pantry = () => {
         houseId: user?.houseId,
         productId: id,
       }),
-    })*/
+    });
    setRefresh(!refresh); //es una flag para que se actualice la lista
   }
 
@@ -60,6 +54,9 @@ const Pantry = () => {
     const panResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onMoveShouldSetPanResponder: () => true,
+      onPanResponderGrant: () => {
+        setIsSwiping(true); // Bloquea el scroll al iniciar el gesto
+      },
       onPanResponderMove: Animated.event([null, { dx: pan.x }], { useNativeDriver: false }),
       onPanResponderRelease: (evt, gestureState) => {
         if (gestureState.dx > 50) {
@@ -68,7 +65,8 @@ const Pantry = () => {
           handleSwipeLeft(id);
         }
         // Reset position
-        Animated.spring(pan, { toValue: { x: 0, y: 0 }, useNativeDriver: false }).start();
+        Animated.spring(pan, { toValue: { x: 0, y: 0 }, useNativeDriver: false }).start(() => {
+          setIsSwiping(false);}); //desbloquea el scroll al finalizar la animación
       },
     });
 
@@ -76,12 +74,16 @@ const Pantry = () => {
       <Animated.View style={[styles.item, { transform: [{ translateX: pan.x }] }]} {...panResponder.panHandlers}>
         <Text style={styles.title}>{title}</Text>
         <Text>Quantity: {quantity}</Text>
+        <Pressable style={styles.editButton} onPress={()=> router.push({
+                pathname: '/modal_product',
+                params: { productId: id },
+              })}>
+          <Ionicons name="create-outline" size={30} color="black" />
+        </Pressable>
       </Animated.View>
+
     );
   };
-
-
-
 
   useEffect(() => {
     fetch(`http://${ip}:3000/houseProduct/products/${user?.houseId}`, {
@@ -102,14 +104,21 @@ const Pantry = () => {
       });
   }, [scan, refresh]); //aca agregue la flag refresh
 
-  console.log(DATA);
   return (
     <View style={styles.container}>
       <FlatList 
         data={DATA}
         renderItem={({item}) => <Item title={item.title} quantity={item.quantity} id={item.id}/>}
         keyExtractor={item => item.id}
-        ListFooterComponent={<View style={{height: 50}} />}
+        scrollEnabled={!isSwiping} // Bloquea el scroll mientras se está realizando un gesto
+        ListFooterComponent={
+        <View>
+          <Pressable style={styles.pastproducts} onPress={()=> router.push("/pantry/pastProducts")}>
+            <Text style={{color: "#666"}}>See past products</Text>
+          </Pressable>
+          <View style={{height: 50}} />
+        </View>
+      }
       />
     </View>
   );
@@ -125,9 +134,25 @@ const styles = StyleSheet.create({
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 16,
+    flex: 1,
   },
   title: {
     fontSize: 32,
+  },
+  editButton: {
+    backgroundColor: '#f9c2ff',
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+  },
+  pastproducts: {
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
