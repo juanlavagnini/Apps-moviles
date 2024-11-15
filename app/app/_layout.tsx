@@ -1,6 +1,9 @@
 import { Stack, useNavigation } from "expo-router";
 import { Button } from "react-native";
 import { createContext, ReactNode, useContext, useState } from "react";
+import { useColorScheme } from 'react-native';
+import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
+import { Colors } from "@/constants/Colors";
 
 export const ScanContext = createContext({
   setScan : (scan: boolean) => {},
@@ -38,6 +41,24 @@ export const useRefreshContext = () => {
   return useContext(RefreshContext);
 }
 
+//ColorSchemeContext
+export const ColorSchemeContext = createContext({
+  colorScheme: 'light',
+  setColorScheme: (colorScheme: 'light' | 'dark') => {}
+});
+
+export const ColorSchemeContextProvider = ({children}: {children: ReactNode}) => {
+  const [colorScheme, setColorScheme] = useState<'light' | 'dark'>('light');
+  return (
+    <ColorSchemeContext.Provider value={{colorScheme, setColorScheme}}>
+      {children}
+    </ColorSchemeContext.Provider>
+  );
+}
+
+export const useColorSchemeContext = () => {
+  return useContext(ColorSchemeContext);
+}
 
 //UserContext
 
@@ -72,6 +93,8 @@ export const useUserContext = () => {
 
 export default function RootLayout() {
   const navigation = useNavigation();
+
+  const colorScheme = useColorScheme();
   
   return (
     <UserContextProvider>
@@ -98,7 +121,7 @@ export default function RootLayout() {
                 }}
               />
               <Stack.Screen name="login" options={{headerShown: false, gestureEnabled: false}}/>
-              <Stack.Screen name="signup" options={{gestureEnabled: false}}/>
+              <Stack.Screen name="signup" options={{gestureEnabled: false, headerTransparent: true, headerTintColor: colorScheme === "dark" ? 'white' : 'black'}}/>
             </Stack>
         </ScanContexProvider>
       </RefreshContextProvider>

@@ -1,7 +1,7 @@
-import { StyleSheet, Text, View, Image, TextInput, Pressable } from 'react-native'
+import { StyleSheet, Text, View, Image, TextInput, Pressable, KeyboardAvoidingView, ScrollView, Platform } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { Colors } from '@/constants/Colors'
-import { router } from 'expo-router'
+import { router, useNavigationContainerRef } from 'expo-router'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUserContext } from './_layout';
 import Logbutton from '@/components/Logbutton';
@@ -18,7 +18,6 @@ const profile = () => {
 
   const colorScheme = useColorScheme();
   const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
-
 
   const signInHandler = (email: string, password: string) => {
     console.log(`http://${ip}:3000/user/login`)
@@ -78,43 +77,57 @@ const profile = () => {
   const [password, setPassword] = useState('')
  
   return (
-    <View style={[styles.container, { backgroundColor: theme.background }]}>
-      <Image source={require('@/assets/images/logo_app.jpeg')} style={styles.logo} />
-      <Text style={[styles.title, {color: theme.text}]}>Welcome Back!</Text>
-      <Text style={[styles.subtitle,{color: theme.subTitle}]}>Log in to the account</Text>
-      <TextInput 
-        placeholder='Email' 
-        value={email} 
-        onChangeText={setEmail}
-        returnKeyType='next'
-        onSubmitEditing={() => passwordInputRef.current?.focus()}
-        style={[isIncorrect? styles.inputIncorrect: styles.input, {color: theme.text}]}
-        placeholderTextColor="#666"
-      />
-      <TextInput 
-        ref={passwordInputRef}
-        placeholder='Password' 
-        value={password} 
-        onChangeText={setPassword}
-        style={isIncorrect? styles.inputIncorrect: styles.input}
-        placeholderTextColor="#666"
-        onSubmitEditing={() => signInHandler(email,password)}
-        returnKeyType="done"
-      />
-      <Logbutton title="Log In" onPress={() => signInHandler(email,password)} />
-      <View style={styles.signUpContainer}>
-        <Text style={[styles.subtitle,{color: theme.subTitle}]} >Don't have an account? </Text>
-        <Pressable onPress={() => (router.push({pathname: "/signup"}))}>
-          <Text style={[styles.signUpText, {color: theme.tint}]}>Sign up here</Text>
-        </Pressable>
-      </View>  
-    </View> 
+    <KeyboardAvoidingView 
+        style={[styles.keyboardAvoidingView,{ backgroundColor: theme.background }]} 
+        behavior={Platform.OS === "ios" ? "padding" : "height"}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View style={[styles.container]}>
+            <Image source={require('@/assets/images/logo_app.jpeg')} style={styles.logo} />
+            <Text style={[styles.title, {color: theme.text}]}>Welcome Back!</Text>
+            <Text style={[styles.subtitle,{color: theme.subTitle}]}>Log in to the account</Text>
+            <TextInput 
+              placeholder='Email' 
+              value={email} 
+              onChangeText={setEmail}
+              returnKeyType='next'
+              onSubmitEditing={() => passwordInputRef.current?.focus()}
+              style={[isIncorrect? styles.inputIncorrect: styles.input, {color: theme.text}]}
+              placeholderTextColor="#666"
+            />
+            <TextInput 
+              ref={passwordInputRef}
+              placeholder='Password' 
+              value={password} 
+              onChangeText={setPassword}
+              style={isIncorrect? styles.inputIncorrect: styles.input}
+              placeholderTextColor="#666"
+              onSubmitEditing={() => signInHandler(email,password)}
+              returnKeyType="done"
+            />
+            <Logbutton title="Log In" onPress={() => signInHandler(email,password)} />
+            <View style={styles.signUpContainer}>
+              <Text style={[styles.subtitle,{color: theme.subTitle}]} >Don't have an account? </Text>
+              <Pressable onPress={() => (router.push({pathname: "/signup"}))}>
+                <Text style={[styles.signUpText, {color: theme.tint}]}>Sign up here</Text>
+              </Pressable>
+            </View>  
+          </View> 
+      </ScrollView>
+    </KeyboardAvoidingView>
   )
 }
 
 export default profile
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    flex: 1,
+    justifyContent: "center",
+    gap: 20,  
+  },
+  keyboardAvoidingView: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     justifyContent: "center",

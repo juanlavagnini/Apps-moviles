@@ -1,8 +1,12 @@
-import { Pressable, StyleSheet, Text, View, FlatList } from 'react-native'
+import { Pressable, StyleSheet, Text, View, FlatList, useColorScheme } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useRefreshContext, useScanContext, useUserContext } from '@/app/_layout';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { Colors } from '@/constants/Colors';
+
+const colorScheme = useColorScheme();
+const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
 
 const pastProducts = () => {
     const { user } = useUserContext();
@@ -73,13 +77,13 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 8,
     marginHorizontal: 16,
-    backgroundColor: '#f9c2ff',
+    backgroundColor: theme.tint,
   },
   title: {
     fontSize: 32,
   },
   editButton: {
-    backgroundColor: '#f9c2ff',
+    backgroundColor: theme.tint,
     position: 'absolute',
     right: 0,
     top: 0,

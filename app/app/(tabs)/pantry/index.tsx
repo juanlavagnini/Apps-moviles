@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, View,  FlatList,  StyleSheet,  Text,  StatusBar,  PanResponder,  Animated, Easing, Pressable,} from 'react-native';
+import { SafeAreaView, View,  FlatList,  StyleSheet,  Text,  StatusBar,  PanResponder,  Animated, Easing, Pressable, useColorScheme,} from 'react-native';
 import { useRefreshContext, useScanContext, useUserContext } from '../../_layout';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { Colors } from '@/constants/Colors';
 
+const colorScheme = useColorScheme();
+const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
 
 const Pantry = () => {
+
+  
 
   type ItemProps = {title: string, quantity: number};
 
@@ -130,7 +135,7 @@ const styles = StyleSheet.create({
     marginTop: StatusBar.currentHeight || 0,
   },
   item: {
-    backgroundColor: '#f9c2ff',
+    backgroundColor: theme.tint,
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 16,
@@ -140,7 +145,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
   },
   editButton: {
-    backgroundColor: '#f9c2ff',
+    backgroundColor: theme.tint,
     position: 'absolute',
     right: 0,
     top: 0,
