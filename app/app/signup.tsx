@@ -51,7 +51,7 @@ const profile = () => {
           behavior={Platform.OS === "ios" ? "padding" : "height"}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={styles.container}>
-            <Text style={[styles.title, {color: theme.text}]}>Create an account</Text>
+            <Text style={[styles.title, {color: theme.grey}]}>Create an account</Text>
             <TextInput 
               placeholder='Name' 
               value={nombre} 

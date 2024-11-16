@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View, FlatList, useColorScheme } from 'react-native'
+import { Pressable, StyleSheet, Text, View, FlatList, useColorScheme, StatusBar } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useRefreshContext, useScanContext, useUserContext } from '@/app/_layout';
 import { router } from 'expo-router';
@@ -62,28 +62,44 @@ const pastProducts = () => {
       }, [scan, refresh]);
     
   return (
+    <View style={styles.container}>
     <FlatList 
         data={DATA}
         renderItem={({item}) => <Item title={item.title} quantity={item.quantity} id={item.id}/>}
         keyExtractor={item => item.id}
     />
+    </View>
   )
 }
 
 export default pastProducts
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: StatusBar.currentHeight || 0,
+    backgroundColor: theme.background,
+  },
   item: {
+    backgroundColor: theme.lightOrange,
+    borderBottomColor: theme.darkOrange,
+    borderLeftColor: theme.darkOrange,
+    borderBottomWidth: 1,
+    borderLeftWidth: 1,
+    borderRadius: 10,
     padding: 10,
     marginVertical: 8,
     marginHorizontal: 16,
-    backgroundColor: theme.tint,
+    flex: 1,
   },
   title: {
-    fontSize: 32,
+    fontSize: 24,
+    paddingRight: 40,
   },
   editButton: {
-    backgroundColor: theme.tint,
+    backgroundColor: theme.lightOrange,
+    borderBottomColor: theme.darkOrange,
+    borderRadius: 10,
     position: 'absolute',
     right: 0,
     top: 0,

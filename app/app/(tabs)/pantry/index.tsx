@@ -9,9 +9,6 @@ const colorScheme = useColorScheme();
 const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
 
 const Pantry = () => {
-
-  
-
   type ItemProps = {title: string, quantity: number};
 
   const { user } = useUserContext();
@@ -77,7 +74,7 @@ const Pantry = () => {
 
     return (
       <Animated.View style={[styles.item, { transform: [{ translateX: pan.x }] }]} {...panResponder.panHandlers}>
-        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.title} numberOfLines={1}>{title}</Text>
         <Text>Quantity: {quantity}</Text>
         <Pressable style={styles.editButton} onPress={()=> router.push({
                 pathname: '/modal_product',
@@ -119,7 +116,7 @@ const Pantry = () => {
         ListFooterComponent={
         <View>
           <Pressable style={styles.pastproducts} onPress={()=> router.push("/pantry/pastProducts")}>
-            <Text style={{color: "#666"}}>See past products</Text>
+            <Text style={{color: theme.grey}}>See past products</Text>
           </Pressable>
           <View style={{height: 50}} />
         </View>
@@ -133,19 +130,28 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: StatusBar.currentHeight || 0,
+    backgroundColor: theme.background,
   },
   item: {
-    backgroundColor: theme.tint,
-    padding: 20,
+    backgroundColor: theme.lightOrange,
+    borderBottomColor: theme.darkOrange,
+    borderLeftColor: theme.darkOrange,
+    borderBottomWidth: 1,
+    borderLeftWidth: 1,
+    borderRadius: 10,
+    padding: 10,
     marginVertical: 8,
     marginHorizontal: 16,
     flex: 1,
   },
   title: {
-    fontSize: 32,
+    fontSize: 24,
+    paddingRight: 40,
   },
   editButton: {
-    backgroundColor: theme.tint,
+    backgroundColor: theme.lightOrange,
+    borderBottomColor: theme.darkOrange,
+    borderRadius: 10,
     position: 'absolute',
     right: 0,
     top: 0,

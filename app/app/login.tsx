@@ -83,8 +83,8 @@ const profile = () => {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={[styles.container]}>
             <Image source={require('@/assets/images/logo_app.jpeg')} style={styles.logo} />
-            <Text style={[styles.title, {color: theme.text}]}>Welcome Back!</Text>
-            <Text style={[styles.subtitle,{color: theme.subTitle}]}>Log in to the account</Text>
+            <Text style={[styles.title, {color: theme.grey}]}>Welcome Back!</Text>
+            <Text style={[styles.subtitle,{color: theme.grey}]}>Log in to the account</Text>
             <TextInput 
               placeholder='Email' 
               value={email} 
@@ -106,9 +106,9 @@ const profile = () => {
             />
             <Logbutton title="Log In" onPress={() => signInHandler(email,password)} />
             <View style={styles.signUpContainer}>
-              <Text style={[styles.subtitle,{color: theme.subTitle}]} >Don't have an account? </Text>
+              <Text style={[styles.subtitle,{color: theme.grey}]} >Don't have an account? </Text>
               <Pressable onPress={() => (router.push({pathname: "/signup"}))}>
-                <Text style={[styles.signUpText, {color: theme.tint}]}>Sign up here</Text>
+                <Text style={[styles.signUpText, {color: theme.darkOrange}]}>Sign up here</Text>
               </Pressable>
             </View>  
           </View> 
