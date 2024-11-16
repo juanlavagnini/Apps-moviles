@@ -1,11 +1,14 @@
-import { StyleSheet, Text, View, Pressable, TouchableOpacity, Button, Image } from 'react-native'
+import { StyleSheet, Text, View, Pressable, TouchableOpacity, Button, Image, useColorScheme } from 'react-native'
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import React, { useEffect, useState } from 'react'
 import { router, useFocusEffect } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useScanContext } from '../_layout';
+import { Colors } from '@/constants/Colors';
 
 const scanner = () => {
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
 
   const [facing, setFacing] = useState<CameraType>('back');
   const [permission, requestPermission] = useCameraPermissions();

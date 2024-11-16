@@ -1,11 +1,11 @@
-import { StyleSheet, Text, View, Image, TextInput, Pressable } from 'react-native'
+import { StyleSheet, Text, View, Image, TextInput, Pressable, KeyboardAvoidingView, ScrollView, Platform } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { Colors } from '@/constants/Colors'
-import { router } from 'expo-router'
+import { router, useNavigationContainerRef } from 'expo-router'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUserContext } from './_layout';
 import Logbutton from '@/components/Logbutton';
-
+import { useColorScheme } from 'react-native';
 
 const profile = () => {
 
@@ -16,6 +16,8 @@ const profile = () => {
 
   const passwordInputRef = useRef<TextInput>(null);
 
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
 
   const signInHandler = (email: string, password: string) => {
     console.log(`http://${ip}:3000/user/login`)
@@ -48,6 +50,7 @@ const profile = () => {
         console.log(data)
         const id = data.id;
         const email = data.email;
+        const name = data.name;
         const houseId = data.houseId;
         const owner = data.ownedHouse;
         if (data.ownedHouse==null){
@@ -57,7 +60,7 @@ const profile = () => {
           setIsOwner(true);
         }
         try {
-          setUser({id, email, houseId, owner});
+          setUser({id, email, name, houseId, owner});
         }
         catch (error) {
           console.error('ErrorLogin:', error);
@@ -75,46 +78,59 @@ const profile = () => {
   const [password, setPassword] = useState('')
  
   return (
-    <View style={styles.container}>
-      <Image source={require('@/assets/images/logo_app.jpeg')} style={styles.logo} />
-      <Text style={styles.title}>Welcome Back!</Text>
-      <Text style={styles.subtitle}>Log in to the account</Text>
-      <TextInput 
-        placeholder='Email' 
-        value={email} 
-        onChangeText={setEmail}
-        returnKeyType='next'
-        onSubmitEditing={() => passwordInputRef.current?.focus()}
-        style={isIncorrect? styles.inputIncorrect: styles.input}
-        placeholderTextColor="#666"
-      />
-      <TextInput 
-        ref={passwordInputRef}
-        placeholder='Password' 
-        value={password} 
-        onChangeText={setPassword}
-        style={isIncorrect? styles.inputIncorrect: styles.input}
-        placeholderTextColor="#666"
-        onSubmitEditing={() => signInHandler(email,password)}
-        returnKeyType="done"
-      />
-      <Logbutton title="Log In" onPress={() => signInHandler(email,password)} />
-      <View style={styles.signUpContainer}>
-        <Text style={styles.newAccountText} >Don't have an account? </Text>
-        <Pressable onPress={() => (router.push({pathname: "/signup"}))}>
-          <Text style={styles.signUpText} >Sign up here</Text>
-        </Pressable>
-      </View>  
-    </View> 
+    <KeyboardAvoidingView 
+        style={[styles.keyboardAvoidingView,{ backgroundColor: theme.background }]} 
+        behavior={Platform.OS === "ios" ? "padding" : "height"}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View style={[styles.container]}>
+            <Image source={require('@/assets/images/logo_app.jpeg')} style={styles.logo} />
+            <Text style={[styles.title, {color: theme.grey}]}>Welcome Back!</Text>
+            <Text style={[styles.subtitle,{color: theme.grey}]}>Log in to the account</Text>
+            <TextInput 
+              placeholder='Email' 
+              value={email} 
+              onChangeText={setEmail}
+              returnKeyType='next'
+              onSubmitEditing={() => passwordInputRef.current?.focus()}
+              style={[isIncorrect? styles.inputIncorrect: styles.input, {color: theme.text}]}
+              placeholderTextColor="#666"
+            />
+            <TextInput 
+              ref={passwordInputRef}
+              placeholder='Password' 
+              value={password} 
+              onChangeText={setPassword}
+              style={[isIncorrect? styles.inputIncorrect: styles.input, {color: theme.text}]}
+              placeholderTextColor="#666"
+              onSubmitEditing={() => signInHandler(email,password)}
+              returnKeyType="done"
+            />
+            <Logbutton title="Log In" onPress={() => signInHandler(email,password)} />
+            <View style={styles.signUpContainer}>
+              <Text style={[styles.subtitle,{color: theme.grey}]} >Don't have an account? </Text>
+              <Pressable onPress={() => (router.push({pathname: "/signup"}))}>
+                <Text style={[styles.signUpText, {color: theme.darkOrange}]}>Sign up here</Text>
+              </Pressable>
+            </View>  
+          </View> 
+      </ScrollView>
+    </KeyboardAvoidingView>
   )
 }
 
 export default profile
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    flex: 1,
+    justifyContent: "center",
+    gap: 20,  
+  },
+  keyboardAvoidingView: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    margin: 10,
     justifyContent: "center",
     alignItems: "center",
     gap: 20,  
@@ -139,10 +155,8 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 16,
-    color: "#666",
-    marginBottom: 30,
-
   },
+
   text: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -169,13 +183,8 @@ const styles = StyleSheet.create({
 
   },
   signUpText: {
-    color: "#673ab7",
     fontSize: 16,
     textDecorationLine: 'underline',
-  },
-  newAccountText: {
-    color: "#666",
-    fontSize: 16,
   },
   signUpContainer: {
     flexDirection: 'row',

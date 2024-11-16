@@ -1,6 +1,9 @@
 import { Stack, useNavigation } from "expo-router";
 import { Button } from "react-native";
 import { createContext, ReactNode, useContext, useState } from "react";
+import { useColorScheme } from 'react-native';
+import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
+import { Colors } from "@/constants/Colors";
 
 export const ScanContext = createContext({
   setScan : (scan: boolean) => {},
@@ -38,12 +41,31 @@ export const useRefreshContext = () => {
   return useContext(RefreshContext);
 }
 
+//ColorSchemeContext
+export const ColorSchemeContext = createContext({
+  colorScheme: 'light',
+  setColorScheme: (colorScheme: 'light' | 'dark') => {}
+});
+
+export const ColorSchemeContextProvider = ({children}: {children: ReactNode}) => {
+  const [colorScheme, setColorScheme] = useState<'light' | 'dark'>('light');
+  return (
+    <ColorSchemeContext.Provider value={{colorScheme, setColorScheme}}>
+      {children}
+    </ColorSchemeContext.Provider>
+  );
+}
+
+export const useColorSchemeContext = () => {
+  return useContext(ColorSchemeContext);
+}
 
 //UserContext
 
 //objeto user
 interface User {
   id: number;
+  name: string;
   email: string;
   houseId: number;
   owner: boolean;
@@ -71,13 +93,13 @@ export const useUserContext = () => {
 }
 
 export default function RootLayout() {
-  const navigation = useNavigation();
-  
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
   return (
     <UserContextProvider>
       <RefreshContextProvider>
         <ScanContexProvider>
-            <Stack>
+            <Stack screenOptions={{contentStyle: {backgroundColor: theme.background}}}>
               <Stack.Screen name="index" options={{headerShown: false}}/>
               <Stack.Screen name="(tabs)" options={{headerShown: false , gestureEnabled: false}}/>
 
@@ -98,7 +120,7 @@ export default function RootLayout() {
                 }}
               />
               <Stack.Screen name="login" options={{headerShown: false, gestureEnabled: false}}/>
-              <Stack.Screen name="signup" options={{gestureEnabled: false}}/>
+              <Stack.Screen name="signup" options={{gestureEnabled: false, headerTransparent: true, headerTintColor: colorScheme === "dark" ? 'white' : 'black'}}/>
             </Stack>
         </ScanContexProvider>
       </RefreshContextProvider>

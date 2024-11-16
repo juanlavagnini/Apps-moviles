@@ -2,6 +2,7 @@ import { GestureResponderEvent, Pressable, StyleSheet, Text, View } from 'react-
 import React from 'react'
 import { TabBarIcon } from './navigation/TabBarIcon'
 import { Ionicons } from '@expo/vector-icons'
+import { tintColor, Colors } from '@/constants/Colors'
 
 const TabBarButtom = ({onPress, onLongPress, isFocused, routeName, color, label}: {onPress: (event: GestureResponderEvent) => void, onLongPress: (event: GestureResponderEvent) => void, isFocused: boolean, routeName: string, color: string, label:any}) => {  
     return (
@@ -23,7 +24,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         gap: 5,
-        backgroundColor: '#673ab7',
+        backgroundColor: tintColor,
         padding: 5,  //20
         paddingVertical: 17,  //30
         borderRadius: 100,  //20

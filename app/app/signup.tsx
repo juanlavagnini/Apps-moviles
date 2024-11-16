@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TextInput, Pressable, ScrollView, KeyboardAvoidingView, Platform } from 'react-native'
+import { StyleSheet, Text, View, Image, TextInput, Pressable, ScrollView, KeyboardAvoidingView, Platform, useColorScheme } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { Colors } from '@/constants/Colors'
 import { useUserContext } from './_layout'
@@ -8,6 +8,11 @@ import Logbutton from '@/components/Logbutton'
 
 const profile = () => {
   const ip = process.env.EXPO_PUBLIC_IP
+
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
+  const [isIncorrect, setIsIncorrect] = useState(false)
+
 
   const signUpHandler = (nombre:string, apellido:string, correo:string, contrasena:string) => {
     
@@ -41,23 +46,19 @@ const profile = () => {
   
 
   return (
-    /*<View style={styles.container}>
-      <Image source={{uri: 'https://reactnative.dev/img/tiny_logo.png'}} style={styles.image}/>
-      <Text style={styles.text}>Trini</Text>
-    </View>*/
     <KeyboardAvoidingView 
-          style={styles.keyboardAvoidingView} 
+          style={[styles.keyboardAvoidingView, { backgroundColor: theme.background }]} 
           behavior={Platform.OS === "ios" ? "padding" : "height"}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={styles.container}>
-            <Text style={styles.title}>Create an account</Text>
+            <Text style={[styles.title, {color: theme.grey}]}>Create an account</Text>
             <TextInput 
               placeholder='Name' 
               value={nombre} 
               onChangeText={setNombre}
               returnKeyType="next"
               onSubmitEditing={() => apellidoInputRef.current?.focus()}
-              style={styles.input}
+              style={[isIncorrect? styles.inputIncorrect: styles.input, {color: theme.text}]}
               placeholderTextColor="#666"
             />
             <TextInput 
@@ -67,7 +68,7 @@ const profile = () => {
               onChangeText={setApellido}
               returnKeyType="next"
               onSubmitEditing={() => correoInputRef.current?.focus()}
-              style={styles.input}
+              style={[isIncorrect? styles.inputIncorrect: styles.input, {color: theme.text}]}
               placeholderTextColor="#666"
             />
             <TextInput 
@@ -77,7 +78,7 @@ const profile = () => {
               onChangeText={setCorreo}
               returnKeyType="next"
               onSubmitEditing={() => contrasenaInputRef.current?.focus()}
-              style={styles.input}
+              style={[isIncorrect? styles.inputIncorrect: styles.input, {color: theme.text}]}
               placeholderTextColor="#666"
             />
             <TextInput 
@@ -85,7 +86,7 @@ const profile = () => {
               placeholder='Password' 
               value={contrasena} 
               onChangeText={setContrasena}
-              style={styles.input}
+              style={[isIncorrect? styles.inputIncorrect: styles.input, {color: theme.text}]}
               placeholderTextColor="#666"
               returnKeyType='done'
               onSubmitEditing={() => signUpHandler(nombre, apellido, correo, contrasena)}
@@ -143,5 +144,15 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 10,
     marginBottom: 20,
+  },
+  inputIncorrect: {
+    width: '80%',
+    height: 50,
+    borderBottomWidth: 1,
+    borderColor: "red",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginBottom: 20,
+
   },
 })

@@ -1,20 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View,FlatList,StyleSheet,Text,StatusBar,SectionList } from 'react-native';
+import { View,FlatList,StyleSheet,Text,StatusBar,SectionList, useColorScheme } from 'react-native';
 import { useRefreshContext, useUserContext } from '../_layout';
-
-type ItemProps = {title: string, brand: string};
-
-const Item = ({title, brand}: ItemProps) => (
-  <View style={styles.item}>
-    <Text style={styles.title}>{title}</Text>
-    <Text >{brand}</Text>
-  </View>
-);
-
+import { Colors } from '@/constants/Colors';
 
 
 
 const List = () => {
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
+
   const { user } = useUserContext();
   const { refresh, setRefresh } = useRefreshContext();
   const ip = process.env.EXPO_PUBLIC_IP;
@@ -28,6 +22,17 @@ const List = () => {
       itemIndex: 0, // Puedes ajustar esto si necesitas que se enfoque un elemento específico
     });
   };
+
+  type ItemProps = {title: string, brand: string};
+
+  const Item = ({title, brand}: ItemProps) => (
+    <View style={[styles.item, {backgroundColor: theme.lightOrange,
+      borderBottomColor: theme.darkOrange,
+      borderLeftColor: theme.darkOrange, shadowColor:theme.shadowColor}]}>
+      <Text style={styles.title} numberOfLines={1}>{title}</Text>
+      <Text>{brand}</Text>
+    </View>
+  );
 
   useEffect(() => {
     fetch(`http://${ip}:3000/houseProduct/supermarketList/${user?.houseId}`, {
@@ -50,7 +55,7 @@ const List = () => {
   }, [refresh]);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {backgroundColor: theme.background}]}>
       <FlatList
         data={DATA}
         renderItem={({item}) => <Item title={item.title} brand={item.brand} />}
@@ -68,13 +73,18 @@ const styles = StyleSheet.create({
     marginTop: StatusBar.currentHeight || 0,
   },
   item: {
-    backgroundColor: '#f9c2ff',
-    padding: 20,
+    borderRadius: 10,
+    padding: 10,
     marginVertical: 8,
     marginHorizontal: 16,
+    flex: 1,
+    shadowOpacity: 0.5,
+    shadowRadius: 4,
+    elevation: 5,
+    shadowOffset: { width: 0, height: 2.5 },
   },
   title: {
-    fontSize: 32,
+    fontSize: 24,
   },
 
   categoryList: {
