@@ -50,6 +50,7 @@ const profile = () => {
         console.log(data)
         const id = data.id;
         const email = data.email;
+        const name = data.name;
         const houseId = data.houseId;
         const owner = data.ownedHouse;
         if (data.ownedHouse==null){
@@ -59,7 +60,7 @@ const profile = () => {
           setIsOwner(true);
         }
         try {
-          setUser({id, email, houseId, owner});
+          setUser({id, email, name, houseId, owner});
         }
         catch (error) {
           console.error('ErrorLogin:', error);
@@ -99,7 +100,7 @@ const profile = () => {
               placeholder='Password' 
               value={password} 
               onChangeText={setPassword}
-              style={isIncorrect? styles.inputIncorrect: styles.input}
+              style={[isIncorrect? styles.inputIncorrect: styles.input, {color: theme.text}]}
               placeholderTextColor="#666"
               onSubmitEditing={() => signInHandler(email,password)}
               returnKeyType="done"

@@ -14,7 +14,7 @@ const Logbutton: React.FC<LogbuttonProps> = ({ onPress, title }) => {
 
   return (
     <Pressable style={[styles.button, {backgroundColor: theme.darkOrange}]} onPress={onPress}>
-      <Text style={[styles.buttonText, {color: theme.lightBrown}]}>{title}</Text>
+      <Text style={[styles.buttonText, {color: theme.darkBrown}]}>{title}</Text>
     </Pressable>
   );
 }

@@ -65,6 +65,7 @@ export const useColorSchemeContext = () => {
 //objeto user
 interface User {
   id: number;
+  name: string;
   email: string;
   houseId: number;
   owner: boolean;
@@ -92,15 +93,13 @@ export const useUserContext = () => {
 }
 
 export default function RootLayout() {
-  const navigation = useNavigation();
-
   const colorScheme = useColorScheme();
-  
+  const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
   return (
     <UserContextProvider>
       <RefreshContextProvider>
         <ScanContexProvider>
-            <Stack>
+            <Stack screenOptions={{contentStyle: {backgroundColor: theme.background}}}>
               <Stack.Screen name="index" options={{headerShown: false}}/>
               <Stack.Screen name="(tabs)" options={{headerShown: false , gestureEnabled: false}}/>
 

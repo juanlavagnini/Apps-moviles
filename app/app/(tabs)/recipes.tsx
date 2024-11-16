@@ -1,3 +1,4 @@
+import { Colors } from '@/constants/Colors';
 import { Link } from 'expo-router';
 import React, { useRef } from 'react';
 import {
@@ -8,7 +9,8 @@ import {
   Text,
   TouchableOpacity,
   View,
-  SectionListData
+  SectionListData,
+  useColorScheme
 } from 'react-native';
 
 interface SectionData {
@@ -110,6 +112,9 @@ const DATA: SectionData[] = [
 
 
 const Recipes = () => {
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
+  
   const sectionListRef = useRef<SectionList<any>>(null);
 
   // Función para desplazarse a la sección
@@ -123,15 +128,15 @@ const Recipes = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container,{backgroundColor: theme.background}]}>
       <FlatList
-        style={styles.categoryList}
+        style={[styles.categoryList]}
         horizontal
         data={DATA}
         keyExtractor={(item) => item.title}
         renderItem={({ item, index }) => (
           <TouchableOpacity
-            style={styles.categoryButton}
+            style={[styles.categoryButton,, {backgroundColor: theme.darkOrange}]}
             onPress={() => scrollToSection(index)}
           >
             <Text style={styles.categoryText}>{item.title}</Text>
@@ -145,7 +150,7 @@ const Recipes = () => {
         sections={DATA}
         keyExtractor={(item, index) => item + index}
         renderItem={({ item }) => (
-          <View style={styles.item}>
+          <View style={[styles.item, {backgroundColor: theme.lightOrange}]}>
             <Link href={{
               pathname: '/modal_recipe',
               params: { name: item  },
@@ -154,7 +159,7 @@ const Recipes = () => {
           </View>
         )}
         renderSectionHeader={({ section: { title } }) => (
-          <Text style={styles.header}>{title}</Text>
+          <Text style={[styles.header, {color: theme.grey}]}>{title}</Text>
         )}
         stickySectionHeadersEnabled={true}
         ListFooterComponent={<View style={{height: 50}} />}
@@ -167,17 +172,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: StatusBar.currentHeight,
-    marginHorizontal: 16,
+    paddingHorizontal: 16,
   },
   item: {
-    backgroundColor: '#f9c2ff',
     padding: 20,
     marginVertical: 8,
     borderRadius: 10,
   },
   header: {
     fontSize: 32,
-    backgroundColor: '#fff',
     paddingVertical: 5,
   },
   title: {
@@ -190,7 +193,6 @@ const styles = StyleSheet.create({
   categoryButton: {
     paddingVertical: 10,
     paddingHorizontal: 15,
-    backgroundColor: '#ddd',
     marginHorizontal: 5,
     borderRadius: 5,
   },

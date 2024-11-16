@@ -5,10 +5,11 @@ import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
 
-const colorScheme = useColorScheme();
-const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
-
 const Pantry = () => {
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
+
+  
   type ItemProps = {title: string, quantity: number};
 
   const { user } = useUserContext();
@@ -73,10 +74,13 @@ const Pantry = () => {
     });
 
     return (
-      <Animated.View style={[styles.item, { transform: [{ translateX: pan.x }] }]} {...panResponder.panHandlers}>
+      <Animated.View style={[styles.item, {backgroundColor: theme.lightOrange,
+        borderBottomColor: theme.darkOrange,
+        borderLeftColor: theme.darkOrange, shadowColor: theme.shadowColor},{ transform: [{ translateX: pan.x }] }]} {...panResponder.panHandlers}>
         <Text style={styles.title} numberOfLines={1}>{title}</Text>
         <Text>Quantity: {quantity}</Text>
-        <Pressable style={styles.editButton} onPress={()=> router.push({
+        <Pressable style={[styles.editButton,{backgroundColor: theme.lightOrange,
+    borderBottomColor: theme.darkOrange,}]} onPress={()=> router.push({
                 pathname: '/modal_product',
                 params: { productId: id },
               })}>
@@ -107,8 +111,9 @@ const Pantry = () => {
   }, [scan, refresh]); //aca agregue la flag refresh
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container,{backgroundColor: theme.background}]}>
       <FlatList 
+        style={{height: '100%'}}
         data={DATA}
         renderItem={({item}) => <Item title={item.title} quantity={item.quantity} id={item.id}/>}
         keyExtractor={item => item.id}
@@ -130,27 +135,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: StatusBar.currentHeight || 0,
-    backgroundColor: theme.background,
+    
   },
   item: {
-    backgroundColor: theme.lightOrange,
-    borderBottomColor: theme.darkOrange,
-    borderLeftColor: theme.darkOrange,
-    borderBottomWidth: 1,
-    borderLeftWidth: 1,
     borderRadius: 10,
     padding: 10,
     marginVertical: 8,
     marginHorizontal: 16,
     flex: 1,
+    shadowOpacity: 0.5,
+    shadowRadius: 4,
+    elevation: 5,
+    shadowOffset: { width: 0, height: 2.5 },
   },
   title: {
     fontSize: 24,
     paddingRight: 40,
   },
   editButton: {
-    backgroundColor: theme.lightOrange,
-    borderBottomColor: theme.darkOrange,
     borderRadius: 10,
     position: 'absolute',
     right: 0,

@@ -10,6 +10,7 @@ export const Colors = {
     text: '#11181C',
     subTitle: "#666",
     background: '#fff',
+    contrast: '#000',
     tint: tintColor,
     icon: '#687076',
     tabIconDefault: '#687076',
@@ -21,12 +22,15 @@ export const Colors = {
     lightBrown: '#8D5E4E',
     darkBrown: '#331716',
     yellow: '#FDD75A',
-    grey: '#666'
+    grey: '#666',
+    shadowColor: "black"
   },
+  
   dark: {
     text: '#ECEDEE',
     subTitle: "#666",
     background: '#000',
+    contrast: '#fff',
     tint: tintColor,
     icon: '#9BA1A6',
     tabIconDefault: '#9BA1A6',
@@ -38,6 +42,7 @@ export const Colors = {
     lightBrown: '#8D5E4E',
     darkBrown: '#331716',
     yellow: '#FDD75A',
-    grey: '#C7C7C7'
+    grey: '#C7C7C7',
+    shadowColor: "white"
   },
 };
