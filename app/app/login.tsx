@@ -51,6 +51,8 @@ const profile = () => {
         const id = data.id;
         const email = data.email;
         const name = data.name;
+        const surname = data.surname;
+        const password = data.password;
         const houseId = data.houseId;
         const owner = data.ownedHouse;
         if (data.ownedHouse==null){
@@ -60,7 +62,7 @@ const profile = () => {
           setIsOwner(true);
         }
         try {
-          setUser({id, email, name, houseId, owner});
+          setUser({id, email, name, surname, password, houseId, owner});
         }
         catch (error) {
           console.error('ErrorLogin:', error);

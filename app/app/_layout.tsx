@@ -65,8 +65,10 @@ export const useColorSchemeContext = () => {
 //objeto user
 interface User {
   id: number;
-  name: string;
   email: string;
+  name: string;
+  surname: string;
+  password: string;
   houseId: number;
   owner: boolean;
 }

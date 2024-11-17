@@ -1,9 +1,83 @@
+import { useUserContext } from '@/app/_layout';
+import Logbutton from '@/components/Logbutton';
+import { Colors } from '@/constants/Colors';
 import { router } from 'expo-router';
-import React, {useState} from 'react';
-import {Alert, Modal, StyleSheet, Text, Pressable, View} from 'react-native';
+import React, {useRef, useState} from 'react';
+import {Alert, Modal, StyleSheet, Text, Pressable, View, TextInput, useColorScheme} from 'react-native';
 import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
 
 const modal_edit_profile = () => {
+  const ip = process.env.EXPO_PUBLIC_IP
+
+  const { user, setUser } = useUserContext();
+
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
+  const [isIncorrect, setIsIncorrect] = useState(false)
+  const [nombre, setNombre] = useState(user?.name)
+  const [apellido, setApellido] = useState(user?.surname)
+  const [correo, setCorreo] = useState(user?.email)
+  const [contrasena, setContrasena] = useState(user?.password)
+
+  const [isOwner, setIsOwner] = useState(false)
+
+  const apellidoInputRef = useRef<TextInput>(null);
+  const correoInputRef = useRef<TextInput>(null);
+  const contrasenaInputRef = useRef<TextInput>(null);
+
+  const handleEdit = () => {
+    fetch(`http://${ip}:3000/user/${user?.id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: nombre,
+        surname: apellido,
+        email: correo,
+        password: contrasena,
+      }),
+    })
+    .then(response => {
+      if (!response.ok) {
+        setIsIncorrect(true);
+        return null;
+      }
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        return response.json();
+      } else {
+        throw new Error('Received non-JSON response');
+      }
+    })
+    .then(async data => {
+      if (data) {
+        const id = data.id;
+        const email = data.email;
+        const name = data.name;
+        const surname = data.surname;
+        const password = data.password;
+        const houseId = data.houseId;
+        const owner = data.ownedHouse;
+        if (data.ownedHouse==null){
+          setIsOwner(false);
+        }
+        else{
+          setIsOwner(true);
+        }
+        try {
+          setUser({id, email, name, surname, password, houseId, owner});
+        }
+        catch (error) {
+          console.error('ErrorLogin:', error);
+        }
+    }})
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+    router.back();
+  }
+  
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.centeredView}>
@@ -15,12 +89,47 @@ const modal_edit_profile = () => {
           }}>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <Text style={styles.modalText}>Hello World!</Text>
-              <Pressable
-                style={[styles.button, styles.buttonClose]}
-                onPress={() => router.back()}>
-                <Text style={styles.textStyle}>Hide Modal</Text>
-              </Pressable>
+            <TextInput 
+              placeholder= {user?.name} 
+              value={nombre} 
+              onChangeText={setNombre}
+              returnKeyType="next"
+              onSubmitEditing={() => apellidoInputRef.current?.focus()}
+              style={[styles.input, {color: theme.background}]}
+              placeholderTextColor= "#666"
+            />
+            <TextInput 
+              ref={apellidoInputRef}
+              placeholder= {user?.surname}  
+              value={apellido} 
+              onChangeText={setApellido}
+              returnKeyType="next"
+              onSubmitEditing={() => correoInputRef.current?.focus()}
+              style={[styles.input, {color: theme.background}]}
+              placeholderTextColor="#666"
+            />
+            <TextInput 
+              ref={correoInputRef}
+              placeholder={user?.email}
+              value={correo} 
+              onChangeText={setCorreo}
+              returnKeyType="next"
+              onSubmitEditing={() => contrasenaInputRef.current?.focus()}
+              style={[styles.input, {color: theme.background}]}
+              placeholderTextColor="#666"
+            />
+            <TextInput 
+              ref={contrasenaInputRef}
+              placeholder='New Password'
+              value={contrasena} 
+              onChangeText={setContrasena}
+              style={[styles.input, {color: theme.background}]}
+              placeholderTextColor="#666"
+              returnKeyType='done'
+            />
+            <Logbutton onPress={() => { handleEdit();}} title={'Save'}>
+            </Logbutton>
+
             </View>
           </View>
         </Modal>
@@ -36,8 +145,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalView: {
-    margin: 20,
-    backgroundColor: 'white',
+    width: '70%',
+    margin: 10,
+    backgroundColor: "white",
     borderRadius: 20,
     padding: 35,
     alignItems: 'center',
@@ -69,6 +179,25 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: 'center',
+  },
+  input: {
+    width: '80%',
+    height: 50,
+    borderBottomWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginBottom: 20,
+  },
+  inputIncorrect: {
+    width: '80%',
+    height: 50,
+    borderBottomWidth: 1,
+    borderColor: "red",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginBottom: 20,
+
   },
 });
 
