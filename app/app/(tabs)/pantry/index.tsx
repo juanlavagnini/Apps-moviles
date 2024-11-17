@@ -111,7 +111,7 @@ const Pantry = () => {
         <Text>Quantity: {quantity}</Text>
         <Pressable style={[styles.editButton,{backgroundColor: theme.lightOrange,
     borderBottomColor: theme.darkOrange,}]} onPress={()=> router.push({
-                pathname: '/modal_product',
+                pathname: '/pantry/modal_product',
                 params: { productId: id },
               })}>
           <Ionicons name="create-outline" size={30} color="black" />
