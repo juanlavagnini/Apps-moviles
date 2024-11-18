@@ -1,7 +1,5 @@
-import CustomTabBar from "@/components/CustomTabBar";
-import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { Colors } from "@/constants/Colors";
-import { Stack, Tabs } from "expo-router";
+import { Stack } from "expo-router";
 import { useColorScheme } from "react-native";
 
 export default function RootLayout() {

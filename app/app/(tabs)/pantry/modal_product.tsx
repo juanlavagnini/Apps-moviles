@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Link, router, useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { Pressable, StyleSheet, Text, TextInput, View, Modal, SafeAreaView, useColorScheme } from 'react-native';
-import Animated from 'react-native-reanimated';
-import { useRefreshContext, useScanContext, useUserContext } from '../../_layout';
-import user from '../profile/user';
+import { useUserContext } from '../../_layout';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Colors } from '@/constants/Colors';
+import { useRefreshContext } from '../_layout';
 
 export default function product_modal() {
   const colorScheme = useColorScheme();
@@ -41,7 +40,6 @@ export default function product_modal() {
     }
   }, []);
 
-  console.log(DBData);
 
 
   function handleNewalert(min: number) {

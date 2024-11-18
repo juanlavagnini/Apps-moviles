@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, View,  FlatList,  StyleSheet,  Text,  StatusBar,  PanResponder,  Animated, Easing, Pressable, useColorScheme,} from 'react-native';
-import { useRefreshContext, useScanContext, useUserContext } from '../../_layout';
+import { View,  FlatList,  StyleSheet,  Text,  StatusBar,  PanResponder,  Animated, Pressable, useColorScheme,} from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
+import { useUserContext } from '@/app/_layout';
+import { useRefreshContext } from '../_layout';
 
 const Pantry = () => {
   const colorScheme = useColorScheme();
@@ -13,7 +14,6 @@ const Pantry = () => {
   type ItemProps = {title: string, quantity: number};
 
   const { user } = useUserContext();
-  const { scan } = useScanContext();
   const ip = process.env.EXPO_PUBLIC_IP;
   const [DATA, setDATA] = useState<any>([]);
   const { refresh, setRefresh } = useRefreshContext();
@@ -138,7 +138,7 @@ const Pantry = () => {
       .catch((error: any) => {
         console.error('ErrorPantry:', error);
       });
-  }, [scan, refresh]); //aca agregue la flag refresh
+  }, [refresh]); //aca agregue la flag refresh
 
   return (
     <View style={[styles.container,{backgroundColor: theme.background}]}>

@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View,FlatList,StyleSheet,Text,StatusBar,SectionList, useColorScheme } from 'react-native';
-import { useRefreshContext, useUserContext } from '../_layout';
+import { useUserContext } from '../_layout';
 import { Colors } from '@/constants/Colors';
+import { useRefreshContext } from './_layout';
 
 
 
@@ -10,7 +11,7 @@ const List = () => {
   const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
 
   const { user } = useUserContext();
-  const { refresh, setRefresh } = useRefreshContext();
+  const { refresh } = useRefreshContext();
   const ip = process.env.EXPO_PUBLIC_IP;
   const sectionListRef = useRef<SectionList<any>>(null);
   const [DATA, setDATA] = useState<any>([]);
@@ -23,14 +24,19 @@ const List = () => {
     });
   };
 
-  type ItemProps = {title: string, brand: string};
+  type ItemProps = {title: string, brand: string, quantityToBuy: number};
 
-  const Item = ({title, brand}: ItemProps) => (
+  const Item = ({title, brand, quantityToBuy}: ItemProps) => (
     <View style={[styles.item, {backgroundColor: theme.lightOrange,
       borderBottomColor: theme.darkOrange,
       borderLeftColor: theme.darkOrange, shadowColor:theme.shadowColor}]}>
-      <Text style={styles.title} numberOfLines={1}>{title}</Text>
-      <Text>{brand}</Text>
+      <View style={styles.item_container}>
+        <View>
+          <Text style={styles.title} numberOfLines={1}>{title}</Text>
+          <Text>{brand}</Text>
+        </View>
+        <Text style={styles.quantity}>{quantityToBuy}</Text>
+      </View>
     </View>
   );
 
@@ -43,11 +49,10 @@ const List = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        const DATA = data.map((item: { productId: number; name: string, brand: string }) => {
-          return { id: item.productId, title: item.name, brand: item.brand };
+        const DATA = data.map((item: { productId: number; name: string, brand: string, quantityToBuy: number }) => {
+          return { id: item.productId, title: item.name, brand: item.brand, quantityToBuy: item.quantityToBuy };
         });
         setDATA(DATA);
-        console.log('DATA:', DATA);
       })
       .catch((error: any) => {
         console.error('ErrorPantry:', error);
@@ -58,7 +63,7 @@ const List = () => {
     <View style={[styles.container, {backgroundColor: theme.background}]}>
       <FlatList
         data={DATA}
-        renderItem={({item}) => <Item title={item.title} brand={item.brand} />}
+        renderItem={({item}) => <Item title={item.title} brand={item.brand} quantityToBuy={item.quantityToBuy} />}
         keyExtractor={item => item.id}
         ListFooterComponent={<View style={{height: 50}} />}
         ListEmptyComponent={<Text style = {styles.textEmpty}>It is not necessary to go to the supermarket!</Text>}
@@ -83,6 +88,19 @@ const styles = StyleSheet.create({
     elevation: 5,
     shadowOffset: { width: 0, height: 2.5 },
   },
+  item_container: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  quantity: {
+    fontSize: 20,
+    padding: 10,
+    borderColor: 'black',
+    borderWidth: 2,
+    borderRadius: 10,
+  },
+
   title: {
     fontSize: 24,
   },

@@ -1,11 +1,11 @@
 import { StyleSheet, Text, View, Image, TextInput, Pressable, KeyboardAvoidingView, ScrollView, Platform } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { Colors } from '@/constants/Colors'
-import { router, useNavigationContainerRef } from 'expo-router'
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from 'expo-router'
 import { useUserContext } from './_layout';
 import Logbutton from '@/components/Logbutton';
 import { useColorScheme } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 const profile = () => {
 
@@ -13,6 +13,11 @@ const profile = () => {
   const [isIncorrect, setIsIncorrect] = useState(false)
   const [isOwner, setIsOwner] = useState(false)
   const { setUser } = useUserContext();
+
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
+  const togglePasswordVisibility = () => {
+    setSecureTextEntry(!secureTextEntry);
+  };
 
   const passwordInputRef = useRef<TextInput>(null);
 
@@ -97,16 +102,29 @@ const profile = () => {
               style={[isIncorrect? styles.inputIncorrect: styles.input, {color: theme.text}]}
               placeholderTextColor="#666"
             />
-            <TextInput 
-              ref={passwordInputRef}
-              placeholder='Password' 
-              value={password} 
-              onChangeText={setPassword}
-              style={[isIncorrect? styles.inputIncorrect: styles.input, {color: theme.text}]}
-              placeholderTextColor="#666"
-              onSubmitEditing={() => signInHandler(email,password)}
-              returnKeyType="done"
-            />
+            <View style={styles.password_conteiner}>
+              <TextInput 
+                ref={passwordInputRef}
+                secureTextEntry={secureTextEntry}
+                placeholder='Password' 
+                value={password} 
+                onChangeText={setPassword}
+                style={[isIncorrect? styles.inputIncorrect: styles.input, {color: theme.text}]}
+                placeholderTextColor="#666"
+                onSubmitEditing={() => signInHandler(email,password)}
+                returnKeyType="done"
+              />
+              <Pressable
+                  style={styles.icon}
+                  onPress={togglePasswordVisibility}
+                >
+                  <Ionicons
+                    name={secureTextEntry ? 'eye-off' : 'eye'}
+                    size={24}
+                    color="gray"
+                  />
+              </Pressable>
+            </View>
             <Logbutton title="Log In" onPress={() => signInHandler(email,password)} />
             <View style={styles.signUpContainer}>
               <Text style={[styles.subtitle,{color: theme.grey}]} >Don't have an account? </Text>
@@ -126,6 +144,7 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flex: 1,
     justifyContent: "center",
+    alignItems: "center",
     gap: 20,  
   },
   keyboardAvoidingView: {
@@ -133,6 +152,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    width:"80%",
     justifyContent: "center",
     alignItems: "center",
     gap: 20,  
@@ -166,7 +186,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input: {
-    width: '80%',
+    width: '100%',
     height: 50,
     borderBottomWidth: 1,
     borderColor: "#ccc",
@@ -175,7 +195,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   inputIncorrect: {
-    width: '80%',
+    width: '100%',
     height: 50,
     borderBottomWidth: 1,
     borderColor: "red",
@@ -192,5 +212,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 10,
+  },
+  password_conteiner: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  icon: {
+    position: 'absolute',
+    right: 10,
+    bottom: 30,
   },
 })

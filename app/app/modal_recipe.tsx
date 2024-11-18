@@ -1,6 +1,5 @@
-import { Link, router, useLocalSearchParams} from 'expo-router';
+import {useLocalSearchParams} from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
-import Animated from 'react-native-reanimated';
 
 export default function Modal() {
 

@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View, Image, TextInput, Pressable, ScrollView, KeyboardAvoidingView, Platform, useColorScheme } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { Colors } from '@/constants/Colors'
-import { useUserContext } from './_layout'
 import { router } from 'expo-router'
 import Logbutton from '@/components/Logbutton'
+import { Ionicons } from '@expo/vector-icons'
 
 
 const profile = () => {
@@ -12,6 +12,11 @@ const profile = () => {
   const colorScheme = useColorScheme();
   const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
   const [isIncorrect, setIsIncorrect] = useState(false)
+
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
+  const togglePasswordVisibility = () => {
+    setSecureTextEntry(!secureTextEntry);
+  };
 
 
   const signUpHandler = (nombre:string, apellido:string, correo:string, contrasena:string) => {
@@ -81,16 +86,29 @@ const profile = () => {
               style={[isIncorrect? styles.inputIncorrect: styles.input, {color: theme.text}]}
               placeholderTextColor="#666"
             />
-            <TextInput 
-              ref={contrasenaInputRef}
-              placeholder='Password' 
-              value={contrasena} 
-              onChangeText={setContrasena}
-              style={[isIncorrect? styles.inputIncorrect: styles.input, {color: theme.text}]}
-              placeholderTextColor="#666"
-              returnKeyType='done'
-              onSubmitEditing={() => signUpHandler(nombre, apellido, correo, contrasena)}
-            />
+            <View style={styles.password_conteiner}>
+              <TextInput 
+                secureTextEntry={secureTextEntry}
+                ref={contrasenaInputRef}
+                placeholder='Password' 
+                value={contrasena} 
+                onChangeText={setContrasena}
+                style={[isIncorrect? styles.inputIncorrect: styles.input, {color: theme.text}]}
+                placeholderTextColor="#666"
+                returnKeyType='done'
+                onSubmitEditing={() => signUpHandler(nombre, apellido, correo, contrasena)}
+              />
+              <Pressable
+                  style={styles.icon}
+                  onPress={togglePasswordVisibility}
+                >
+                  <Ionicons
+                    name={secureTextEntry ? 'eye-off' : 'eye'}
+                    size={24}
+                    color="gray"
+                  />
+              </Pressable>
+            </View>
             <Logbutton title="Sign Up" onPress={() => signUpHandler(nombre, apellido, correo, contrasena)} />
           </View>
         </ScrollView>
@@ -104,6 +122,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     margin: 10,
+    width: '80%',
     justifyContent: "center",
     alignItems: "center",
     gap: 20,  
@@ -112,6 +131,7 @@ const styles = StyleSheet.create({
     flex: 1,
     margin: 10,
     justifyContent: "center",
+    alignItems: "center",
     gap: 20,  
   },
   keyboardAvoidingView: {
@@ -137,7 +157,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input: {
-    width: '80%',
+    width: '100%',
     height: 50,
     borderBottomWidth: 1,
     borderColor: "#ccc",
@@ -146,13 +166,23 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   inputIncorrect: {
-    width: '80%',
+    width: '100%',
     height: 50,
     borderBottomWidth: 1,
     borderColor: "red",
     borderRadius: 8,
     paddingHorizontal: 10,
     marginBottom: 20,
-
+  },
+  password_conteiner: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  icon: {
+    position: 'absolute',
+    right: 10,
+    bottom: 30,
   },
 })

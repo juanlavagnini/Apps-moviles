@@ -1,7 +1,6 @@
-import { StyleSheet, Text, View, Image, TextInput, Pressable, useColorScheme } from 'react-native'
-import React, { useState } from 'react'
+import { StyleSheet, Text, View, Pressable, useColorScheme } from 'react-native'
+import React from 'react'
 import { Colors } from '@/constants/Colors'
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUserContext } from '@/app/_layout';
 import QRCode from 'react-native-qrcode-svg';
 import { router } from 'expo-router';

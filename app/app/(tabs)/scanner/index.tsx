@@ -1,10 +1,12 @@
-import { StyleSheet, Text, View, Pressable, TouchableOpacity, Button, Image, useColorScheme } from 'react-native'
+import { StyleSheet, Text, View, Pressable, Button, useColorScheme } from 'react-native'
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import React, { useEffect, useState } from 'react'
 import { router, useFocusEffect } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useScanContext } from '../../_layout';
 import { Colors } from '@/constants/Colors';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useScanContext } from './_layout';
+import { useRefreshContext } from '../_layout';
 
 const scanner = () => {
   const colorScheme = useColorScheme();
@@ -14,6 +16,7 @@ const scanner = () => {
   const [permission, requestPermission] = useCameraPermissions();
   //producto escaneado
   const {scan, setScan} = useScanContext();
+  const {refresh, setRefresh} = useRefreshContext();
 
   //Cuando apretamos la cruz de exit en el scanner, se desactiva la camara
   const [isCameraActive, setIsCameraActive] = useState<boolean>(true);
@@ -53,7 +56,7 @@ const scanner = () => {
 
   
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {isCameraActive && (<CameraView 
         style={styles.camera} 
         facing={facing} 
@@ -71,6 +74,7 @@ const scanner = () => {
           (<Pressable style={styles.closeButton} 
             onPress={() => {
               router.push({pathname: '/pantry'});
+              setRefresh(!refresh);
               setIsCameraActive(false);
               }} >
             <Ionicons name="close-circle" size={50} color="white" />
@@ -84,7 +88,7 @@ const scanner = () => {
       </CameraView>)}
      
           
-    </View>
+    </SafeAreaView>
   )
 }
 
@@ -97,6 +101,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     gap: 10,
+    backgroundColor: 'black',
   },
   message: {
     justifyContent: 'center',

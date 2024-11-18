@@ -1,9 +1,9 @@
 import { useUserContext } from '@/app/_layout';
 import Logbutton from '@/components/Logbutton';
-import { Colors } from '@/constants/Colors';
+import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, {useRef, useState} from 'react';
-import {Alert, Modal, StyleSheet, Text, Pressable, View, TextInput, useColorScheme} from 'react-native';
+import {Modal, StyleSheet, Pressable, View, TextInput, useColorScheme} from 'react-native';
 import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
 
 const modal_edit_profile = () => {
@@ -11,13 +11,17 @@ const modal_edit_profile = () => {
 
   const { user, setUser } = useUserContext();
 
-  const colorScheme = useColorScheme();
-  const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
+
   const [isIncorrect, setIsIncorrect] = useState(false)
   const [nombre, setNombre] = useState(user?.name)
   const [apellido, setApellido] = useState(user?.surname)
   const [correo, setCorreo] = useState(user?.email)
   const [contrasena, setContrasena] = useState(user?.password)
+
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
+  const togglePasswordVisibility = () => {
+    setSecureTextEntry(!secureTextEntry);
+  };
 
   const [isOwner, setIsOwner] = useState(false)
 
@@ -89,46 +93,59 @@ const modal_edit_profile = () => {
           }}>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-            <TextInput 
-              placeholder= {user?.name} 
-              value={nombre} 
-              onChangeText={setNombre}
-              returnKeyType="next"
-              onSubmitEditing={() => apellidoInputRef.current?.focus()}
-              style={[styles.input, {color: theme.background}]}
-              placeholderTextColor= "#666"
-            />
-            <TextInput 
-              ref={apellidoInputRef}
-              placeholder= {user?.surname}  
-              value={apellido} 
-              onChangeText={setApellido}
-              returnKeyType="next"
-              onSubmitEditing={() => correoInputRef.current?.focus()}
-              style={[styles.input, {color: theme.background}]}
-              placeholderTextColor="#666"
-            />
-            <TextInput 
-              ref={correoInputRef}
-              placeholder={user?.email}
-              value={correo} 
-              onChangeText={setCorreo}
-              returnKeyType="next"
-              onSubmitEditing={() => contrasenaInputRef.current?.focus()}
-              style={[styles.input, {color: theme.background}]}
-              placeholderTextColor="#666"
-            />
-            <TextInput 
-              ref={contrasenaInputRef}
-              placeholder='New Password'
-              value={contrasena} 
-              onChangeText={setContrasena}
-              style={[styles.input, {color: theme.background}]}
-              placeholderTextColor="#666"
-              returnKeyType='done'
-            />
-            <Logbutton onPress={() => { handleEdit();}} title={'Save'}>
-            </Logbutton>
+              <TextInput 
+                placeholder= {user?.name} 
+                value={nombre} 
+                onChangeText={setNombre}
+                returnKeyType="next"
+                onSubmitEditing={() => apellidoInputRef.current?.focus()}
+                style={[styles.input, {color: "black"}]}
+                placeholderTextColor= "#666"
+              />
+              <TextInput 
+                ref={apellidoInputRef}
+                placeholder= {user?.surname}  
+                value={apellido} 
+                onChangeText={setApellido}
+                returnKeyType="next"
+                onSubmitEditing={() => correoInputRef.current?.focus()}
+                style={[styles.input, {color: "black"}]}
+                placeholderTextColor="#666"
+              />
+              <TextInput 
+                ref={correoInputRef}
+                placeholder={user?.email}
+                value={correo} 
+                onChangeText={setCorreo}
+                returnKeyType="next"
+                onSubmitEditing={() => contrasenaInputRef.current?.focus()}
+                style={[styles.input, {color: "black"}]}
+                placeholderTextColor="#666"
+              />
+              <View style={styles.password_conteiner}>
+                <TextInput 
+                  ref={contrasenaInputRef}
+                  secureTextEntry={secureTextEntry}
+                  placeholder='New Password'
+                  value={contrasena} 
+                  onChangeText={setContrasena}
+                  style={[styles.input, {color: "black"}]}
+                  placeholderTextColor="#666"
+                  returnKeyType='done'
+                />
+                <Pressable
+                  style={styles.icon}
+                  onPress={togglePasswordVisibility}
+                >
+                  <Ionicons
+                    name={secureTextEntry ? 'eye-off' : 'eye'}
+                    size={24}
+                    color="gray"
+                  />
+                </Pressable>
+              </View>
+              <Logbutton onPress={() => { handleEdit();}} title={'Save'}>
+              </Logbutton>
 
             </View>
           </View>
@@ -181,23 +198,33 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   input: {
-    width: '80%',
+    width: '100%',
     height: 50,
     borderBottomWidth: 1,
     borderColor: "#ccc",
     borderRadius: 8,
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
     marginBottom: 20,
   },
   inputIncorrect: {
-    width: '80%',
+    width: '100%',
     height: 50,
     borderBottomWidth: 1,
     borderColor: "red",
     borderRadius: 8,
     paddingHorizontal: 10,
     marginBottom: 20,
-
+  },
+  password_conteiner: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  icon: {
+    position: 'absolute',
+    right: 10,
+    bottom: 30,
   },
 });
 

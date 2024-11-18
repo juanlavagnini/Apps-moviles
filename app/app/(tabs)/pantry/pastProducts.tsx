@@ -1,9 +1,9 @@
 import { Pressable, StyleSheet, Text, View, FlatList, useColorScheme, StatusBar } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { useRefreshContext, useScanContext, useUserContext } from '@/app/_layout';
-import { router } from 'expo-router';
+import { useUserContext } from '@/app/_layout';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
+import { useRefreshContext } from '../_layout';
 
 
 const pastProducts = () => {
@@ -11,7 +11,6 @@ const pastProducts = () => {
   const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
 
   const { user } = useUserContext();
-  const { scan } = useScanContext();
   const ip = process.env.EXPO_PUBLIC_IP;
   const [DATA, setDATA] = useState<any>([]);
   const { refresh, setRefresh } = useRefreshContext();
@@ -63,7 +62,7 @@ const pastProducts = () => {
         .catch((error: any) => {
           console.error('ErrorPantry:', error);
         });
-    }, [scan, refresh]);
+    }, [refresh]);
   
   return (
     <View style={[styles.container, {backgroundColor: theme.background,}]}>

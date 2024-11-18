@@ -9,7 +9,6 @@ import {
   Text,
   TouchableOpacity,
   View,
-  SectionListData,
   useColorScheme
 } from 'react-native';
 
