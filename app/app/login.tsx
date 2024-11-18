@@ -1,11 +1,12 @@
 import { StyleSheet, Text, View, Image, TextInput, Pressable, KeyboardAvoidingView, ScrollView, Platform } from 'react-native'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Colors } from '@/constants/Colors'
 import { router } from 'expo-router'
 import { useUserContext } from './_layout';
 import Logbutton from '@/components/Logbutton';
 import { useColorScheme } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const profile = () => {
 
@@ -24,63 +25,75 @@ const profile = () => {
   const colorScheme = useColorScheme();
   const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
 
-  const signInHandler = (email: string, password: string) => {
-    console.log(`http://${ip}:3000/user/login`)
-    fetch(`http://${ip}:3000/user/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password
-      }),
-    })
-    //si es true, redirigir a la pagina de inicio, false cambio el color de los recuadros
-    .then(response => {
+
+  useEffect(() => {
+    const checkToken = async () => {
+      const token = await AsyncStorage.getItem('userToken');
+      if (token) {
+        // Aquí puedes validar el token si tienes un endpoint de verificación
+        fetch(`http://${ip}:3000/user/validatetoken`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+      })
+      .then((response: Response) => response.json())
+      .then((data: any) => {
+        setUser({
+          id: data.id,
+          email: data.email,
+          name: data.name,
+          surname: data.surname,
+          houseId: data.ownedHouse.id,
+          owner: data.ownedHouse,
+        });
+  
+        router.push({ pathname: '/(tabs)' }); // Redirigir al inicio
+      });
+      };
+    }
+    checkToken();
+  }, []);
+ 
+
+  const signInHandler = async (email: string, password: string) => {
+    console.log(`http://${ip}:3000/user/login`);
+    try {
+      const response = await fetch(`http://${ip}:3000/user/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
       if (!response.ok) {
-        setIsIncorrect(true); // Manejar error si la respuesta no es OK
-        return null; // Asegurarse de no procesar más
+        setIsIncorrect(true); // Mostrar error si las credenciales son incorrectas
+        return;
       }
-      //return response.json(); // Convertir a JSON si es exitoso
-      const contentType = response.headers.get('content-type');
-        if (contentType && contentType.includes('application/json')) {
-          return response.json(); // Convertir a JSON si es exitoso
-        } else {
-          throw new Error('Received non-JSON response');
-        }
-    })
-    .then(async data => {
-      if (data) {
-        console.log(data)
-        const id = data.id;
-        const email = data.email;
-        const name = data.name;
-        const surname = data.surname;
-        const password = data.password;
-        const houseId = data.houseId;
-        const owner = data.ownedHouse;
-        if (data.ownedHouse==null){
-          setIsOwner(false);
-        }
-        else{
-          setIsOwner(true);
-        }
-        try {
-          setUser({id, email, name, surname, password, houseId, owner});
-        }
-        catch (error) {
-          console.error('ErrorLogin:', error);
-        }
-        router.push({ pathname: "/(tabs)"
-         });
-      }
-    })
-    
-    .catch(error => {
-      console.error('Error:', error); // Manejar errores de red
-    });
-  }
+
+      const data = await response.json();
+
+      // Guardar el token JWT en AsyncStorage
+      await AsyncStorage.setItem('userToken', data.token);
+
+      // Guardar la información del usuario en el contexto
+      setUser({
+        id: data.user.id,
+        email: data.user.email,
+        name: data.user.name,
+        surname: data.user.surname,
+        houseId: data.user.ownedHouse.id,
+        owner: data.user.ownedHouse,
+      });
+
+      router.push({ pathname: '/(tabs)' }); // Redirigir al inicio
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
  

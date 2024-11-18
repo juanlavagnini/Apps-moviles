@@ -32,7 +32,6 @@ interface User {
   email: string;
   name: string;
   surname: string;
-  password: string;
   houseId: number;
   owner: boolean;
 }
