@@ -1,8 +1,6 @@
-import { Stack, useNavigation } from "expo-router";
-import { Button } from "react-native";
+import { Stack } from "expo-router";
 import { createContext, ReactNode, useContext, useState } from "react";
 import { useColorScheme } from 'react-native';
-import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { Colors } from "@/constants/Colors";
 
 //ColorSchemeContext

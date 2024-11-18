@@ -16,7 +16,7 @@ const modal_edit_profile = () => {
   const [nombre, setNombre] = useState(user?.name)
   const [apellido, setApellido] = useState(user?.surname)
   const [correo, setCorreo] = useState(user?.email)
-  const [contrasena, setContrasena] = useState(user?.password)
+  const [contrasena, setContrasena] = useState("")
 
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const togglePasswordVisibility = () => {
@@ -60,7 +60,6 @@ const modal_edit_profile = () => {
         const email = data.email;
         const name = data.name;
         const surname = data.surname;
-        const password = data.password;
         const houseId = data.houseId;
         const owner = data.ownedHouse;
         if (data.ownedHouse==null){
@@ -70,7 +69,7 @@ const modal_edit_profile = () => {
           setIsOwner(true);
         }
         try {
-          setUser({id, email, name, surname, password, houseId, owner});
+          setUser({id, email, name, surname, houseId, owner});
         }
         catch (error) {
           console.error('ErrorLogin:', error);

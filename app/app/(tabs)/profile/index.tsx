@@ -6,6 +6,7 @@ import QRCode from 'react-native-qrcode-svg';
 import { router } from 'expo-router';
 import Logbutton from '@/components/Logbutton';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const index = () => {
@@ -15,8 +16,9 @@ const index = () => {
   const { user, setUser } = useUserContext();
 
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setUser(null);
+    await AsyncStorage.removeItem('userToken');
     router.navigate({ pathname: '/login' });
   }
 
