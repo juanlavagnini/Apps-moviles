@@ -3,7 +3,7 @@ import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import React, { useEffect, useState } from 'react'
 import { router, useFocusEffect } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useScanContext } from '../_layout';
+import { useScanContext } from '../../_layout';
 import { Colors } from '@/constants/Colors';
 
 const scanner = () => {
@@ -61,7 +61,7 @@ const scanner = () => {
               setScan(true);
               if (scan) return;
               router.push({
-                pathname: '/modal_scanner_product',
+                pathname: '/scanner/modal_scanner_product',
                 params: { product: result.data },
               });
             }} 

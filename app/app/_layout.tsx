@@ -104,15 +104,6 @@ export default function RootLayout() {
             <Stack screenOptions={{contentStyle: {backgroundColor: theme.background}}}>
               <Stack.Screen name="index" options={{headerShown: false}}/>
               <Stack.Screen name="(tabs)" options={{headerShown: false , gestureEnabled: false}}/>
-
-              <Stack.Screen
-                name="modal_scanner_product"
-                options={{
-                  title: "add_product",
-                  presentation: 'transparentModal',
-                  headerShown: false,
-                }}
-              />
               <Stack.Screen name="login" options={{headerShown: false, gestureEnabled: false}}/>
               <Stack.Screen name="signup" options={{gestureEnabled: false, headerTransparent: true, headerTintColor: colorScheme === "dark" ? 'white' : 'black'}}/>
             </Stack>
