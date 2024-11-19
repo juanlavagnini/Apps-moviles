@@ -27,7 +27,7 @@ const Pantry = () => {
   const { refresh, setRefresh } = useRefreshContext();
   const [isSwiping, setIsSwiping] = useState(false);
 
-  const handleSwipeLeft = (id: string, swipeableRef: any) => {
+  const handleSwipeRight = (id: string, swipeableRef: any) => {
     console.log('Delete product', id);
     fetch(`http://${ip}:3000/houseProduct/deleteProduct`, {
       method: 'POST',
@@ -44,7 +44,7 @@ const Pantry = () => {
     });
   };
 
-  const handleSwipeRight = (id: string, swipeableRef: any) => {
+  const handleSwipeLeft = (id: string, swipeableRef: any) => {
     fetch(`http://${ip}:3000/houseProduct/addProduct`, {
       method: 'POST',
       headers: {
@@ -65,21 +65,27 @@ const Pantry = () => {
 
     return (
       <Swipeable
+        containerStyle={styles.swipeable}
         ref={swipeableRef} // Asigna la referencia
         renderRightActions={() => (
           <Pressable onPress={() => handleSwipeRight(id, swipeableRef)}>
             <View style={styles.actionContainerRight}>
-              <Text style={styles.actionText}>Delete</Text>
+              <Ionicons name="trash" size={30} color="white" />
             </View>
           </Pressable>
         )}
         renderLeftActions={() => (
           <Pressable onPress={() => handleSwipeLeft(id, swipeableRef)}>
             <View style={styles.actionContainerLeft}>
-              <Text style={styles.actionText}>Add</Text>
+              <Ionicons name="add" size={30} color="white" />
             </View>
           </Pressable>
         )}
+        leftThreshold={10}
+        rightThreshold={10}
+        overshootLeft={false}
+        overshootRight={false}
+      
       >
         <View style={[styles.item, { backgroundColor: theme.lightOrange, flexDirection:"row", justifyContent: "space-between"}]}>
           <View>
@@ -127,6 +133,7 @@ const Pantry = () => {
             <Item title={item.title} quantity={item.quantity} id={item.id} />
           )}
           keyExtractor={(item) => item.id}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
           ListFooterComponent={
             <View>
               <Pressable
@@ -154,8 +161,8 @@ const styles = StyleSheet.create({
   item: {
     borderRadius: 10,
     padding: 10,
-    marginVertical: 8,
-    marginHorizontal: 16,
+    //marginHorizontal: 16,
+    width: '100%',
     flex: 1,
     shadowOpacity: 0.5,
     shadowRadius: 4,
@@ -177,39 +184,41 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   rightAction: { width: 50, height: 50, backgroundColor: 'purple' },
-  separator: {
-    width: '100%',
-    borderTopWidth: 1,
-  },
+
   swipeable: {
-    height: 50,
-    backgroundColor: 'papayawhip',
-    alignItems: 'center',
+    marginHorizontal:16,
+    height: 'auto',
+    width: 'auto',
   },
   actionContainerRight: {
-    borderRadius: 10,
-    padding: 10,
-    marginVertical: 8,
-    marginHorizontal: 16,
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10,
+    padding: 15,
     backgroundColor: "red", 
     justifyContent: 'center', 
-    alignItems: 'center', 
-    width: 75, 
-    height: '100%' },
+    alignItems: 'center',
+    height: '100%',
+    width: '100%',
+  },
+
   actionContainerLeft: {
-    borderRadius: 10,
-    padding: 10,
-    marginVertical: 10,
-    marginHorizontal: 16,
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10,
+    padding: 15,
     backgroundColor: "green", 
     justifyContent: 'center', 
     alignItems: 'center',
     height: '100%',
     width: '100%',
    },
+
   actionText: { 
     color: 'white',
     fontWeight: 'bold'
+  },
+  separator: {
+    width: '100%',
+    height: 10,
   },
 });
 
