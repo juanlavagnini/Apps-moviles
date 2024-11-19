@@ -12,6 +12,7 @@ const profile = () => {
   const colorScheme = useColorScheme();
   const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
   const [isIncorrect, setIsIncorrect] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('');
 
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const togglePasswordVisibility = () => {
@@ -33,10 +34,18 @@ const profile = () => {
         password: contrasena
       }),
     })
-    .then(response => {
+    .then(async response => {
       if (response.ok) {
         router.push({ pathname: "/login" });
-      }
+        setErrorMessage('');
+      }else if (response.status === 400) {
+          const data = await response.json();
+          const error = data.errors?.[0]?.message || 'An error occurred';
+          setErrorMessage(error); // Actualiza el mensaje de error
+          setIsIncorrect(true); // Marca los campos como incorrectos
+        } else {
+          setErrorMessage('An unexpected error occurred.');
+        }
     })
   }
   const [nombre, setNombre] = useState('')
@@ -57,6 +66,9 @@ const profile = () => {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={styles.container}>
             <Text style={[styles.title, {color: theme.grey}]}>Create an account</Text>
+            {errorMessage ? ( // Mostrar el mensaje de error si existe
+            <Text style={styles.errorMessage}>{errorMessage}</Text>
+          ) : null}
             <TextInput 
               placeholder='Name' 
               value={nombre} 
@@ -184,5 +196,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 10,
     bottom: 30,
+  },
+  errorMessage: {
+    color: "red",
+    fontSize: 14,
+    marginBottom: 10,
+    textAlign: "center",
   },
 })
