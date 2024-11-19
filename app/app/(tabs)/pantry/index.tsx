@@ -17,6 +17,7 @@ const Pantry = () => {
   const ip = process.env.EXPO_PUBLIC_IP;
   const [DATA, setDATA] = useState<any>([]);
   const { refresh, setRefresh } = useRefreshContext();
+  const [isSwiping, setIsSwiping] = useState(false);
 
   //Quiero agregar gestos de swipe para eliminar (izquierda) o agregar (derecha) productos
   //https://reactnative.dev/docs/flatlist#onswipableleft
@@ -53,7 +54,6 @@ const Pantry = () => {
   const Item = ({ id, title, quantity }: { id: string; title: string; quantity: number }) => {
     const pan = React.useRef(new Animated.ValueXY()).current;
     const [gestureLocked, setGestureLocked] = React.useState<'swipe' | 'scroll' | null>(null);
-  
     const panResponder = PanResponder.create({
       onStartShouldSetPanResponder: (_, gestureState) => {
         return Math.abs(gestureState.dx) > 2 || Math.abs(gestureState.dy) > 2;
@@ -64,9 +64,11 @@ const Pantry = () => {
   
         if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 5) {
           setGestureLocked('swipe'); // Bloquear en swipe.
+          setIsSwiping(true);
           return true;
         } else if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 5) {
           setGestureLocked('scroll'); // Bloquear en scroll.
+          setIsSwiping(false);
           return false; // Dejar el control al scroll.
         }
         return false;
@@ -95,12 +97,14 @@ const Pantry = () => {
           Animated.spring(pan, { toValue: { x: 0, y: 0 }, useNativeDriver: false }).start();
         }
         setGestureLocked(null); // Liberar el bloqueo.
+        setIsSwiping(false);
       },
       onPanResponderTerminate: () => {
         // Reseteo si el gesto es cancelado.
         Animated.spring(pan, { toValue: { x: 0, y: 0 }, useNativeDriver: false }).start();
         setGestureLocked(null);
         console.log('onPanResponderTerminate');
+        setIsSwiping(false);
       },
     });
     return (
@@ -147,7 +151,7 @@ const Pantry = () => {
         data={DATA}
         renderItem={({item}) => <Item title={item.title} quantity={item.quantity} id={item.id}/>}
         keyExtractor={item => item.id}
-
+        scrollEnabled={!isSwiping}
         ListFooterComponent={
         <View>
           <Pressable style={styles.pastproducts} onPress={()=> router.push("/pantry/pastProducts")}>
