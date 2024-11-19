@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
       borderRadius: 25,
       shadowRadius: 10,
       shadowOpacity: 0.3,
+      elevation: 5,
     }
 })
 

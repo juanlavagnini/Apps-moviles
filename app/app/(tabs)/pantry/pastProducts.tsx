@@ -80,7 +80,8 @@ export default pastProducts
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    //marginTop: StatusBar.currentHeight || 0,
+    paddingTop: StatusBar.currentHeight,
   },
   item: {
     borderRadius: 10,

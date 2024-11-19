@@ -89,7 +89,7 @@ const Pantry = () => {
       >
         <View style={[styles.item, { backgroundColor: theme.lightOrange, flexDirection:"row", justifyContent: "space-between"}]}>
           <View>
-            <Text style={[styles.title, { color: 'black' }]}>{title}</Text>
+            <Text style={[styles.title, { color: 'black' }]} numberOfLines={1} ellipsizeMode='tail'>{title}</Text>
             <Text style={{ color: 'black' }}>{quantity}</Text>
           </View>
           <Pressable style={[styles.editButton,{backgroundColor: theme.lightOrange,
@@ -155,8 +155,8 @@ const Pantry = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
-    
+    //marginTop: StatusBar.currentHeight || 0,
+    paddingTop: StatusBar.currentHeight,
   },
   item: {
     borderRadius: 10,
