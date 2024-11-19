@@ -66,17 +66,17 @@ const Pantry = () => {
     return (
       <Swipeable
         ref={swipeableRef} // Asigna la referencia
-        renderLeftActions={() => (
+        renderRightActions={() => (
           <Pressable onPress={() => handleSwipeRight(id, swipeableRef)}>
             <View style={styles.actionContainerRight}>
-              <Text style={styles.actionText}>Add</Text>
+              <Text style={styles.actionText}>Delete</Text>
             </View>
           </Pressable>
         )}
-        renderRightActions={() => (
+        renderLeftActions={() => (
           <Pressable onPress={() => handleSwipeLeft(id, swipeableRef)}>
             <View style={styles.actionContainerLeft}>
-              <Text style={styles.actionText}>Delete</Text>
+              <Text style={styles.actionText}>Add</Text>
             </View>
           </Pressable>
         )}
@@ -167,7 +167,6 @@ const styles = StyleSheet.create({
     paddingRight: 40,
   },
   editButton: {
-    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 10,
@@ -187,15 +186,31 @@ const styles = StyleSheet.create({
     backgroundColor: 'papayawhip',
     alignItems: 'center',
   },
-  actionContainerRight: {borderRadius: 10,
+  actionContainerRight: {
+    borderRadius: 10,
     padding: 10,
     marginVertical: 8,
-    marginHorizontal: 16,backgroundColor: "red", justifyContent: 'center', alignItems: 'center', width: 75, height: '100%' },
-  actionContainerLeft: {borderRadius: 10,
+    marginHorizontal: 16,
+    backgroundColor: "red", 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    width: 75, 
+    height: '100%' },
+  actionContainerLeft: {
+    borderRadius: 10,
     padding: 10,
-    marginVertical: 8,
-    marginHorizontal: 16,backgroundColor: "green", justifyContent: 'center', alignItems: 'center', width: 75, height: '100%' },
-  actionText: { color: 'white', fontWeight: 'bold' },
+    marginVertical: 10,
+    marginHorizontal: 16,
+    backgroundColor: "green", 
+    justifyContent: 'center', 
+    alignItems: 'center',
+    height: '100%',
+    width: '100%',
+   },
+  actionText: { 
+    color: 'white',
+    fontWeight: 'bold'
+  },
 });
 
 export default Pantry;

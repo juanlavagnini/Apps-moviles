@@ -58,7 +58,6 @@ const profile = () => {
  
 
   const signInHandler = async (email: string, password: string) => {
-    console.log(`http://${ip}:3000/user/login`);
     try {
       const response = await fetch(`http://${ip}:3000/user/login`, {
         method: 'POST',
@@ -68,12 +67,12 @@ const profile = () => {
         body: JSON.stringify({ email, password }),
       });
 
-      if (!response.ok) {
+      const data = await response.json();
+      console.log(data);
+      if (!data.user){
         setIsIncorrect(true); // Mostrar error si las credenciales son incorrectas
         return;
       }
-
-      const data = await response.json();
 
       // Guardar el token JWT en AsyncStorage
       await AsyncStorage.setItem('userToken', data.token);
