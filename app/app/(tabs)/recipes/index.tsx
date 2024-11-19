@@ -151,7 +151,7 @@ const Recipes = () => {
         renderItem={({ item }) => (
           <View style={[styles.item, {backgroundColor: theme.lightOrange}]}>
             <Link href={{
-              pathname: '/modal_recipe',
+              pathname: '/recipes/modal_recipe',
               params: { name: item  },
             }}
             style={styles.title}>{item}</Link>
