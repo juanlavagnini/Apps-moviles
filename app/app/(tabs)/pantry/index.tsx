@@ -177,6 +177,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 10,
+    position: 'absolute',
+    right: 0,
+    borderRadius: 10,
+    
   },
   pastproducts: {
     padding: 10,
