@@ -6,7 +6,7 @@ import { useUserContext } from './_layout';
 import Logbutton from '@/components/Logbutton';
 import { useColorScheme } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 
 const profile = () => {
 
@@ -28,7 +28,7 @@ const profile = () => {
 
   useEffect(() => {
     const checkToken = async () => {
-      const token = await AsyncStorage.getItem('userToken');
+      const token = await SecureStore.getItem('userToken');
       if (token) {
         // Aquí puedes validar el token si tienes un endpoint de verificación
         fetch(`http://${ip}:3000/user/validatetoken`, {
@@ -75,7 +75,7 @@ const profile = () => {
       }
 
       // Guardar el token JWT en AsyncStorage
-      await AsyncStorage.setItem('userToken', data.token);
+      await SecureStore.setItem('userToken', data.token);
 
       // Guardar la información del usuario en el contexto
       setUser({
