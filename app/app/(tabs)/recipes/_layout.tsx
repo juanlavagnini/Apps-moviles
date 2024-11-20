@@ -7,9 +7,8 @@ export default function RootLayout() {
   const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
   return (
     <Stack>
-      <Stack.Screen name="index" options={{ headerShown: true,headerStyle: {backgroundColor: theme.background}, headerTintColor: theme.grey, title: 'Profile'}}/>
-      <Stack.Screen name="user" />
-      <Stack.Screen name="modal_edit_profile" options={{
+      <Stack.Screen name="index" options={{ headerShown: false,headerStyle: {backgroundColor: theme.background}, headerTintColor: theme.grey}}/>
+      <Stack.Screen name="modal_recipe" options={{
                   presentation: 'transparentModal',
                   headerShown: false,
                 }}/>

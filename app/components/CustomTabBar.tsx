@@ -7,8 +7,8 @@ import { Colors } from '@/constants/Colors';
 
 
 const CustomTabBar = ({ state, descriptors, navigation } : BottomTabBarProps) => {
-
-  const isDarkMode = useColorScheme() === 'dark' ? true : false;
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
   //Use esta funcion para detectar si el dispositivo esta en modo oscuro
   //devuelve "dark" si esta en modo oscuro y "light" si esta en modo claro
   //Lo trasnforme a un booleano para que sea mas facil de usar
@@ -16,7 +16,7 @@ const CustomTabBar = ({ state, descriptors, navigation } : BottomTabBarProps) =>
     return null;
   }
   return (
-    <View style={styles.tabbar}>
+    <View style={[styles.tabbar, {backgroundColor: theme.background, shadowColor: theme.shadowColor}]}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const label =
@@ -77,9 +77,7 @@ const CustomTabBar = ({ state, descriptors, navigation } : BottomTabBarProps) =>
             onLongPress={onLongPress}
             isFocused={isFocused}
             routeName={route.name}
-            color={isFocused ? 
-              (isDarkMode ? Colors.dark.tabIconSelected : Colors.light.tabIconSelected) : 
-              (isDarkMode ? Colors.dark.tabIconDefault : Colors.light.tabIconDefault)}
+            color={isFocused ? theme.tabIconSelected : theme.tabIconDefault}
             label={label}
           />
         );
@@ -96,13 +94,11 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      backgroundColor: 'white',
       marginHorizontal: 'auto',
       borderRadius: 25,
-      shadowColor: 'black',
-      shadowOffset: {width: 0, height: 10},
       shadowRadius: 10,
-      shadowOpacity: 0.1,
+      shadowOpacity: 0.3,
+      elevation: 5,
     }
 })
 

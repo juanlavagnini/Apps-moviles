@@ -1,6 +1,8 @@
 import { GestureResponderEvent, Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { TabBarIcon } from './navigation/TabBarIcon'
+import { Ionicons } from '@expo/vector-icons'
+import { tintColor, Colors } from '@/constants/Colors'
 
 const TabBarButtom = ({onPress, onLongPress, isFocused, routeName, color, label}: {onPress: (event: GestureResponderEvent) => void, onLongPress: (event: GestureResponderEvent) => void, isFocused: boolean, routeName: string, color: string, label:any}) => {  
     return (
@@ -9,10 +11,7 @@ const TabBarButtom = ({onPress, onLongPress, isFocused, routeName, color, label}
         onLongPress={onLongPress}
         style={styles.tabBarIcon}
         >
-        <TabBarIcon name="scan" color={color} />
-        <Text style={{ color: color}}>
-            {label}
-        </Text>
+        <Ionicons name={'barcode-outline'} size={50} color={color} />
     </Pressable>
   )
 }
@@ -25,7 +24,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         gap: 5,
-        backgroundColor: '#673ab7',
+        backgroundColor: tintColor,
         padding: 5,  //20
         paddingVertical: 17,  //30
         borderRadius: 100,  //20

@@ -1,25 +1,26 @@
-import { Stack, useNavigation } from "expo-router";
-import { Button } from "react-native";
+import { Stack } from "expo-router";
 import { createContext, ReactNode, useContext, useState } from "react";
+import { useColorScheme } from 'react-native';
+import { Colors } from "@/constants/Colors";
 
-export const ScanContext = createContext({
-  setScan : (scan: boolean) => {},
-  scan: false
+//ColorSchemeContext
+export const ColorSchemeContext = createContext({
+  colorScheme: 'light',
+  setColorScheme: (colorScheme: 'light' | 'dark') => {}
 });
 
-export const ScanContexProvider = ({children}: {children: ReactNode}) => {
-  const [scan, setScan] = useState(false);
+export const ColorSchemeContextProvider = ({children}: {children: ReactNode}) => {
+  const [colorScheme, setColorScheme] = useState<'light' | 'dark'>('light');
   return (
-    <ScanContext.Provider value={{scan, setScan}}>
+    <ColorSchemeContext.Provider value={{colorScheme, setColorScheme}}>
       {children}
-    </ScanContext.Provider>
+    </ColorSchemeContext.Provider>
   );
 }
 
-export const useScanContext = () => {
-  return useContext(ScanContext);
+export const useColorSchemeContext = () => {
+  return useContext(ColorSchemeContext);
 }
-
 
 //UserContext
 
@@ -27,6 +28,8 @@ export const useScanContext = () => {
 interface User {
   id: number;
   email: string;
+  name: string;
+  surname: string;
   houseId: number;
   owner: boolean;
 }
@@ -53,42 +56,16 @@ export const useUserContext = () => {
 }
 
 export default function RootLayout() {
-  const navigation = useNavigation();
-  
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
   return (
     <UserContextProvider>
-      <ScanContexProvider>
-          <Stack>
-            <Stack.Screen name="index" options={{headerShown: false}}/>
-            <Stack.Screen name="(tabs)" options={{headerShown: false , gestureEnabled: false}}/>
-            <Stack.Screen
-              name="modal_recipe"
-              options={{
-                title: "Recipe",
-                presentation: 'modal', //"transparentModal"
-                //animation: "none",
-                //headerShown: false,
-                headerLeft: () => (
-                  <Button
-                    onPress={() => navigation.goBack()}
-                    title="Close"
-                    color="#000"
-                  />
-                ),
-              }}
-            />
-            <Stack.Screen
-              name="modal_scanner_product"
-              options={{
-                title: "add_product",
-                presentation: 'transparentModal',
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen name="login" options={{headerShown: false, gestureEnabled: false}}/>
-            <Stack.Screen name="signup" options={{gestureEnabled: false}}/>
-          </Stack>
-      </ScanContexProvider>
+      <Stack screenOptions={{contentStyle: {backgroundColor: theme.background}}}>
+        <Stack.Screen name="index" options={{headerShown: false}}/>
+        <Stack.Screen name="(tabs)" options={{headerShown: false , gestureEnabled: false}}/>
+        <Stack.Screen name="login" options={{headerShown: false, gestureEnabled: false}}/>
+        <Stack.Screen name="signup" options={{headerStyle: {backgroundColor: theme.background},headerTintColor: colorScheme === "dark" ? 'white' : 'black'}}/>
+      </Stack>
     </UserContextProvider>
   );
 }
