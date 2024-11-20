@@ -45,7 +45,7 @@ const profile = () => {
           email: data.email,
           name: data.name,
           surname: data.surname,
-          houseId: data.ownedHouse.id,
+          houseId: data.houseId,
           owner: data.ownedHouse,
         });
   
