@@ -3,7 +3,7 @@ import Logbutton from '@/components/Logbutton';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, {useRef, useState} from 'react';
-import {Modal, StyleSheet, Pressable, View, TextInput, useColorScheme} from 'react-native';
+import {Modal, StyleSheet, Pressable, View, TextInput} from 'react-native';
 import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
 
 const modal_edit_profile = () => {

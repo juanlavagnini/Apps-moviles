@@ -2,7 +2,6 @@ import { StyleSheet, Text, View, Pressable, useColorScheme } from 'react-native'
 import React from 'react'
 import { Colors } from '@/constants/Colors'
 import { useUserContext } from '@/app/_layout';
-import QRCode from 'react-native-qrcode-svg';
 import { router } from 'expo-router';
 import Logbutton from '@/components/Logbutton';
 import { Ionicons } from '@expo/vector-icons';
@@ -32,6 +31,7 @@ const index = () => {
           user?.owner ? <QRCode value={user?.houseId.toString()} size={200} /> : 
                         <Pressable onPress={() => {}}><Text>Join another house</Text></Pressable>
       }*/
+
       <View style={[styles.container, {backgroundColor: theme.background}]}>
           <View>
             <Ionicons name="add" size={130} style={[styles.avatar, {backgroundColor: theme.grey}]} />
@@ -43,6 +43,16 @@ const index = () => {
           <Text style={{fontSize: 30,color: theme.grey}}>Hi, {user?.name}!</Text>
           <Text style={{color: theme.grey}}>Your House ID is: {user?.houseId}</Text>
           <Text style={{color: theme.grey}}>Owner: {user?.owner ? 'Yes' : 'No'}</Text>
+          {
+            user?.owner ? (
+              <View>
+                <Logbutton onPress={() => router.push('/profile/invite_qr')} title="Invite members"/>
+                <Logbutton onPress={() => router.push('/profile/join_house')} title="Join another house" />
+              </View>
+            ) : (
+              <Logbutton onPress={() => router.push('/profile/join_house')} title="Leave house" />
+            )
+          }
           
           <Logbutton onPress={handleLogout} title="Logout" />
       </View>
@@ -53,6 +63,7 @@ export default index
 
 const styles = StyleSheet.create({
   container: {
+    width: '100%',
     flex: 1,
     padding: 10,
     alignItems: "center",
