@@ -12,7 +12,12 @@ const profile = () => {
   const colorScheme = useColorScheme();
   const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
   const [isIncorrect, setIsIncorrect] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessages, setErrorMessages] = useState({
+    nombre: '',
+    apellido: '',
+    correo: '',
+    contrasena: '',
+  });
 
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const togglePasswordVisibility = () => {
@@ -37,14 +42,38 @@ const profile = () => {
     .then(async response => {
       if (response.ok) {
         router.push({ pathname: "/login" });
-        setErrorMessage('');
+        setErrorMessages({
+          nombre: '',
+          apellido: '',
+          correo: '',
+          contrasena: '',
+        });
       }else if (response.status === 400) {
           const data = await response.json();
-          const error = data.errors?.[0]?.message || 'An error occurred';
-          setErrorMessage(error); // Actualiza el mensaje de error
-          setIsIncorrect(true); // Marca los campos como incorrectos
+          const errors = data.errors || [];
+        const newErrorMessages = {
+          nombre: '',
+          apellido: '',
+          correo: '',
+          contrasena: '',
+        };
+
+        // Asignamos el error específico a cada campo
+        errors.forEach((e: { field: string; message: string }) => {
+          if (e.field === 'name') newErrorMessages.nombre = e.message;
+          if (e.field === 'surname') newErrorMessages.apellido = e.message;
+          if (e.field === 'email') newErrorMessages.correo = e.message;
+          if (e.field === 'password') newErrorMessages.contrasena = e.message;
+        });
+        setErrorMessages(newErrorMessages);
+        setIsIncorrect(true);
         } else {
-          setErrorMessage('An unexpected error occurred.');
+          setErrorMessages({
+            nombre: 'An unexpected error occurred.',
+            apellido: '',
+            correo: '',
+            contrasena: '',
+          });
         }
     })
   }
@@ -66,16 +95,14 @@ const profile = () => {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={styles.container}>
             <Text style={[styles.title, {color: theme.grey}]}>Create an account</Text>
-            {errorMessage ? ( // Mostrar el mensaje de error si existe
-            <Text style={styles.errorMessage}>{errorMessage}</Text>
-          ) : null}
+            {Object.values(errorMessages).some((msg) => msg) && <Text style={styles.errorMessage}>{Object.values(errorMessages).join('\n')}</Text>}
             <TextInput 
               placeholder='Name' 
               value={nombre} 
               onChangeText={setNombre}
               returnKeyType="next"
               onSubmitEditing={() => apellidoInputRef.current?.focus()}
-              style={[isIncorrect? styles.inputIncorrect: styles.input, {color: theme.text}]}
+              style={[errorMessages.nombre ? styles.inputIncorrect : styles.input, { color: theme.text }]}
               placeholderTextColor="#666"
             />
             <TextInput 
@@ -85,7 +112,7 @@ const profile = () => {
               onChangeText={setApellido}
               returnKeyType="next"
               onSubmitEditing={() => correoInputRef.current?.focus()}
-              style={[isIncorrect? styles.inputIncorrect: styles.input, {color: theme.text}]}
+              style={[errorMessages.apellido ? styles.inputIncorrect : styles.input, { color: theme.text }]}
               placeholderTextColor="#666"
             />
             <TextInput 
@@ -95,7 +122,7 @@ const profile = () => {
               onChangeText={setCorreo}
               returnKeyType="next"
               onSubmitEditing={() => contrasenaInputRef.current?.focus()}
-              style={[isIncorrect? styles.inputIncorrect: styles.input, {color: theme.text}]}
+              style={[errorMessages.correo ? styles.inputIncorrect : styles.input, { color: theme.text }]}
               placeholderTextColor="#666"
             />
             <View style={styles.password_conteiner}>
@@ -105,7 +132,7 @@ const profile = () => {
                 placeholder='Password' 
                 value={contrasena} 
                 onChangeText={setContrasena}
-                style={[isIncorrect? styles.inputIncorrect: styles.input, {color: theme.text}]}
+                style={[errorMessages.contrasena ? styles.inputIncorrect : styles.input, { color: theme.text }]}
                 placeholderTextColor="#666"
                 returnKeyType='done'
                 onSubmitEditing={() => signUpHandler(nombre, apellido, correo, contrasena)}
