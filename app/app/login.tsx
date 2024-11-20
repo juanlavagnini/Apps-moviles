@@ -103,7 +103,7 @@ const profile = () => {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={[styles.container]}>
             <Image source={require('@/assets/images/logo_app.jpeg')} style={styles.logo} />
-            <Text style={[styles.title, {color: theme.grey}]}>Welcome Back!</Text>
+            <Text style={[styles.title, {color: theme.grey}]}>Welcome!</Text>
             <Text style={[styles.subtitle,{color: theme.grey}]}>Log in to the account</Text>
             <TextInput 
               placeholder='Email' 
