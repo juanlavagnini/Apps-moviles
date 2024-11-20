@@ -110,7 +110,7 @@ export default function scanner_modal() {
           </View>
           ) : productData && productData.status == 0 ?(
           <View>
-            <Text style={styles.text}>Product not found</Text>    
+            <Text style={styles.notFoundText}>Product not found</Text>    
             <TextInput
               style={styles.input}
               onChangeText={(text: string) => setManualName(text)}
@@ -216,10 +216,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
+    width: '100%',
+    height: 50,
+    borderBottomWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    paddingHorizontal: 15,
+    marginBottom: 5,
+  },
+  notFoundText: {
+    fontSize: 16,
     marginBottom: 10,
-    padding: 10,
+    marginTop: 10,
+    color: 'red',
+    alignSelf: 'center',
   },
 });
