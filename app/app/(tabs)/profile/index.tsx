@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Pressable, useColorScheme } from 'react-native'
+import { StyleSheet, Text, View, Pressable, ScrollView,useColorScheme } from 'react-native'
 import React from 'react'
 import { Colors } from '@/constants/Colors'
 import { useUserContext } from '@/app/_layout';
@@ -13,12 +13,39 @@ const index = () => {
   const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
   
   const { user, setUser } = useUserContext();
+  const ip = process.env.EXPO_PUBLIC_IP;
 
 
   const handleLogout = async () => {
     setUser(null);
     await SecureStore.deleteItemAsync('userToken');
     router.navigate({ pathname: '/login' });
+  }
+
+  const handleLeave = async () => { 
+    console.log('Leaving house');
+    fetch(`http://${ip}:3000/house/leave`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: user?.id,
+        houseId: user?.houseId,
+      }),
+    })
+    .then((response: Response) => response.json())
+    .then((data: any) => {
+      console.log(data);
+      setUser({
+        id: data.id,
+        email: data.email,
+        name: data.name,
+        surname: data.surname,
+        houseId: data.houseId,
+        owner: data.ownedHouse,
+      });
+    });
   }
 
   return (
@@ -31,7 +58,7 @@ const index = () => {
           user?.owner ? <QRCode value={user?.houseId.toString()} size={200} /> : 
                         <Pressable onPress={() => {}}><Text>Join another house</Text></Pressable>
       }*/
-
+      <ScrollView style={[styles.scrollContainer, {backgroundColor: theme.background }]}>
       <View style={[styles.container, {backgroundColor: theme.background}]}>
           <View>
             <Ionicons name="add" size={130} style={[styles.avatar, {backgroundColor: theme.grey}]} />
@@ -45,23 +72,29 @@ const index = () => {
           <Text style={{color: theme.grey}}>Owner: {user?.owner ? 'Yes' : 'No'}</Text>
           {
             user?.owner ? (
-              <View>
+              <View style={styles.buttonContainer}>
                 <Logbutton onPress={() => router.push('/profile/invite_qr')} title="Invite members"/>
                 <Logbutton onPress={() => router.push('/profile/join_house')} title="Join another house" />
               </View>
             ) : (
-              <Logbutton onPress={() => router.push('/profile/join_house')} title="Leave house" />
+              <Logbutton onPress={() => handleLeave()} title="Leave house" />
             )
           }
           
           <Logbutton onPress={handleLogout} title="Logout" />
       </View>
+      </ScrollView>
   )
 }
 
 export default index
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    height: '100%',
+    flex: 1,
+    gap: 20,  
+  },
   container: {
     width: '100%',
     flex: 1,
@@ -83,5 +116,11 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     padding: 5,
     borderWidth: 2,
-  }
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    gap: 10,
+    margin: 10,
+  },
 })

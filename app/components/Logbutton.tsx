@@ -24,13 +24,15 @@ export default Logbutton;
 const styles = StyleSheet.create({
     button: {
         width: '20%',
-        height: 40,
+        height: "auto",
+        minHeight: 40,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 8,
         marginBottom: 15,
       },
       buttonText: {
+        alignSelf: 'center',
         fontSize: 14,
         fontWeight: 'bold',
       },

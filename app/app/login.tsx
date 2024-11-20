@@ -83,7 +83,7 @@ const profile = () => {
         email: data.user.email,
         name: data.user.name,
         surname: data.user.surname,
-        houseId: data.user.ownedHouse.id,
+        houseId: data.user.houseId,
         owner: data.user.ownedHouse,
       });
 
