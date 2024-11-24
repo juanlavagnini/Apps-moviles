@@ -82,6 +82,7 @@ export default function scanner_modal() {
         <Modal animationType="slide"
           transparent={true}
           onRequestClose={() => {
+            setScan(false);
             router.back();
           }}>
         <View style={styles.centeredView}>
