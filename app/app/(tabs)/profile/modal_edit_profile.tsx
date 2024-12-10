@@ -7,7 +7,7 @@ import {Modal, StyleSheet, Pressable, View, TextInput, useColorScheme} from 'rea
 import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
 
 const modal_edit_profile = () => {
-  const ip = process.env.EXPO_PUBLIC_IP
+  const URL = process.env.EXPO_PUBLIC_SERVER_URL;
 
   const { user, setUser } = useUserContext();
 
@@ -30,7 +30,7 @@ const modal_edit_profile = () => {
   const contrasenaInputRef = useRef<TextInput>(null);
 
   const handleEdit = () => {
-    fetch(`http://${ip}:3000/user/${user?.id}`, {
+    fetch(`${URL}/user/${user?.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

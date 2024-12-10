@@ -17,11 +17,11 @@ export default function scanner_modal() {
   const [manualName, setManualName] = useState<string>("");
   const [brand, setBrand] = useState<string>("");
 
-  const ip = process.env.EXPO_PUBLIC_IP
+  const URL = process.env.EXPO_PUBLIC_SERVER_URL;
 
   //Primero checkeamos si el producto ya existe en la base de datos de este usuario
   useEffect(() => {
-    fetch(`http://${ip}:3000/houseProduct/product/${user?.houseId}/${product}`)
+    fetch(`${URL}/houseProduct/product/${user?.houseId}/${product}`)
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
@@ -57,7 +57,7 @@ export default function scanner_modal() {
     const productBrand = (productData.status == 1) ? productData.product.brands : brand;
 
     console.log('Add product', productId);
-    fetch(`http://${ip}:3000/houseProduct/addProduct`, {
+    fetch(`${URL}/houseProduct/addProduct`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

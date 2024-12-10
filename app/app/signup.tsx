@@ -7,7 +7,7 @@ import { Ionicons } from '@expo/vector-icons'
 
 
 const profile = () => {
-  const ip = process.env.EXPO_PUBLIC_IP
+  const URL = process.env.EXPO_PUBLIC_SERVER_URL;
 
   const colorScheme = useColorScheme();
   const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
@@ -27,7 +27,7 @@ const profile = () => {
 
   const signUpHandler = (nombre:string, apellido:string, correo:string, contrasena:string) => {
     
-    fetch(`http://${ip}:3000/user/signup`, {
+    fetch(`${URL}/user/signup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
