@@ -35,7 +35,7 @@ const index = () => {
       <View style={[styles.container, {backgroundColor: theme.background}]}>
           <View>
             <Ionicons name="add" size={130} style={[styles.avatar, {backgroundColor: theme.grey}]} />
-            <Pressable style={[styles.edit, {backgroundColor: theme.contrast, borderColor: theme.background}]}
+            <Pressable hitSlop={5} style={[styles.edit, {backgroundColor: theme.contrast, borderColor: theme.background}]}
             onPress={() => router.push('/profile/modal_edit_profile')}>
               <Ionicons name="pencil" size={20} color={theme.grey}/>
             </Pressable>
