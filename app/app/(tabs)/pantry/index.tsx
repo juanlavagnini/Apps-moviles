@@ -53,6 +53,7 @@ const Pantry = () => {
       body: JSON.stringify({
         houseId: user?.houseId,
         productId: id,
+        quantity: 1,
       }),
     }).then(() => {
       setRefresh(!refresh);
