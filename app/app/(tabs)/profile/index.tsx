@@ -7,6 +7,8 @@ import { router } from 'expo-router';
 import Logbutton from '@/components/Logbutton';
 import { Ionicons } from '@expo/vector-icons';
 import * as SecureStore from 'expo-secure-store';
+import { icons } from '@/constants/Avatars';
+import { useAvatarContext } from './_layout';
 
 
 const index = () => {
@@ -14,6 +16,8 @@ const index = () => {
   const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
   
   const { user, setUser } = useUserContext();
+
+  const { selected, setSelected } = useAvatarContext();
 
 
   const handleLogout = async () => {
@@ -34,7 +38,7 @@ const index = () => {
       }*/
       <View style={[styles.container, {backgroundColor: theme.background}]}>
           <View>
-            <Ionicons name="add" size={130} style={[styles.avatar, {backgroundColor: theme.grey}]} />
+            <Ionicons name={icons[selected]} size={110} style={[styles.avatar, {backgroundColor: theme.grey}]} />
             <Pressable hitSlop={5} style={[styles.edit, {backgroundColor: theme.contrast, borderColor: theme.background}]}
             onPress={() => router.push('/profile/modal_edit_profile')}>
               <Ionicons name="pencil" size={20} color={theme.grey}/>
@@ -63,13 +67,13 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     borderRadius: 100,
     color:"white",
-    
+    padding: 20,
   },
   edit:{
     position: "absolute",
     right: 0,
     bottom: 0,
-    borderRadius: 100,
+    borderRadius: 110,
     padding: 5,
     borderWidth: 2,
   }

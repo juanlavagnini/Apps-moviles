@@ -23,6 +23,7 @@ export const Colors = {
     darkBrown: '#331716',
     yellow: '#FDD75A',
     grey: '#666',
+    contrastGrey: '#C7C7C7',
     shadowColor: "black"
   },
   
@@ -43,6 +44,7 @@ export const Colors = {
     darkBrown: '#331716',
     yellow: '#FDD75A',
     grey: '#C7C7C7',
+    contrastGrey: '#666',
     shadowColor: "white"
   },
 };
