@@ -22,14 +22,14 @@ const Pantry = () => {
   const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
 
   const { user } = useUserContext();
-  const ip = process.env.EXPO_PUBLIC_IP;
+  const URL = process.env.EXPO_PUBLIC_SERVER_URL;
   const [DATA, setDATA] = useState<any>([]);
   const { refresh, setRefresh } = useRefreshContext();
   const [isSwiping, setIsSwiping] = useState(false);
 
   const handleSwipeRight = (id: string, swipeableRef: any) => {
     console.log('Delete product', id);
-    fetch(`http://${ip}:3000/houseProduct/deleteProduct`, {
+    fetch(`${URL}/houseProduct/deleteProduct`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -45,7 +45,7 @@ const Pantry = () => {
   };
 
   const handleSwipeLeft = (id: string, swipeableRef: any) => {
-    fetch(`http://${ip}:3000/houseProduct/addProduct`, {
+    fetch(`${URL}/houseProduct/addProduct`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -53,6 +53,7 @@ const Pantry = () => {
       body: JSON.stringify({
         houseId: user?.houseId,
         productId: id,
+        quantity: 1,
       }),
     }).then(() => {
       setRefresh(!refresh);
@@ -105,7 +106,7 @@ const Pantry = () => {
   };
 
   useEffect(() => {
-    fetch(`http://${ip}:3000/houseProduct/products/${user?.houseId}`, {
+    fetch(`${URL}/houseProduct/products/${user?.houseId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

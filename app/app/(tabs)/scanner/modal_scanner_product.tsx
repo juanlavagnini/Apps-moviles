@@ -16,12 +16,13 @@ export default function scanner_modal() {
   const [error, setError] = useState<string | null>(null);
   const [manualName, setManualName] = useState<string>("");
   const [brand, setBrand] = useState<string>("");
+  const [quantity, setQuantity] = useState<number>(1);
 
-  const ip = process.env.EXPO_PUBLIC_IP
+  const URL = process.env.EXPO_PUBLIC_SERVER_URL;
 
   //Primero checkeamos si el producto ya existe en la base de datos de este usuario
   useEffect(() => {
-    fetch(`http://${ip}:3000/houseProduct/product/${user?.houseId}/${product}`)
+    fetch(`${URL}/houseProduct/product/${user?.houseId}/${product}`)
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
@@ -51,13 +52,13 @@ export default function scanner_modal() {
     }
   }, [product]);
 
-  const handleAddProduct = (productId: string | string [], productData: any) => () => {
+  const handleAddProduct = (productId: string | string [], productData: any, quantity: number) => () => {
     //Si la API no tiene nombre, se usa el nombre manual
     const name = (productData.status == 1) ? productData.product.product_name : manualName;
     const productBrand = (productData.status == 1) ? productData.product.brands : brand;
 
     console.log('Add product', productId);
-    fetch(`http://${ip}:3000/houseProduct/addProduct`, {
+    fetch(`${URL}/houseProduct/addProduct`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -67,6 +68,7 @@ export default function scanner_modal() {
         productId: productId,
         name: name ,
         brand: productBrand,
+        quantity: quantity,
       }),
     })
     setScan(false);
@@ -82,6 +84,7 @@ export default function scanner_modal() {
         <Modal animationType="slide"
           transparent={true}
           onRequestClose={() => {
+            setScan(false);
             router.back();
           }}>
         <View style={styles.centeredView}>
@@ -102,15 +105,31 @@ export default function scanner_modal() {
           <View style={styles.textContainer}>
             <Text style={styles.text} numberOfLines={1}>Product Name: {DBdata.name}</Text>
             <Text style={styles.text} numberOfLines={1}>Brand: {DBdata.brand}</Text>
+            <View>
+              <TextInput
+                style={styles.input}
+                onChange={(e) => setQuantity(Number(e.nativeEvent.text))}
+                placeholder="1"
+                placeholderTextColor={'#666'}
+              />
+            </View>
           </View>
           ) : productData && productData.status == 1 && productData.product.product_name != "" ? (
           <View style={styles.textContainer}>
             <Text style={styles.text} numberOfLines={1}>Product Name: {productData.product.product_name}</Text>
             <Text style={styles.text} numberOfLines={1}>Brand: {productData.product.brands}</Text>
+            <View>
+              <TextInput
+                style={styles.input}
+                onChange={(e) => setQuantity(Number(e.nativeEvent.text))}
+                placeholder="1"
+                placeholderTextColor={'#666'}
+              />
+            </View>
           </View>
           ) : productData && productData.status == 0 ?(
           <View>
-            <Text style={styles.text}>Product not found</Text>    
+            <Text style={styles.notFoundText}>Product not found</Text>    
             <TextInput
               style={styles.input}
               onChangeText={(text: string) => setManualName(text)}
@@ -125,6 +144,14 @@ export default function scanner_modal() {
               placeholder="Enter brand"
               placeholderTextColor={'#666'}
             />
+            <View>
+              <TextInput
+                style={styles.input}
+                onChange={(e) => setQuantity(Number(e.nativeEvent.text))}
+                placeholder="1"
+                placeholderTextColor={'#666'}
+              />
+            </View>
           </View>
           ): null }
 
@@ -140,7 +167,7 @@ export default function scanner_modal() {
           </Pressable>
           <Pressable 
             style={styles.addButton}
-            onPress={handleAddProduct(product, productData)}>
+            onPress={handleAddProduct(product, productData, quantity)}>
               <Text style={styles.buttonText}>Add</Text>
           </Pressable>
           </View> : null}
@@ -216,10 +243,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
+    width: '100%',
+    height: 50,
+    borderBottomWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    paddingHorizontal: 15,
+    marginBottom: 5,
+  },
+  notFoundText: {
+    fontSize: 16,
     marginBottom: 10,
-    padding: 10,
+    marginTop: 10,
+    color: 'red',
+    alignSelf: 'center',
   },
 });

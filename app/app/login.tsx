@@ -10,7 +10,7 @@ import * as SecureStore from 'expo-secure-store';
 
 const profile = () => {
 
-  const ip = process.env.EXPO_PUBLIC_IP
+  const URL = process.env.EXPO_PUBLIC_SERVER_URL;
   const [isIncorrect, setIsIncorrect] = useState(false)
   const [isOwner, setIsOwner] = useState(false)
   const { setUser } = useUserContext();
@@ -31,7 +31,7 @@ const profile = () => {
       const token = await SecureStore.getItem('userToken');
       if (token) {
         // Aquí puedes validar el token si tienes un endpoint de verificación
-        fetch(`http://${ip}:3000/user/validatetoken`, {
+        fetch(`${URL}/user/validatetoken`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -45,7 +45,7 @@ const profile = () => {
           email: data.email,
           name: data.name,
           surname: data.surname,
-          houseId: data.ownedHouse.id,
+          houseId: data.houseId,
           owner: data.ownedHouse,
         });
   
@@ -59,7 +59,8 @@ const profile = () => {
 
   const signInHandler = async (email: string, password: string) => {
     try {
-      const response = await fetch(`http://${ip}:3000/user/login`, {
+      console.log(URL)
+      const response = await fetch(`${URL}/user/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
