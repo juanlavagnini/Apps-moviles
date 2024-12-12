@@ -42,6 +42,10 @@ export default function RootLayout() {
                   presentation: 'transparentModal',
                   headerShown: false,
                 }}/>
+      <Stack.Screen name="leave_house" options={{
+                  presentation: 'transparentModal',
+                  headerShown: false,
+                }}/>
     </Stack>
     </AvatarContextProvider>
   );

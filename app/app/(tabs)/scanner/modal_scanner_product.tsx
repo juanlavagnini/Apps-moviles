@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { router, useLocalSearchParams } from 'expo-router';
-import { Pressable, SafeAreaView, StyleSheet, Text, TextInput, View, Modal } from 'react-native';
+import { Pressable, SafeAreaView, StyleSheet, Text, TextInput, View} from 'react-native';
 import { useUserContext } from '@/app/_layout';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import LottieView from 'lottie-react-native';
 import { useScanContext } from './_layout';
+import Modal from 'react-native-modal';
 
 export default function scanner_modal() {
   const { product = "" } = useLocalSearchParams();
@@ -81,12 +82,11 @@ export default function scanner_modal() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.centeredView}>
-        <Modal animationType="slide"
-          transparent={true}
-          onRequestClose={() => {
-            setScan(false);
-            router.back();
-          }}>
+        <Modal 
+          isVisible={true}
+          onBackButtonPress={() => router.back()}
+          onBackdropPress={() => router.back()}
+          >
         <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <Text style={styles.heading}>Product</Text>

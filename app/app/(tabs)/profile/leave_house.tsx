@@ -10,13 +10,11 @@ import { CameraView, useCameraPermissions } from 'expo-camera';
 import Logbutton from '@/components/Logbutton';
 import { FlatList } from 'react-native';
 import { Colors } from '@/constants/Colors';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
-const join_house = () => {
+const leave_house = () => {
 
     const { user, setUser } = useUserContext();
     const [permission, requestPermission] = useCameraPermissions();
-    const [scan, setScan] = React.useState<boolean>(false);
     const URL = process.env.EXPO_PUBLIC_SERVER_URL;
 
     const [isAcepted, setIsAcepted] = React.useState<boolean>(false);
@@ -48,35 +46,33 @@ const join_house = () => {
           </View>
         );
       }
-
-    const handleJoinHouse = (ownerEmail: string) => {
-        console.log(ownerEmail);
-        fetch(`${URL}/house/join`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                userId: user?.id,
-                ownerEmail: ownerEmail,
-                delegatedOwner: selectedOwner,
-            }),
-        })
-        .then((response) => response.json())
-        .then((data) => {
-            console.log(data);
-            setUser({
-              id: user?.id || 0,
-              email: user?.email || '',
-              name: user?.name || '',
-              surname: user?.surname || '',
-              houseId: data.ownedHouse.id,
-              owner: false,
-            });
-            router.back();
-        })
-        
-    }   
+ 
+    const handleLeave = async () => { 
+      console.log('Leaving house');
+      fetch(`${URL}/house/leave`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: user?.id,
+          delegatedUserId : selectedOwner,
+        }),
+      })
+      .then((response: Response) => response.json())
+      .then((data: any) => {
+        console.log(data);
+        setUser({
+          id: data.id,
+          email: data.email,
+          name: data.name,
+          surname: data.surname,
+          houseId: data.houseId,
+          owner: data.ownedHouse,
+        });
+      });
+      router.back();
+    }
 
     const getUsers = async () => {
       console.log('Getting users');
@@ -112,9 +108,7 @@ const join_house = () => {
       } catch (error) {
         console.error('Error fetching users:', error);
       }
-    };
-    
-
+    }
 
     const Item = ({ item }: { item: { name: string; id: string } }) => {
       return (
@@ -134,7 +128,6 @@ const join_house = () => {
           onBackButtonPress={() => router.back()}
           onBackdropPress={() => router.back()}
           >
-            
             <View style={styles.centeredView}>
               <View style={styles.modalView}>
                 <View style={styles.buttonContainer}>
@@ -146,13 +139,11 @@ const join_house = () => {
                     </Pressable>
                 </View>
                 {isAcepted && isDelegated ? (
-                <CameraView style={{height: 200, width: 200}} 
-                    onBarcodeScanned={(result) => {
-                        setScan(true);
-                        if (scan) return;
-                        handleJoinHouse(result.data);
-                    }}
-                 />): (
+                <View>
+                  <Text>Confirm?</Text>
+                  <Logbutton title="Yes" onPress={()=> handleLeave()} />
+                  <Logbutton title="Cancel" onPress={() => router.back()} />
+                </View>): (
                   isAcepted && !isDelegated ? 
                   (<View>
                     <Text style={{margin: 10, fontWeight: "bold"}}>Select new owner</Text>
@@ -186,7 +177,7 @@ const join_house = () => {
   )
 }
 
-export default join_house
+export default leave_house
 
 const styles = StyleSheet.create({
     container: {

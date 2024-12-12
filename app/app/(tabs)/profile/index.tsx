@@ -79,9 +79,14 @@ const index = () => {
               <View style={styles.buttonContainer}>
                 <Logbutton onPress={() => router.push('/profile/invite_qr')} title="Invite members"/>
                 <Logbutton onPress={() => router.push('/profile/join_house')} title="Join another house" />
+                <Logbutton onPress={() => router.push('/profile/leave_house')} title="Leave House"/>
               </View>
             ) : (
-              <Logbutton onPress={() => handleLeave()} title="Leave house" />
+              <View style={styles.buttonContainer}>
+                <Logbutton onPress={() => router.push('/profile/invite_qr')} title="Invite members"/>
+                <Logbutton onPress={() => router.push('/profile/join_house')} title="Join another house" />
+                <Logbutton onPress={() => router.push('/profile/leave_house')}title="Leave House"/>
+              </View>
             )
           }
           

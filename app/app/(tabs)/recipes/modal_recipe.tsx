@@ -1,7 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import {useLocalSearchParams, router} from 'expo-router';
-import { StyleSheet, Text, View, Modal, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Pressable } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import Modal from 'react-native-modal';
 
 export default function recipe_modal() {
 
@@ -11,12 +12,11 @@ export default function recipe_modal() {
     return (
       <SafeAreaProvider>
       <SafeAreaView style={styles.centeredView}>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          onRequestClose={() => {
-            router.back();
-          }}>
+        <Modal 
+          isVisible={true}
+          onBackButtonPress={() => router.back()}
+          onBackdropPress={() => router.back()}
+          >
             <View style={styles.centeredView}>
             <View style={styles.modalView}>
             <View style={styles.buttonContainer}>

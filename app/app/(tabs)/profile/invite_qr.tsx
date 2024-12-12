@@ -4,23 +4,21 @@ import React from 'react'
 import QRCode from 'react-native-qrcode-svg';
 import { useUserContext } from '@/app/_layout';
 import { router } from 'expo-router';
-import {Modal, Pressable, TextInput} from 'react-native';
+import { Pressable, TextInput} from 'react-native';
+import Modal  from 'react-native-modal'
 import { Ionicons } from '@expo/vector-icons';
 
 const invite_qr = () => {
 
     const { user } = useUserContext();
-    if (!user?.owner) {
-        router.push('/profile');
-    }
     return (
         <SafeAreaProvider>
         <SafeAreaView style={styles.centeredView}>
-          <Modal animationType="slide"
-          transparent={true}
-          onRequestClose={() => {
-            router.back();
-          }}>
+          <Modal 
+          isVisible={true}
+          onBackButtonPress={() => router.back()}
+          onBackdropPress={() => router.back()}
+          >
             
             <View style={styles.centeredView}>
               <View style={styles.modalView}>

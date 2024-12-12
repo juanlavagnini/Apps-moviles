@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { router, useLocalSearchParams } from 'expo-router';
-import { Pressable, StyleSheet, Text, TextInput, View, Modal, SafeAreaView, useColorScheme } from 'react-native';
+import { Pressable, StyleSheet, Text, TextInput, View, SafeAreaView, useColorScheme } from 'react-native';
 import { useUserContext } from '../../_layout';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Colors } from '@/constants/Colors';
 import { useRefreshContext } from '../_layout';
+import Modal from 'react-native-modal';
 
 export default function product_modal() {
   const colorScheme = useColorScheme();
@@ -89,11 +90,11 @@ export default function product_modal() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.centeredView}>
-        <Modal animationType="slide"
-          transparent={true}
-          onRequestClose={() => {
-            router.back();
-          }}>
+        <Modal 
+          isVisible={true}
+          onBackButtonPress={() => router.back()}
+          onBackdropPress={() => router.back()}
+          >
           <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <View style={styles.buttonContainer}>

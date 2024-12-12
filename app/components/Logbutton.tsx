@@ -25,6 +25,7 @@ export default Logbutton;
 const styles = StyleSheet.create({
     button: {
         width: 'auto',
+        minWidth: 60,
         padding: 5,
         height: 40,
         justifyContent: 'center',

@@ -4,7 +4,8 @@ import { Colors } from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, {useRef, useState} from 'react';
-import {Modal, StyleSheet, Pressable, View, TextInput, Text, useColorScheme} from 'react-native';
+import { StyleSheet, Pressable, View, TextInput, Text, useColorScheme} from 'react-native';
+import Modal from 'react-native-modal';
 import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
 import CustomGrid  from '@/components/customGrid';
 
@@ -171,12 +172,11 @@ const modal_edit_profile = () => {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.centeredView}>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          onRequestClose={() => {
-            router.back();
-          }}>
+        <Modal 
+          isVisible={true}
+          onBackButtonPress={() => router.back()}
+          onBackdropPress={() => router.back()}
+          >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
             <View style={styles.buttonContainer}>
