@@ -29,7 +29,7 @@ export default function RootLayout() {
     <AvatarContextProvider>
     <Stack>
       <Stack.Screen name="index" options={{ headerShown: true,headerStyle: {backgroundColor: theme.background}, headerTintColor: theme.grey, title: 'Profile'}}/>
-      <Stack.Screen name="user" />
+      <Stack.Screen name="home" options={{ headerShown: true,headerStyle: {backgroundColor: theme.background}, headerTintColor: theme.grey, title: 'Home'}}/>
       <Stack.Screen name="modal_edit_profile" options={{
                   presentation: 'transparentModal',
                   headerShown: false,

@@ -66,12 +66,12 @@ const join_house = () => {
         .then((data) => {
             console.log(data);
             setUser({
-              id: user?.id || 0,
-              email: user?.email || '',
-              name: user?.name || '',
-              surname: user?.surname || '',
-              houseId: data.ownedHouse.id,
-              owner: false,
+              id: data.id,
+              email: data.email,
+              name: data.name,
+              surname: data.surname,
+              houseId: data.houseId,
+              owner: data.ownedHouse,
             });
             router.back();
         })
@@ -168,7 +168,7 @@ const join_house = () => {
                   </View>) 
                   : (
                  <View style={styles.viewAlert}>
-                  <Text style={{alignSelf: "flex-start"}}>Are you sure that you want to leave your house?</Text>
+                  <Text style={{alignSelf: "flex-start"}}>Are you sure that you want to join another house?</Text>
                   <Text style={{alignSelf: "flex-start", color: "red", fontStyle: "italic"}}>By accepting you will lose all your products</Text>
                   <View style={styles.alertButtons}>
                     <Logbutton title="Yes" onPress={() => {setIsAcepted(true), getUsers()}} />

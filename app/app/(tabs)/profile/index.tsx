@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Pressable, ScrollView,useColorScheme } from 'react-native'
+import { StyleSheet, Text, View, Pressable, ScrollView,useColorScheme, RefreshControl } from 'react-native'
 import React from 'react'
 import { Colors } from '@/constants/Colors'
 import { useUserContext } from '@/app/_layout';
@@ -15,7 +15,7 @@ const index = () => {
   const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
   
   const { user, setUser } = useUserContext();
-  const ip = process.env.EXPO_PUBLIC_IP;
+  const URL = process.env.EXPO_PUBLIC_SERVER_URL;
 
   const { selected, setSelected } = useAvatarContext();
 
@@ -26,21 +26,19 @@ const index = () => {
     router.navigate({ pathname: '/login' });
   }
 
-  const handleLeave = async () => { 
-    console.log('Leaving house');
-    fetch(`http://${ip}:3000/house/leave`, {
+  const refresh = () => {
+    console.log('Refreshing');
+    fetch(`${URL}/user/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        userId: user?.id,
-        houseId: user?.houseId,
+        id: user?.id,
       }),
     })
     .then((response: Response) => response.json())
     .then((data: any) => {
-      console.log(data);
       setUser({
         id: data.id,
         email: data.email,
@@ -62,7 +60,15 @@ const index = () => {
           user?.owner ? <QRCode value={user?.houseId.toString()} size={200} /> : 
                         <Pressable onPress={() => {}}><Text>Join another house</Text></Pressable>
       }*/
-      <ScrollView style={[styles.scrollContainer, {backgroundColor: theme.background }]}>
+      <ScrollView style={[styles.scrollContainer, {backgroundColor: theme.background }]}
+      refreshControl={
+        <RefreshControl
+      refreshing={false}
+      onRefresh={() => {
+        refresh();
+      }}
+      colors={[theme.contrast]}
+        />}>
       <View style={[styles.container, {backgroundColor: theme.background}]}>
           <View>
             <Ionicons name={icons[selected]} size={110} style={[styles.avatar, {backgroundColor: theme.grey}]} />
@@ -77,21 +83,31 @@ const index = () => {
           {
             user?.owner ? (
               <View style={styles.buttonContainer}>
-                <Logbutton onPress={() => router.push('/profile/invite_qr')} title="Invite members"/>
-                <Logbutton onPress={() => router.push('/profile/join_house')} title="Join another house" />
-                <Logbutton onPress={() => router.push('/profile/leave_house')} title="Leave House"/>
+                <Pressable style={[styles.icons,{backgroundColor: theme.darkOrange}]} onPress={() => router.push('/profile/join_house')}>
+                  <Ionicons name="enter-outline" size={40} color={theme.contrast} />
+                </Pressable>
+                <Pressable style={[styles.icons,{backgroundColor: theme.darkOrange}]} onPress={() => router.push('/profile/home')}>
+                  <Ionicons name="home-outline" size={40} color={theme.contrast} />
+                </Pressable>
+                <Pressable style={[styles.icons,{backgroundColor: theme.darkOrange}]} onPress={() => router.push('/profile/leave_house')}>
+                  <Ionicons name="exit-outline" size={40} color={theme.contrast} />
+                </Pressable>
               </View>
             ) : (
               <View style={styles.buttonContainer}>
-                <Logbutton onPress={() => router.push('/profile/invite_qr')} title="Invite members"/>
-                <Logbutton onPress={() => router.push('/profile/join_house')} title="Join another house" />
-                <Logbutton onPress={() => router.push('/profile/leave_house')}title="Leave House"/>
+                <Pressable style={[styles.icons,{backgroundColor: theme.darkOrange}]} onPress={() => router.push('/profile/join_house')}>
+                  <Ionicons name="enter-outline" size={40} color={theme.contrast} />
+                </Pressable>
+                <Pressable style={[styles.icons,{backgroundColor: theme.darkOrange}]} onPress={() => router.push('/profile/leave_house')}>
+                  <Ionicons name="exit-outline" size={40} color={theme.contrast} />
+                </Pressable>
               </View>
             )
           }
           
           <Logbutton onPress={handleLogout} title="Logout" />
       </View>
+      <View style={{height: 100}}></View>
       </ScrollView>
   )
 }
@@ -132,4 +148,8 @@ const styles = StyleSheet.create({
     gap: 10,
     margin: 10,
   },
+  icons: {
+    padding: 10,
+    borderRadius: 100,
+  }
 })
