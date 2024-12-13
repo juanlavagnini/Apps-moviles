@@ -41,20 +41,6 @@ const Recipes = () => {
     });
   };
 
-  const getRecipes = (category: string) => {
-    fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`)
-      .then((response) => response.json())
-      .then((json) => {
-        const index = DATA.findIndex((element) => element.title === category);
-        console.log(DATA[index].data);
-        const meals = json.meals.map((meal: any) => meal.strMeal);
-        meals.forEach((meal: string) => { DATA[index].data.push(meal); });
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
-
   //Consulta a la api de TheMealDB para obtener las categorías
   //https://www.themealdb.com/api/json/v1/1/categories.php
   //Me quiero quedar con el id y el strCategory
@@ -64,9 +50,6 @@ const Recipes = () => {
       const json = await response.json();
       json.categories.forEach((category: any) => {
         DATA.push({ title: category.strCategory, data: [] });
-      });
-      json.categories.forEach((category: any) => {
-        getRecipes(category.strCategory);
       });
       setIsLoading(false);
     } catch (error) {
@@ -89,20 +72,24 @@ const Recipes = () => {
                 />}
       {!isLoading && (
         <>
+        <Text style={[styles.title, {color: theme.contrast}]}>Choose a Meal Category</Text>
         <FlatList
         data={DATA}
         keyExtractor={(item) => item.title}
         renderItem={({ item, index }) => (
           <TouchableOpacity
-            style={[styles.categoryButton,, {backgroundColor: theme.darkOrange}]}
+            style={[styles.categoryButton,, {backgroundColor: theme.lightOrange}]}
             onPress={() => router.push({pathname: '/recipes/meals_options', params: {category: item.title}})}
           >
             <Text style={styles.categoryText}>{item.title}</Text>
           </TouchableOpacity>
         )}
+        style={styles.categoryList}
         showsHorizontalScrollIndicator={false}
         ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
         ListFooterComponent={<View style={{ height: 50 }}></View>}
+        numColumns={2} // Muestra los elementos en dos columnas
+        columnWrapperStyle={{ justifyContent: 'space-around' }}
       />
       </>
     )}
@@ -127,16 +114,23 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
+    alignSelf: 'center',
+    fontWeight: 'bold',
+    marginTop: 12,
+    marginBottom: 10,
   },
   categoryList: {
     minHeight: 40,
     marginVertical: 10,
   },
   categoryButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    marginHorizontal: 5,
-    borderRadius: 5,
+    width: '40%',
+    aspectRatio: 1.5, // Hace que los elementos sean cuadrados
+    backgroundColor: '#00aaff',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
   },
   categoryText: {
     fontSize: 18,

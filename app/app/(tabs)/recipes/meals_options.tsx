@@ -44,18 +44,21 @@ const meals_options = () => {
                 />}
             {!isLoading && (
             <>
-            <Text style={[styles.title, {color: theme.contrast}]}>{category}</Text>
+            <Text style={[styles.title, {color: theme.contrast}]}>Choose a {category}</Text>
             <FlatList
                 data={data}
                 keyExtractor={(item) => item}
                 renderItem={({ item }) => 
                     <TouchableOpacity
-                        style={[styles.categoryButton,, {backgroundColor: theme.darkOrange}]}
+                        style={[styles.categoryButton,, {backgroundColor: theme.lightOrange}]}
                         onPress={() => router.push({pathname: '/recipes/meal_recipe', params: {meal: item}})}>
                         <Text style={styles.categoryText}>{item}</Text>
                     </TouchableOpacity>}
+                style={styles.categoryList}
                 ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
-                ListFooterComponent={<View style={{ height: 50 }}></View>}/>
+                ListFooterComponent={<View style={{ height: 50 }}></View>}
+                numColumns={2} // Muestra los elementos en dos columnas
+                columnWrapperStyle={{ justifyContent: 'space-around' }}/>
             </>
             )}
         </View>
@@ -71,18 +74,28 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
     },
     title: {
-        fontSize: 28,
+        fontSize: 24,
         alignSelf: 'center',
-        paddingVertical: 5,
+        fontWeight: 'bold',
+        marginTop: 12,
+        marginBottom: 10,
     },
     categoryButton: {
-        paddingVertical: 10,
-        paddingHorizontal: 15,
-        marginHorizontal: 5,
-        borderRadius: 5,
+        width: '40%',
+        aspectRatio: 1.5, // Hace que los elementos sean cuadrados
+        backgroundColor: '#00aaff',
+        borderRadius: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 16,
+      },
+      categoryList: {
+        minHeight: 40,
+        marginVertical: 10,
       },
       categoryText: {
         fontSize: 18,
         fontWeight: 'bold',
+        padding: 10,
       },
 })
