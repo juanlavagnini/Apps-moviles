@@ -7,8 +7,7 @@ import Modal from 'react-native-modal';
 export default function recipe_modal() {
 
     const {name = "receta"} = useLocalSearchParams();
-    //const animation = new Animated.Value(0);
-
+    
     return (
       <SafeAreaProvider>
       <SafeAreaView style={styles.centeredView}>
