@@ -102,6 +102,7 @@ const Recipes = () => {
         )}
         showsHorizontalScrollIndicator={false}
         ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+        ListFooterComponent={<View style={{ height: 50 }}></View>}
       />
       </>
     )}

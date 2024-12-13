@@ -51,10 +51,11 @@ const meals_options = () => {
                 renderItem={({ item }) => 
                     <TouchableOpacity
                         style={[styles.categoryButton,, {backgroundColor: theme.darkOrange}]}
-                        onPress={() => router.push('/recipes/meal_recipe')}>
+                        onPress={() => router.push({pathname: '/recipes/meal_recipe', params: {meal: item}})}>
                         <Text style={styles.categoryText}>{item}</Text>
                     </TouchableOpacity>}
-                ItemSeparatorComponent={() => <View style={{ height: 10 }} />}/>
+                ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+                ListFooterComponent={<View style={{ height: 50 }}></View>}/>
             </>
             )}
         </View>
