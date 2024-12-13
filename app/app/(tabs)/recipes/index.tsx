@@ -1,5 +1,6 @@
 import { Colors } from '@/constants/Colors';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
+import LottieView from 'lottie-react-native';
 import React, { useEffect, useRef } from 'react';
 import {
   FlatList,
@@ -80,7 +81,12 @@ const Recipes = () => {
   
   return (
     <View style={[styles.container,{backgroundColor: theme.background}]}>
-      {isLoading && <Text>Loading...</Text>}
+      {isLoading && <LottieView
+                  source={require('@/assets/loading.json')}
+                  autoPlay
+                  loop
+                  style={{ width: 100, height: 100, alignSelf: 'center' }}
+                />}
       {!isLoading && (
         <>
         <FlatList
@@ -89,7 +95,7 @@ const Recipes = () => {
         renderItem={({ item, index }) => (
           <TouchableOpacity
             style={[styles.categoryButton,, {backgroundColor: theme.darkOrange}]}
-            onPress={() => scrollToSection(index)}
+            onPress={() => router.push({pathname: '/recipes/meals_options', params: {category: item.title}})}
           >
             <Text style={styles.categoryText}>{item.title}</Text>
           </TouchableOpacity>
