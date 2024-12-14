@@ -1,6 +1,7 @@
 import { Colors } from '@/constants/Colors';
-import { Link } from 'expo-router';
-import React, { useRef } from 'react';
+import { Link, router } from 'expo-router';
+import LottieView from 'lottie-react-native';
+import React, { useEffect, useRef } from 'react';
 import {
   FlatList,
   SectionList,
@@ -11,6 +12,7 @@ import {
   View,
   useColorScheme
 } from 'react-native';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 interface SectionData {
   //index: number;
@@ -18,96 +20,7 @@ interface SectionData {
   data: string[];
 }
 
-const DATA: SectionData[] = [
-  {
-    title: 'Main dishes',
-    data: ['Pizza', 'Burger', 'Risotto'],
-  },
-  {
-    title: 'Sides',
-    data: ['French Fries', 'Onion Rings', 'Fried Shrimps'],
-  },
-  {
-    title: 'Drinks',
-    data: ['Water', 'Coke', 'Beer'],
-  },
-  {
-    title: 'Desserts',
-    data: ['Cheese Cake', 'Ice Cream'],
-  },
-  {
-    title: 'Salads',
-    data: ['Caesar Salad', 'Greek Salad', 'Cobb Salad'],
-  },
-  {
-    title: 'Soups',
-    data: ['Tomato Soup', 'Chicken Noodle Soup', 'Minestrone'],
-  },
-  {
-    title: 'Sandwiches',
-    data: ['Club Sandwich', 'Grilled Cheese', 'BLT'],
-  },
-  {
-    title: 'Pasta',
-    data: ['Spaghetti', 'Fettuccine Alfredo', 'Penne Arrabbiata'],
-  },
-  {
-    title: 'Breakfast',
-    data: ['Pancakes', 'Waffles', 'Omelette'],
-  },
-  {
-    title: 'Seafood',
-    data: ['Grilled Salmon', 'Shrimp Scampi', 'Crab Cakes'],
-  },
-  {
-    title: 'Vegetarian',
-    data: ['Veggie Burger', 'Stuffed Bell Peppers', 'Vegetable Stir Fry'],
-  },
-  {
-    title: 'Grill',
-    data: ['BBQ Ribs', 'Grilled Vegetables', 'Steak'],
-  },
-  {
-    title: 'Breads',
-    data: ['Sourdough', 'Focaccia', 'Bagels'],
-  },
-  {
-    title: 'Tacos',
-    data: ['Beef Tacos', 'Chicken Tacos', 'Fish Tacos'],
-  },
-  {
-    title: 'Smoothies',
-    data: ['Berry Smoothie', 'Mango Smoothie', 'Green Smoothie'],
-  },
-  {
-    title: 'Pastries',
-    data: ['Croissants', 'Danish', 'Eclairs'],
-  },
-  {
-    title: 'Asian',
-    data: ['Sushi', 'Dim Sum', 'Spring Rolls'],
-  },
-  {
-    title: 'Mexican',
-    data: ['Enchiladas', 'Burritos', 'Quesadillas'],
-  },
-  {
-    title: 'American',
-    data: ['Cheeseburger', 'Hot Dog', 'Apple Pie'],
-  },
-  {
-    title: 'Italian',
-    data: ['Lasagna', 'Margarita Pizza', 'Carbonara'],
-  },
-  {
-    title: 'French',
-    data: ['Crepes', 'Ratatouille', 'Quiche Lorraine'],
-  },
-  {
-    title: 'Greek',
-    data: ['Gyro', 'Moussaka', 'Spanakopita'],
-  },
-];
+const DATA: SectionData[] = [];
 
 
 const Recipes = () => {
@@ -115,6 +28,8 @@ const Recipes = () => {
   const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
   
   const sectionListRef = useRef<SectionList<any>>(null);
+
+  const [isLoading, setIsLoading] = React.useState(true);
 
   // Función para desplazarse a la sección
   //Hay que revisar esta función
@@ -126,43 +41,58 @@ const Recipes = () => {
     });
   };
 
+  //Consulta a la api de TheMealDB para obtener las categorías
+  //https://www.themealdb.com/api/json/v1/1/categories.php
+  //Me quiero quedar con el id y el strCategory
+  const getCategories = async () => {
+    try {
+      const response = await fetch('https://www.themealdb.com/api/json/v1/1/categories.php');
+      const json = await response.json();
+      json.categories.forEach((category: any) => {
+        DATA.push({ title: category.strCategory, data: [] });
+      });
+      setIsLoading(false);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    getCategories();
+  },[]);
+
+  
   return (
     <View style={[styles.container,{backgroundColor: theme.background}]}>
-      <FlatList
-        style={[styles.categoryList]}
-        horizontal
+      {isLoading && <LottieView
+                  source={require('@/assets/loading.json')}
+                  autoPlay
+                  loop
+                  style={{ width: 100, height: 100, alignSelf: 'center' }}
+                />}
+      {!isLoading && (
+        <>
+        <Text style={[styles.title, {color: theme.contrast}]}>Choose a Meal Category</Text>
+        <FlatList
         data={DATA}
         keyExtractor={(item) => item.title}
         renderItem={({ item, index }) => (
           <TouchableOpacity
-            style={[styles.categoryButton,, {backgroundColor: theme.darkOrange}]}
-            onPress={() => scrollToSection(index)}
+            style={[styles.categoryButton,, {backgroundColor: theme.lightOrange}]}
+            onPress={() => router.push({pathname: '/recipes/meals_options', params: {category: item.title}})}
           >
             <Text style={styles.categoryText}>{item.title}</Text>
           </TouchableOpacity>
         )}
+        style={styles.categoryList}
         showsHorizontalScrollIndicator={false}
+        ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+        ListFooterComponent={<View style={{ height: 50 }}></View>}
+        numColumns={2} // Muestra los elementos en dos columnas
+        columnWrapperStyle={{ justifyContent: 'space-around' }}
       />
-
-      <SectionList
-        ref={sectionListRef}
-        sections={DATA}
-        keyExtractor={(item, index) => item + index}
-        renderItem={({ item }) => (
-          <View style={[styles.item, {backgroundColor: theme.lightOrange}]}>
-            <Link href={{
-              pathname: '/recipes/modal_recipe',
-              params: { name: item  },
-            }}
-            style={styles.title}>{item}</Link>
-          </View>
-        )}
-        renderSectionHeader={({ section: { title } }) => (
-          <Text style={[styles.header, {color: theme.grey}]}>{title}</Text>
-        )}
-        stickySectionHeadersEnabled={true}
-        ListFooterComponent={<View style={{height: 50}} />}
-      />
+      </>
+    )}
     </View>
   );
 };
@@ -172,6 +102,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: StatusBar.currentHeight,
     paddingHorizontal: 16,
+    justifyContent: 'center',
   },
   item: {
     padding: 20,
@@ -184,16 +115,23 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
+    alignSelf: 'center',
+    fontWeight: 'bold',
+    marginTop: 12,
+    marginBottom: 10,
   },
   categoryList: {
     minHeight: 40,
     marginVertical: 10,
   },
   categoryButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    marginHorizontal: 5,
-    borderRadius: 5,
+    width: '40%',
+    aspectRatio: 1.5, // Hace que los elementos sean cuadrados
+    backgroundColor: '#00aaff',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
   },
   categoryText: {
     fontSize: 18,

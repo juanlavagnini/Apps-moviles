@@ -12,7 +12,7 @@ const List = () => {
 
   const { user } = useUserContext();
   const { refresh } = useRefreshContext();
-  const ip = process.env.EXPO_PUBLIC_IP;
+  const URL = process.env.EXPO_PUBLIC_SERVER_URL;
   const sectionListRef = useRef<SectionList<any>>(null);
   const [DATA, setDATA] = useState<any>([]);
 
@@ -41,7 +41,7 @@ const List = () => {
   );
 
   useEffect(() => {
-    fetch(`http://${ip}:3000/houseProduct/supermarketList/${user?.houseId}`, {
+    fetch(`${URL}/houseProduct/supermarketList/${user?.houseId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -84,10 +84,6 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     marginHorizontal: 16,
     flex: 1,
-    shadowOpacity: 0.5,
-    shadowRadius: 4,
-    elevation: 5,
-    shadowOffset: { width: 0, height: 2.5 },
   },
   item_container: {
     flexDirection: 'row',

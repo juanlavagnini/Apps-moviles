@@ -11,12 +11,12 @@ const pastProducts = () => {
   const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
 
   const { user } = useUserContext();
-  const ip = process.env.EXPO_PUBLIC_IP;
+  const URL = process.env.EXPO_PUBLIC_SERVER_URL;
   const [DATA, setDATA] = useState<any>([]);
   const { refresh, setRefresh } = useRefreshContext();
 
   const handleRestoreProduct = (id: string) => {
-      fetch(`http://${ip}:3000/houseProduct/addProduct`, {
+      fetch(`${URL}/houseProduct/addProduct`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -46,7 +46,7 @@ const pastProducts = () => {
   };
 
   useEffect(() => {
-      fetch(`http://${ip}:3000/houseProduct/pastProducts/${user?.houseId}`, {
+      fetch(`${URL}/houseProduct/pastProducts/${user?.houseId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -89,10 +89,6 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     marginHorizontal: 16,
     flex: 1,
-    shadowOpacity: 0.5,
-    shadowRadius: 4,
-    elevation: 5,
-    shadowOffset: { width: 0, height: 2.5 },
   },
   title: {
     fontSize: 24,

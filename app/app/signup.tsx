@@ -7,11 +7,14 @@ import { Ionicons } from '@expo/vector-icons'
 
 
 const profile = () => {
-  const ip = process.env.EXPO_PUBLIC_IP
+  const URL = process.env.EXPO_PUBLIC_SERVER_URL;
 
   const colorScheme = useColorScheme();
   const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
   const [isIncorrect, setIsIncorrect] = useState(false)
+
+  const device = Platform.OS === 'ios' ? true : false;
+
   const [errorMessages, setErrorMessages] = useState({
     nombre: '',
     apellido: '',
@@ -27,7 +30,7 @@ const profile = () => {
 
   const signUpHandler = (nombre:string, apellido:string, correo:string, contrasena:string) => {
     
-    fetch(`http://${ip}:3000/user/signup`, {
+    fetch(`${URL}/user/signup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -89,11 +92,11 @@ const profile = () => {
   
 
   return (
-    <KeyboardAvoidingView 
-          style={[styles.keyboardAvoidingView, { backgroundColor: theme.background }]} 
-          behavior={Platform.OS === "ios" ? "padding" : "height"}>
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-            <View style={styles.container}>
+    <>
+    {device ? (
+    <KeyboardAvoidingView style={styles.keyboardAvoidingView} behavior="padding">
+      <View style={styles.container}>
+        <ScrollView style={styles.scrollContainer}>
             <Text style={[styles.title, {color: theme.grey}]}>Create an account</Text>
             {Object.values(errorMessages).some((msg) => msg) && <Text style={styles.errorMessage}>{Object.values(errorMessages).join('\n')}</Text>}
             <TextInput 
@@ -149,9 +152,75 @@ const profile = () => {
               </Pressable>
             </View>
             <Logbutton title="Sign Up" onPress={() => signUpHandler(nombre, apellido, correo, contrasena)} />
-          </View>
+          
+          <View style={{height: 50}}></View>
         </ScrollView>
-    </KeyboardAvoidingView>
+        </View>
+      </KeyboardAvoidingView>
+    ): (
+      <View style={styles.container}>
+        <ScrollView style={styles.scrollContainer}>
+            <Text style={[styles.title, {color: theme.grey}]}>Create an account</Text>
+            {Object.values(errorMessages).some((msg) => msg) && <Text style={styles.errorMessage}>{Object.values(errorMessages).join('\n')}</Text>}
+            <TextInput 
+              placeholder='Name' 
+              value={nombre} 
+              onChangeText={setNombre}
+              returnKeyType="next"
+              onSubmitEditing={() => apellidoInputRef.current?.focus()}
+              style={[errorMessages.nombre ? styles.inputIncorrect : styles.input, { color: theme.text }]}
+              placeholderTextColor="#666"
+            />
+            <TextInput 
+              ref={apellidoInputRef}
+              placeholder='Lastname' 
+              value={apellido} 
+              onChangeText={setApellido}
+              returnKeyType="next"
+              onSubmitEditing={() => correoInputRef.current?.focus()}
+              style={[errorMessages.apellido ? styles.inputIncorrect : styles.input, { color: theme.text }]}
+              placeholderTextColor="#666"
+            />
+            <TextInput 
+              ref={correoInputRef}
+              placeholder='Email' 
+              value={correo} 
+              onChangeText={setCorreo}
+              returnKeyType="next"
+              onSubmitEditing={() => contrasenaInputRef.current?.focus()}
+              style={[errorMessages.correo ? styles.inputIncorrect : styles.input, { color: theme.text }]}
+              placeholderTextColor="#666"
+            />
+            <View style={styles.password_conteiner}>
+              <TextInput 
+                secureTextEntry={secureTextEntry}
+                ref={contrasenaInputRef}
+                placeholder='Password' 
+                value={contrasena} 
+                onChangeText={setContrasena}
+                style={[errorMessages.contrasena ? styles.inputIncorrect : styles.input, { color: theme.text }]}
+                placeholderTextColor="#666"
+                returnKeyType='done'
+                onSubmitEditing={() => signUpHandler(nombre, apellido, correo, contrasena)}
+              />
+              <Pressable
+                  style={styles.icon}
+                  onPress={togglePasswordVisibility}
+                >
+                  <Ionicons
+                    name={secureTextEntry ? 'eye-off' : 'eye'}
+                    size={24}
+                    color="gray"
+                  />
+              </Pressable>
+            </View>
+            <Logbutton title="Sign Up" onPress={() => signUpHandler(nombre, apellido, correo, contrasena)} />
+          
+          <View style={{height: 50}}></View>
+        </ScrollView>
+        </View>
+    )}
+    </>
   )
 }
 
@@ -160,18 +229,17 @@ export default profile
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    margin: 10,
-    width: '80%',
+    width: '100%',
     justifyContent: "center",
+    alignContent: "center",
     alignItems: "center",
     gap: 20,  
   },
   scrollContainer: {
+    height: '100%',
     flex: 1,
-    margin: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 20,  
+    padding: 20,
+    gap: 20, 
   },
   keyboardAvoidingView: {
     flex: 1,

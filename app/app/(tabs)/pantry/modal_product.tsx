@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { router, useLocalSearchParams } from 'expo-router';
-import { Pressable, StyleSheet, Text, TextInput, View, Modal, SafeAreaView, useColorScheme } from 'react-native';
+import { Pressable, StyleSheet, Text, TextInput, View, SafeAreaView, useColorScheme } from 'react-native';
 import { useUserContext } from '../../_layout';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Colors } from '@/constants/Colors';
 import { useRefreshContext } from '../_layout';
+import Modal from 'react-native-modal';
 
 export default function product_modal() {
   const colorScheme = useColorScheme();
   const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
-  const ip = process.env.EXPO_PUBLIC_IP
+  const URL = process.env.EXPO_PUBLIC_SERVER_URL;
   const { user } = useUserContext();
   const { refresh, setRefresh } = useRefreshContext();
   const { productId = "" } = useLocalSearchParams();
@@ -22,7 +23,7 @@ export default function product_modal() {
 
   useEffect(() => {
     if (productId) {
-      fetch(`http://${ip}:3000/houseProduct/product/${user?.houseId}/${productId}`, {
+      fetch(`${URL}/houseProduct/product/${user?.houseId}/${productId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -43,7 +44,7 @@ export default function product_modal() {
 
 
   function handleNewalert(min: number) {
-    fetch(`http://${ip}:3000/houseProduct/updateAlert`, {
+    fetch(`${URL}/houseProduct/updateAlert`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -65,7 +66,7 @@ export default function product_modal() {
   }
 
   function handleRemoveAlert() {
-    fetch(`http://${ip}:3000/houseProduct/removeAlert`, {
+    fetch(`${URL}/houseProduct/removeAlert`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -89,11 +90,11 @@ export default function product_modal() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.centeredView}>
-        <Modal animationType="slide"
-          transparent={true}
-          onRequestClose={() => {
-            router.back();
-          }}>
+        <Modal 
+          isVisible={true}
+          onBackButtonPress={() => router.back()}
+          onBackdropPress={() => router.back()}
+          >
           <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <View style={styles.buttonContainer}>
