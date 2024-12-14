@@ -1,6 +1,6 @@
 # Mobile Applications Programming Project
 
-This repository is part of a project for the "Programming of Mobile Applications" course in the Computer Engineering program at Universidad Católica Argentina.
+This repository is part of a project for the "Programación de Aplicaciones Moviles" course in the Computer Engineering program at Universidad Católica Argentina.
 
 ## Prerequisites
 
