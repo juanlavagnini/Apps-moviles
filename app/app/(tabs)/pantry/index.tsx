@@ -156,8 +156,7 @@ const Pantry = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    //marginTop: StatusBar.currentHeight || 0,
-    paddingTop: StatusBar.currentHeight,
+    paddingTop: 5,
   },
   item: {
     borderRadius: 10,
@@ -165,10 +164,7 @@ const styles = StyleSheet.create({
     //marginHorizontal: 16,
     width: '100%',
     flex: 1,
-    shadowOpacity: 0.5,
-    shadowRadius: 4,
-    elevation: 5,
-    shadowOffset: { width: 0, height: 2.5 },
+    
   },
   title: {
     fontSize: 24,

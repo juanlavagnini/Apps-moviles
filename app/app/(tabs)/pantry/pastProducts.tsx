@@ -89,10 +89,6 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     marginHorizontal: 16,
     flex: 1,
-    shadowOpacity: 0.5,
-    shadowRadius: 4,
-    elevation: 5,
-    shadowOffset: { width: 0, height: 2.5 },
   },
   title: {
     fontSize: 24,
