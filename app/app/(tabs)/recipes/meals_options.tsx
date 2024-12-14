@@ -72,6 +72,7 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingTop: StatusBar.currentHeight,
         paddingHorizontal: 16,
+        justifyContent: 'center',
     },
     title: {
         fontSize: 24,

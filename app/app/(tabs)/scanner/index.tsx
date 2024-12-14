@@ -7,6 +7,7 @@ import { Colors } from '@/constants/Colors';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useScanContext } from './_layout';
 import { useRefreshContext } from '../_layout';
+import { Audio } from 'expo-av';
 
 const scanner = () => {
   const colorScheme = useColorScheme();
@@ -20,6 +21,36 @@ const scanner = () => {
 
   //Cuando apretamos la cruz de exit en el scanner, se desactiva la camara
   const [isCameraActive, setIsCameraActive] = useState<boolean>(true);
+
+  const [sound, setSound] = useState<Audio.Sound | null>(null);
+
+  // Precargar el sonido al montar el componente
+  useEffect(() => {
+    let soundObject: Audio.Sound;
+
+    const loadSound = async () => {
+      const { sound } = await Audio.Sound.createAsync(
+        require('@/assets/sounds/beep.mp3'), // Ruta del archivo de sonido
+        { shouldPlay: false } // Precargar pero no reproducir
+      );
+      soundObject = sound;
+      setSound(soundObject);
+    };
+
+    loadSound();
+
+    return () => {
+      if (soundObject) {
+        soundObject.unloadAsync(); // Liberar recursos al desmontar
+      }
+    };
+  }, []);
+
+  const playBeep = async () => {
+    if (sound) {
+      await sound.replayAsync(); // Reproducir el sonido inmediatamente
+    }
+  };
 
 
 
@@ -63,6 +94,7 @@ const scanner = () => {
         onBarcodeScanned={(result) => {
               setScan(true);
               if (scan) return;
+              playBeep();
               router.push({
                 pathname: '/scanner/modal_scanner_product',
                 params: { product: result.data },

@@ -23,7 +23,9 @@ const meal_recipie = () => {
   const modifyMeal = (meal: string) => meal.replace(/ /g, '%20');
 
   const getRecipie = (mealName: string) => {
-    const encodedMeal = modifyMeal(mealName);
+    const encodedMeal = modifyMeal(encodeURIComponent(mealName));
+    console.log(encodedMeal);
+    console.log(`https://www.themealdb.com/api/json/v1/1/search.php?s=${encodedMeal}`);
     fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${encodedMeal}`)
       .then((response) => response.json())
       .then((json) => {
@@ -97,6 +99,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: StatusBar.currentHeight,
     paddingHorizontal: 16,
+    justifyContent: 'center',
   },
   title: {
     fontSize: 24,

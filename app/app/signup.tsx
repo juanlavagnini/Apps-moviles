@@ -90,6 +90,7 @@ const profile = () => {
 
   return (
     <KeyboardAvoidingView 
+          keyboardVerticalOffset={100}  
           style={[styles.keyboardAvoidingView, { backgroundColor: theme.background }]} 
           behavior={Platform.OS === "ios" ? "padding" : "height"}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -150,6 +151,7 @@ const profile = () => {
             </View>
             <Logbutton title="Sign Up" onPress={() => signUpHandler(nombre, apellido, correo, contrasena)} />
           </View>
+          <View style={{height: 50}}></View>
         </ScrollView>
     </KeyboardAvoidingView>
   )

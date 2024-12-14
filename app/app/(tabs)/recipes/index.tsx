@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: StatusBar.currentHeight,
     paddingHorizontal: 16,
+    justifyContent: 'center',
   },
   item: {
     padding: 20,
