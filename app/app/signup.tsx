@@ -151,8 +151,9 @@ const profile = () => {
                   />
               </Pressable>
             </View>
+            <Text style={{color: theme.contrast, fontSize: 10, marginBottom: 30, marginTop: -24}}>Password must contain at least 8 characters, one number, one lowercase letter and one uppercase letter</Text>
             <Logbutton title="Sign Up" onPress={() => signUpHandler(nombre, apellido, correo, contrasena)} />
-          
+            <Text style={{color: theme.contrast, fontSize: 12}}>By signing up you agree to our Terms of Service and Privacy Policy</Text>
           <View style={{height: 50}}></View>
         </ScrollView>
         </View>
@@ -215,8 +216,9 @@ const profile = () => {
               </Pressable>
               
             </View>
+            <Text style={{color: theme.contrast, fontSize: 10, marginBottom: 30, marginTop: -24}}>Password must contain at least 8 characters, one number, one lowercase letter and one uppercase letter</Text>
             <Logbutton title="Sign Up" onPress={() => signUpHandler(nombre, apellido, correo, contrasena)} />
-          
+            <Text style={{color: theme.contrast, fontSize: 12}}>By signing up you agree to our Terms of Service and Privacy Policy</Text>
           <View style={{height: 50}}></View>
         </ScrollView>
         </View>
