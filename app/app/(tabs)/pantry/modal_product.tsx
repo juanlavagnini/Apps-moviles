@@ -174,7 +174,7 @@ export default function product_modal() {
               </View>
           </View> )}         
         </View>
-        ):
+        ): DBData && ShowEdit ?
         (
           <View style={{gap:5, alignItems: 'center'}}>
             <TextInput
@@ -194,7 +194,7 @@ export default function product_modal() {
             <Logbutton onPress={() => {handleEditInfo(DBData)}} title="Update"/>
           </View>
     
-        )}
+        ): null}
         
         <View>
              </View>
@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   heading: {
-    fontSize: 25,
+    fontSize: 20,
     marginBottom: 10,
   },
   text: {
