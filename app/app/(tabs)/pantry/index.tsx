@@ -25,7 +25,6 @@ const Pantry = () => {
   const URL = process.env.EXPO_PUBLIC_SERVER_URL;
   const [DATA, setDATA] = useState<any>([]);
   const { refresh, setRefresh } = useRefreshContext();
-  const [isSwiping, setIsSwiping] = useState(false);
 
   const handleSwipeRight = (id: string, swipeableRef: any) => {
     console.log('Delete product', id);
@@ -122,7 +121,7 @@ const Pantry = () => {
       .catch((error: any) => {
         console.error('ErrorPantry:', error);
       });
-  }, [refresh]);
+  }, [refresh, user?.houseId]);
 
   return (
     <GestureHandlerRootView>

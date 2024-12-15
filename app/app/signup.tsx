@@ -213,6 +213,7 @@ const profile = () => {
                     color="gray"
                   />
               </Pressable>
+              
             </View>
             <Logbutton title="Sign Up" onPress={() => signUpHandler(nombre, apellido, correo, contrasena)} />
           

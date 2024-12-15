@@ -57,7 +57,7 @@ const List = () => {
       .catch((error: any) => {
         console.error('ErrorPantry:', error);
       });
-  }, [refresh]);
+  }, [refresh, user?.houseId]);
 
   return (
     <View style={[styles.container, {backgroundColor: theme.background}]}>

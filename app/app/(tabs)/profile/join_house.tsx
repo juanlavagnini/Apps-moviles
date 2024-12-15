@@ -10,11 +10,13 @@ import { CameraView, useCameraPermissions } from 'expo-camera';
 import Logbutton from '@/components/Logbutton';
 import { FlatList } from 'react-native';
 import { Colors } from '@/constants/Colors';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import { useRefreshContext } from '../_layout';
 
 const join_house = () => {
 
     const { user, setUser } = useUserContext();
+    const { refresh, setRefresh } = useRefreshContext();
+
     const [permission, requestPermission] = useCameraPermissions();
     const [scan, setScan] = React.useState<boolean>(false);
     const URL = process.env.EXPO_PUBLIC_SERVER_URL;
@@ -73,6 +75,7 @@ const join_house = () => {
               houseId: data.houseId,
               owner: data.ownedHouse,
             });
+            setRefresh(!refresh);
             router.back();
         })
         

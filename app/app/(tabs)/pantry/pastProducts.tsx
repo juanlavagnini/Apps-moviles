@@ -24,6 +24,7 @@ const pastProducts = () => {
         body: JSON.stringify({
           houseId: user?.houseId,
           productId: id,
+          quantity: 1,
         }),
       })
       setRefresh(!refresh);
