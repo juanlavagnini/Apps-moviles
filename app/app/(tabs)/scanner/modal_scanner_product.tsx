@@ -63,10 +63,6 @@ export default function scanner_modal() {
 
   const handleAddProduct = (productId: string | string [], productData: any, quantity: number) => () => {
     //Si la API no tiene nombre, se usa el nombre manual
-    //const name = (productData.status == 1) ? productData.product.product_name : manualName;
-    //const productBrand = (productData.status == 1) ? productData.product.brands : brand;
-    //const name = DBdata.name || productData.product.product_name || manualName;
-    //const productBrand = DBdata.brand || productData.product.brands || brand;
     const name = (productData.status == 0 && DBdata) ? DBdata.name : (productData.status == 0 && !DBdata) ? manualName : (productData.status == 1 && productData.product.product_name != undefined) ? productData.product.product_name : "no name";
     const productBrand = (productData.status == 0 && DBdata) ? DBdata.brand : (productData.status == 0 && !DBdata) ? brand : (productData.status == 1 && productData.product.brands != undefined) ? productData.product.brands : "no brand";
 
@@ -126,8 +122,8 @@ export default function scanner_modal() {
       <SafeAreaView style={styles.centeredView}>
         <Modal 
           isVisible={true}
-          //onBackButtonPress={() => router.back()}
-          onBackdropPress={() => router.back()}
+          onBackButtonPress={() => {router.back(), setScan(false)}}
+          onBackdropPress={() => {router.back(), setScan(false)}}
           >
         <View style={styles.centeredView}>
         <View style={styles.modalView}>
@@ -232,7 +228,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalView: {
-    width: '70%',
+    width: '80%',
     margin: 10,
     backgroundColor: "white",
     borderRadius: 20,

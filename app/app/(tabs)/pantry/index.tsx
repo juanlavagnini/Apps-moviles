@@ -7,6 +7,7 @@ import {
   Pressable,
   FlatList,
   useColorScheme,
+  RefreshControl,
 } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -108,6 +109,7 @@ const Pantry = () => {
   };
 
   useEffect(() => {
+    console.log('Fetching pantry products');
     fetch(`${URL}/houseProduct/products/${user?.houseId}`, {
       method: 'GET',
       headers: {
@@ -130,6 +132,14 @@ const Pantry = () => {
     <GestureHandlerRootView>
       <View style={[styles.container, { backgroundColor: theme.background }]}>
         <FlatList
+          refreshControl={
+                  <RefreshControl
+                refreshing={false}
+                onRefresh={() => {
+                  setRefresh(!refresh);
+                }}
+                colors={[theme.contrast]}
+                  />}
           style={{ height: '100%' }}
           data={DATA}
           renderItem={({ item }) => (
@@ -137,6 +147,7 @@ const Pantry = () => {
           )}
           keyExtractor={(item) => item.id}
           ItemSeparatorComponent={() => <View style={styles.separator} />}
+          ListEmptyComponent={<Text style = {styles.textEmpty}>Your Pantry is empty! Go to the scanner to add new products</Text>}
           ListFooterComponent={
             <View>
               <Pressable
@@ -223,6 +234,11 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 10,
   },
+  textEmpty: {
+    textAlign: 'center',
+    fontSize: 20,
+    marginTop: 5,
+  }
 });
 
 export default Pantry;

@@ -75,6 +75,8 @@ const pastProducts = () => {
         data={DATA}
         renderItem={({item}) => <Item title={item.title} brand={item.brand} quantity={item.quantity} id={item.id}/>}
         keyExtractor={item => item.id}
+        ListEmptyComponent={<Text style = {styles.textEmpty}>You don't have past products</Text>}
+        ListFooterComponent={<View style={{height: 50}} />}
     />
     </View>
   )
@@ -108,5 +110,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 10,
+  },
+  textEmpty: {
+    textAlign: 'center',
+    fontSize: 20,
+    marginTop: 5,
   },
 })
