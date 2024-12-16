@@ -57,7 +57,7 @@ const List = () => {
       .catch((error: any) => {
         console.error('ErrorPantry:', error);
       });
-  }, [refresh]);
+  }, [refresh, user?.houseId]);
 
   return (
     <View style={[styles.container, {backgroundColor: theme.background}]}>
@@ -75,8 +75,7 @@ const List = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    //marginTop: StatusBar.currentHeight || 0,
-    paddingTop: StatusBar.currentHeight,
+    paddingTop: 5,
   },
   item: {
     borderRadius: 10,

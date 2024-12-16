@@ -7,6 +7,7 @@ import {
   Pressable,
   FlatList,
   useColorScheme,
+  RefreshControl,
 } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -25,7 +26,6 @@ const Pantry = () => {
   const URL = process.env.EXPO_PUBLIC_SERVER_URL;
   const [DATA, setDATA] = useState<any>([]);
   const { refresh, setRefresh } = useRefreshContext();
-  const [isSwiping, setIsSwiping] = useState(false);
 
   const handleSwipeRight = (id: string, swipeableRef: any) => {
     console.log('Delete product', id);
@@ -44,7 +44,7 @@ const Pantry = () => {
     });
   };
 
-  const handleSwipeLeft = (id: string, swipeableRef: any) => {
+  const handleSwipeLeft = (id: string, name: string, brand:string, swipeableRef: any) => {
     fetch(`${URL}/houseProduct/addProduct`, {
       method: 'POST',
       headers: {
@@ -53,15 +53,18 @@ const Pantry = () => {
       body: JSON.stringify({
         houseId: user?.houseId,
         productId: id,
+        name: name,
+        brand: brand,
         quantity: 1,
       }),
     }).then(() => {
+      console.log('Add product', id);
       setRefresh(!refresh);
       swipeableRef.current?.close(); // Cierra el Swipeable después de la acción
     });
   };
 
-  const Item = ({ id, title, quantity }: { id: string; title: string; quantity: number }) => {
+  const Item = ({ id, title, brand, quantity }: { id: string; title: string; brand: string; quantity: number }) => {
     const swipeableRef = useRef(null); // Referencia para controlar el Swipeable
 
     return (
@@ -76,7 +79,7 @@ const Pantry = () => {
           </Pressable>
         )}
         renderLeftActions={() => (
-          <Pressable onPress={() => handleSwipeLeft(id, swipeableRef)}>
+          <Pressable onPress={() => handleSwipeLeft(id, title, brand, swipeableRef)}>
             <View style={styles.actionContainerLeft}>
               <Ionicons name="add" size={30} color="white" />
             </View>
@@ -106,6 +109,7 @@ const Pantry = () => {
   };
 
   useEffect(() => {
+    console.log('Fetching pantry products');
     fetch(`${URL}/houseProduct/products/${user?.houseId}`, {
       method: 'GET',
       headers: {
@@ -114,27 +118,36 @@ const Pantry = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        const DATA = data.map((item: { productId: number; name: string; quantity: number }) => {
-          return { id: item.productId, title: item.name, quantity: item.quantity };
+        const DATA = data.map((item: { productId: number; name: string; brand: string ;quantity: number }) => {
+          return { id: item.productId, title: item.name, brand: item.brand ,quantity: item.quantity };
         });
         setDATA(DATA);
       })
       .catch((error: any) => {
         console.error('ErrorPantry:', error);
       });
-  }, [refresh]);
+  }, [refresh, user?.houseId]);
 
   return (
     <GestureHandlerRootView>
       <View style={[styles.container, { backgroundColor: theme.background }]}>
         <FlatList
+          refreshControl={
+                  <RefreshControl
+                refreshing={false}
+                onRefresh={() => {
+                  setRefresh(!refresh);
+                }}
+                colors={[theme.contrast]}
+                  />}
           style={{ height: '100%' }}
           data={DATA}
           renderItem={({ item }) => (
-            <Item title={item.title} quantity={item.quantity} id={item.id} />
+            <Item title={item.title} quantity={item.quantity} id={item.id} brand={item.brand} />
           )}
           keyExtractor={(item) => item.id}
           ItemSeparatorComponent={() => <View style={styles.separator} />}
+          ListEmptyComponent={<Text style = {styles.textEmpty}>Your Pantry is empty! Go to the scanner to add new products</Text>}
           ListFooterComponent={
             <View>
               <Pressable
@@ -221,6 +234,11 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 10,
   },
+  textEmpty: {
+    textAlign: 'center',
+    fontSize: 20,
+    marginTop: 5,
+  }
 });
 
 export default Pantry;

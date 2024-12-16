@@ -7,6 +7,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Colors } from '@/constants/Colors';
 import { useRefreshContext } from '../_layout';
 import Modal from 'react-native-modal';
+import Logbutton from '@/components/Logbutton';
 
 export default function product_modal() {
   const colorScheme = useColorScheme();
@@ -18,8 +19,13 @@ export default function product_modal() {
   const [DBData, setDBData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [showInputAlert, setshowInputAlert] = useState<Boolean>(false);
+  const [ShowEdit, setShowEdit] = useState<Boolean>(false);
   const [minQuantity, setMinQuantity] = useState<number>(0);
+    const [errorMessages, setErrorMessages] = useState({
+      name: '',
+      brand: '',
+    });
+    const [isIncorrect, setIsIncorrect] = useState(false)
 
   useEffect(() => {
     if (productId) {
@@ -86,6 +92,48 @@ export default function product_modal() {
     })
   }
 
+  const handleEditInfo = (data: any) => {
+    fetch(`${URL}/houseProduct/updateProductInfo`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        houseId: user?.houseId,
+        productId: productId,
+        name: data.name,
+        brand: data.brand,
+      }),
+    })
+    .then(async (response) => {
+      if(response.ok){
+        setErrorMessages({
+          name: '',
+          brand: '',
+        });
+        setDBData(data);
+        setShowEdit(false);
+        setRefresh(!refresh);
+      }else if(response.status === 400){
+        const data = await response.json();
+        const errors = data.errors || [];
+        const newErrorMessages = {
+          name: '',
+          brand: '',
+        };
+        errors.forEach((e: {field: string; message: string}) => {
+          if (e.field === 'name') newErrorMessages.name = e.message;
+          if (e.field === 'brand') newErrorMessages.brand = e.message;
+        });
+        console.log("estoy aca");
+        setErrorMessages(newErrorMessages);
+        setIsIncorrect(true);
+      }})
+    .catch((error) => {
+      setError(error.message);
+    })
+  }
+
 
   return (
     <SafeAreaProvider>
@@ -109,7 +157,7 @@ export default function product_modal() {
               <Text style={styles.heading} numberOfLines={1}>Product Information</Text>
             </View>
         {loading && <Text>Loading...</Text>}
-        {DBData && (
+        {DBData && !ShowEdit ? (
         <View>
           <View style={{ borderBottomColor: 'grey',
                           borderBottomWidth: 1,
@@ -119,45 +167,58 @@ export default function product_modal() {
             <Text style={styles.text}>Brand: {DBData.brand}</Text>
             <Text style={styles.text}>Stored quantity: {DBData.quantity}</Text>
           </View>
-          {DBData.hasAlert ? showInputAlert ? 
-            (<View>
-              <TextInput 
-                placeholder='Minimum Quantity' 
-                style={styles.input} 
-                placeholderTextColor="#666"
-                onChange={(e) => setMinQuantity(Number(e.nativeEvent.text))}/> 
-                <Pressable style={[styles.updateButton, {backgroundColor: theme.darkOrange}]} 
-                            onPress={() => {
-                              handleNewalert(minQuantity)
-                              setshowInputAlert(false)}}>
-                  <Text style={{color: theme.darkBrown}}>Update Alert</Text>
-                </Pressable>
-            </View> ) : 
+          {DBData.hasAlert ?
           (
             <View style={{gap:5, alignItems: 'center'}}>
               <Text style={styles.text}>Has alert set for: {DBData.minimum}</Text>
               <View style={styles.buttons}>
-                <Pressable style={[styles.updateButton, {backgroundColor: theme.darkOrange}]} onPress={()=> setshowInputAlert(true)}>
-                  <Text style={{color: theme.darkBrown}}>Update Alert</Text>
-                </Pressable>
                 <Pressable style={[styles.removeButton, {backgroundColor: theme.darkOrange}]} onPress={() => handleRemoveAlert()}>
-                  <Text style={{color: theme.darkBrown}}>Remove Alert</Text>
+                  <Ionicons name="notifications-off-sharp" size={24} color={theme.darkBrown} />
+                </Pressable>
+                <Pressable style={[styles.removeButton, {backgroundColor: theme.darkOrange}]} onPress={() => setShowEdit(true)}>
+                  <Ionicons name="settings-sharp" size={24} color={theme.darkBrown} />
                 </Pressable>
               </View>
             </View>
           ) : 
-          (<View>
+          (<View style={{gap:5, alignItems: 'center'}}>
             <TextInput 
               placeholder='Minimum Quantity' 
               style={styles.input} 
               placeholderTextColor="#666"
               onChange={(e) => setMinQuantity(Number(e.nativeEvent.text))}/> 
-              <Pressable style={[styles.addButton, {backgroundColor: theme.darkOrange}]} onPress={() => handleNewalert(minQuantity)}>
-                <Text style={{color: theme.darkBrown}}>Set Alert</Text>
-              </Pressable>
+              <View style={styles.buttons}>
+                <Pressable style={[styles.addButton, {backgroundColor: theme.darkOrange}]} onPress={() => handleNewalert(minQuantity)}>
+                  <Ionicons name="notifications-sharp" size={24} color={theme.darkBrown} />
+                </Pressable>
+                <Pressable style={[styles.removeButton, {backgroundColor: theme.darkOrange}]} onPress={() => setShowEdit(true)}>
+                    <Ionicons name="settings-sharp" size={24} color={theme.darkBrown} />
+                </Pressable>
+              </View>
           </View> )}         
         </View>
-        )}
+        ): DBData && ShowEdit ?
+        (
+          <View style={{gap:5, alignItems: 'center'}}>
+            {Object.values(errorMessages).some((msg) => msg) && <Text style={styles.errorMessage}>{Object.values(errorMessages).join('\n')}</Text>}
+            <TextInput
+            placeholder='Product Name' 
+            style={[errorMessages.name ? styles.inputIncorrect : styles.input]} 
+            placeholderTextColor="#666"
+            value={DBData.name}
+            onChange={(e) => setDBData({ ...DBData, name: e.nativeEvent.text })}
+            />
+              <TextInput
+            placeholder='Product Brand' 
+            style={[errorMessages.brand ? styles.inputIncorrect : styles.input]} 
+            placeholderTextColor="#666"
+            value={DBData.brand}
+            onChange={(e) => setDBData({ ...DBData, brand: e.nativeEvent.text })}
+            />
+            <Logbutton onPress={() => {handleEditInfo(DBData)}} title="Update"/>
+          </View>
+    
+        ): null}
         
         <View>
              </View>
@@ -193,7 +254,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   heading: {
-    fontSize: 25,
+    fontSize: 20,
     marginBottom: 10,
   },
   text: {
@@ -242,5 +303,21 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 8,
     paddingHorizontal: 10,
-    marginBottom: 10,},
+    marginBottom: 10,
+  },
+  inputIncorrect: {
+    width: '100%',
+    height: 50,
+    borderBottomWidth: 1,
+    borderColor: "red",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginBottom: 20,
+  },
+  errorMessage: {
+    color: "red",
+    fontSize: 14,
+    marginBottom: 10,
+    textAlign: "center",
+  },
 });

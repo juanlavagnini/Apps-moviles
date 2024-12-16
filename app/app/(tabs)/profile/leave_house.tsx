@@ -6,14 +6,17 @@ import { router } from 'expo-router';
 import { Pressable} from 'react-native';
 import Modal  from 'react-native-modal'
 import { Ionicons } from '@expo/vector-icons';
-import { CameraView, useCameraPermissions } from 'expo-camera';
+import { useCameraPermissions } from 'expo-camera';
 import Logbutton from '@/components/Logbutton';
 import { FlatList } from 'react-native';
 import { Colors } from '@/constants/Colors';
+import { useRefreshContext } from '../_layout';
 
 const leave_house = () => {
 
     const { user, setUser } = useUserContext();
+    const { refresh, setRefresh } = useRefreshContext();
+
     const [permission, requestPermission] = useCameraPermissions();
     const URL = process.env.EXPO_PUBLIC_SERVER_URL;
 
@@ -22,6 +25,7 @@ const leave_house = () => {
     const [selectedOwner, setSelectedOwner] = React.useState<string>('');
 
     const [users, setUsers] = React.useState<{ name: string; id: string }[]>([]);
+
 
     const colorScheme = useColorScheme();
     const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
@@ -71,6 +75,7 @@ const leave_house = () => {
           owner: data.ownedHouse,
         });
       });
+      setRefresh(!refresh);
       router.back();
     }
 
@@ -157,12 +162,20 @@ const leave_house = () => {
                     </FlatList>
                     <Logbutton title="Accept" onPress={() => setIsDelegated(true)} />
                   </View>) 
-                  : (
+                  : !isAcepted && !isDelegated ? (
                  <View style={styles.viewAlert}>
                   <Text style={{alignSelf: "flex-start"}}>Are you sure that you want to leave your house?</Text>
                   <Text style={{alignSelf: "flex-start", color: "red", fontStyle: "italic"}}>By accepting you will lose all your products</Text>
                   <View style={styles.alertButtons}>
                     <Logbutton title="Yes" onPress={() => {setIsAcepted(true), getUsers()}} />
+                    <Logbutton title="No" onPress={() => router.back()} />
+                  </View>
+
+                </View>): (<View style={styles.viewAlert}>
+                  <Text style={{alignSelf: "flex-start"}}>Are you sure that you want to leave your house?</Text>
+                  <Text style={{alignSelf: "flex-start", color: "red", fontStyle: "italic"}}>By accepting you will lose all your products</Text>
+                  <View style={styles.alertButtons}>
+                    <Logbutton title="Yes" onPress={() => {setIsAcepted(true)}} />
                     <Logbutton title="No" onPress={() => router.back()} />
                   </View>
 
@@ -200,7 +213,7 @@ const styles = StyleSheet.create({
       },
       modalView: {
         width: '70%',
-        height: "30%",
+        height: "50%",
         margin: 10,
         justifyContent: 'center',
         alignContent: 'center',

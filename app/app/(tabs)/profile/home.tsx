@@ -91,18 +91,22 @@ const index = () => {
 
   return (
     <View style={[styles.container, {backgroundColor: theme.background}]}>
-        <Text style={{color: theme.text}}>Invite members</Text>
-        <View style={styles.qrcode}>
-        <QRCode value={user?.email} size={200} />
-        </View>
-        <Text style={{color: theme.text}}>Members</Text>
         <FlatList
-            style={{width:"90%",padding:10,marginBottom: 10}}
+            ListHeaderComponent={<View style={[styles.container,{justifyContent:'center', alignItems: 'center'}]}>
+              <Text style={{color: theme.text}}>Invite members</Text>
+              <View style={styles.qrcode}>
+              <QRCode value={user?.email} size={200} />
+              </View>
+              <Text style={{color: theme.text}}>Members</Text>
+            </View>}
+            style={{width:"100%",padding:10,marginBottom: 10}}
             data={users}
             renderItem={({ item }) => (Item({item}))}
             keyExtractor={(item) => item.id}
             ItemSeparatorComponent={() => <View style={{height:8}} />}
-                >
+            ListEmptyComponent={<Text style={{color: theme.text, alignSelf: "center"}}>No members</Text>}
+            ListFooterComponent={<View style={{height: 50}}/>}
+        >
         </FlatList>
     </View>
   )
@@ -113,7 +117,7 @@ export default index
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 60,
+        paddingVertical: 5,
         gap: 20,
         justifyContent: 'flex-start',
         alignItems: 'center',

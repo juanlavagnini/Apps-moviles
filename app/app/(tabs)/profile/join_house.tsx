@@ -10,11 +10,13 @@ import { CameraView, useCameraPermissions } from 'expo-camera';
 import Logbutton from '@/components/Logbutton';
 import { FlatList } from 'react-native';
 import { Colors } from '@/constants/Colors';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import { useRefreshContext } from '../_layout';
 
 const join_house = () => {
 
     const { user, setUser } = useUserContext();
+    const { refresh, setRefresh } = useRefreshContext();
+
     const [permission, requestPermission] = useCameraPermissions();
     const [scan, setScan] = React.useState<boolean>(false);
     const URL = process.env.EXPO_PUBLIC_SERVER_URL;
@@ -73,6 +75,7 @@ const join_house = () => {
               houseId: data.houseId,
               owner: data.ownedHouse,
             });
+            setRefresh(!refresh);
             router.back();
         })
         
@@ -166,12 +169,20 @@ const join_house = () => {
                     </FlatList>
                     <Logbutton title="Accept" onPress={() => setIsDelegated(true)} />
                   </View>) 
-                  : (
+                  : !isAcepted && !isDelegated ? (
                  <View style={styles.viewAlert}>
                   <Text style={{alignSelf: "flex-start"}}>Are you sure that you want to join another house?</Text>
                   <Text style={{alignSelf: "flex-start", color: "red", fontStyle: "italic"}}>By accepting you will lose all your products</Text>
                   <View style={styles.alertButtons}>
                     <Logbutton title="Yes" onPress={() => {setIsAcepted(true), getUsers()}} />
+                    <Logbutton title="No" onPress={() => router.back()} />
+                  </View>
+
+                </View>): (<View style={styles.viewAlert}>
+                  <Text style={{alignSelf: "flex-start"}}>Are you sure that you want to leave your house?</Text>
+                  <Text style={{alignSelf: "flex-start", color: "red", fontStyle: "italic"}}>By accepting you will lose all your products</Text>
+                  <View style={styles.alertButtons}>
+                    <Logbutton title="Yes" onPress={() => {setIsAcepted(true)}} />
                     <Logbutton title="No" onPress={() => router.back()} />
                   </View>
 

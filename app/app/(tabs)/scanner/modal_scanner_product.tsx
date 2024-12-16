@@ -18,6 +18,14 @@ export default function scanner_modal() {
   const [manualName, setManualName] = useState<string>("");
   const [brand, setBrand] = useState<string>("");
   const [quantity, setQuantity] = useState<number>(1);
+  const [errorMessages, setErrorMessages] = useState({
+    productName: '',
+    productBrand: '',
+    catidad: '',
+  });
+  const [isIncorrect, setIsIncorrect] = useState(false)
+  
+
 
   const URL = process.env.EXPO_PUBLIC_SERVER_URL;
 
@@ -55,10 +63,9 @@ export default function scanner_modal() {
 
   const handleAddProduct = (productId: string | string [], productData: any, quantity: number) => () => {
     //Si la API no tiene nombre, se usa el nombre manual
-    const name = (productData.status == 1) ? productData.product.product_name : manualName;
-    const productBrand = (productData.status == 1) ? productData.product.brands : brand;
+    const name = (productData.status == 0 && DBdata) ? DBdata.name : (productData.status == 0 && !DBdata) ? manualName : (productData.status == 1 && productData.product.product_name != undefined) ? productData.product.product_name : "no name";
+    const productBrand = (productData.status == 0 && DBdata) ? DBdata.brand : (productData.status == 0 && !DBdata) ? brand : (productData.status == 1 && productData.product.brands != undefined) ? productData.product.brands : "no brand";
 
-    console.log('Add product', productId);
     fetch(`${URL}/houseProduct/addProduct`, {
       method: 'POST',
       headers: {
@@ -72,8 +79,39 @@ export default function scanner_modal() {
         quantity: quantity,
       }),
     })
-    setScan(false);
-    router.back();
+    .then(async (response) => {
+      if (response.ok) {
+        setErrorMessages({
+          productName: '',
+          productBrand: '',
+          catidad: '',
+        });
+        setScan(false);
+        router.back();
+      }else if (response.status == 400) {
+        const data = await response.json();
+        const errors = data.errors || [];
+        const newErrorMessages = {
+          productName: '',
+          productBrand: '',
+          catidad: '',
+        };
+
+        errors.forEach((e: {field: string; message: string}) => {
+          if (e.field === 'name') newErrorMessages.productName = e.message;
+          if (e.field === 'brand') newErrorMessages.productBrand = e.message;
+          if (e.field === 'quantity') newErrorMessages.catidad = e.message;
+          });
+          setErrorMessages(newErrorMessages);
+          setIsIncorrect(true);
+      } else {
+        setErrorMessages({
+          productName: 'Unexpected Error',
+          productBrand: '',
+          catidad: '',
+        });
+      }
+    })
   };
 
   //Si el producto ya existe en la base de datos de este usuario, se muestra
@@ -84,8 +122,8 @@ export default function scanner_modal() {
       <SafeAreaView style={styles.centeredView}>
         <Modal 
           isVisible={true}
-          onBackButtonPress={() => router.back()}
-          onBackdropPress={() => router.back()}
+          onBackButtonPress={() => {router.back(), setScan(false)}}
+          onBackdropPress={() => {router.back(), setScan(false)}}
           >
         <View style={styles.centeredView}>
         <View style={styles.modalView}>
@@ -105,9 +143,10 @@ export default function scanner_modal() {
           <View style={styles.textContainer}>
             <Text style={styles.text} numberOfLines={1}>Product Name: {DBdata.name}</Text>
             <Text style={styles.text} numberOfLines={1}>Brand: {DBdata.brand}</Text>
+            {Object.values(errorMessages).some((msg) => msg) && <Text style={styles.errorMessage}>{Object.values(errorMessages).join('\n')}</Text>}
             <View>
               <TextInput
-                style={styles.input}
+                style={[errorMessages.catidad ? styles.inputIncorrect : styles.input]}
                 onChange={(e) => setQuantity(Number(e.nativeEvent.text))}
                 placeholder="1"
                 placeholderTextColor={'#666'}
@@ -118,9 +157,10 @@ export default function scanner_modal() {
           <View style={styles.textContainer}>
             <Text style={styles.text} numberOfLines={1}>Product Name: {productData.product.product_name}</Text>
             <Text style={styles.text} numberOfLines={1}>Brand: {productData.product.brands}</Text>
+            {Object.values(errorMessages).some((msg) => msg) && <Text style={styles.errorMessage}>{Object.values(errorMessages).join('\n')}</Text>}
             <View>
               <TextInput
-                style={styles.input}
+                style={[errorMessages.catidad ? styles.inputIncorrect : styles.input]}
                 onChange={(e) => setQuantity(Number(e.nativeEvent.text))}
                 placeholder="1"
                 placeholderTextColor={'#666'}
@@ -130,15 +170,16 @@ export default function scanner_modal() {
           ) : productData && productData.status == 0 ?(
           <View>
             <Text style={styles.notFoundText}>Product not found</Text>    
+            {Object.values(errorMessages).some((msg) => msg) && <Text style={styles.errorMessage}>{Object.values(errorMessages).join('\n')}</Text>}
             <TextInput
-              style={styles.input}
+              style={[errorMessages.productName ? styles.inputIncorrect : styles.input]}
               onChangeText={(text: string) => setManualName(text)}
               value={manualName}
               placeholder="Enter product name"
               placeholderTextColor={'#666'}
             />
             <TextInput
-              style={styles.input}
+              style={[errorMessages.productBrand ? styles.inputIncorrect : styles.input]}
               onChangeText={(text: string) => setBrand(text)}
               value={brand}
               placeholder="Enter brand"
@@ -146,7 +187,7 @@ export default function scanner_modal() {
             />
             <View>
               <TextInput
-                style={styles.input}
+                style={[errorMessages.catidad ? styles.inputIncorrect : styles.input]}
                 onChange={(e) => setQuantity(Number(e.nativeEvent.text))}
                 placeholder="1"
                 placeholderTextColor={'#666'}
@@ -187,7 +228,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalView: {
-    width: '70%',
+    width: '80%',
     margin: 10,
     backgroundColor: "white",
     borderRadius: 20,
@@ -257,5 +298,20 @@ const styles = StyleSheet.create({
     marginTop: 10,
     color: 'red',
     alignSelf: 'center',
+  },
+  inputIncorrect: {
+    width: '100%',
+    height: 50,
+    borderBottomWidth: 1,
+    borderColor: "red",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginBottom: 20,
+  },
+  errorMessage: {
+    color: "red",
+    fontSize: 14,
+    marginBottom: 10,
+    textAlign: "center",
   },
 });
