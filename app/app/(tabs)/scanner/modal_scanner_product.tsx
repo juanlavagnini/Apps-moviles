@@ -67,9 +67,9 @@ export default function scanner_modal() {
     //const productBrand = (productData.status == 1) ? productData.product.brands : brand;
     //const name = DBdata.name || productData.product.product_name || manualName;
     //const productBrand = DBdata.brand || productData.product.brands || brand;
-    const name = (productData.status == 0 && DBdata) ? DBdata.name : (productData.status == 0 && !DBdata) ? manualName : (productData.status == 1) ? productData.product.product_name : null;
-    const productBrand = (productData.status == 0 && DBdata) ? DBdata.brand : (productData.status == 0 && !DBdata) ? brand : (productData.status == 1) ? productData.product.brands : null;
-    
+    const name = (productData.status == 0 && DBdata) ? DBdata.name : (productData.status == 0 && !DBdata) ? manualName : (productData.status == 1 && productData.product.product_name != undefined) ? productData.product.product_name : "no name";
+    const productBrand = (productData.status == 0 && DBdata) ? DBdata.brand : (productData.status == 0 && !DBdata) ? brand : (productData.status == 1 && productData.product.brands != undefined) ? productData.product.brands : "no brand";
+    console.log("aca",productData.product.product_name);
     console.log('DBdata', DBdata);
     console.log('Add product', productData.status);
     console.log('name', productBrand);
