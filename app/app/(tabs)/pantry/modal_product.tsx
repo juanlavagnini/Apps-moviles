@@ -21,6 +21,11 @@ export default function product_modal() {
   const [error, setError] = useState<string | null>(null);
   const [ShowEdit, setShowEdit] = useState<Boolean>(false);
   const [minQuantity, setMinQuantity] = useState<number>(0);
+    const [errorMessages, setErrorMessages] = useState({
+      name: '',
+      brand: '',
+    });
+    const [isIncorrect, setIsIncorrect] = useState(false)
 
   useEffect(() => {
     if (productId) {
@@ -100,12 +105,30 @@ export default function product_modal() {
         brand: data.brand,
       }),
     })
-    .then((response) => response.json())
-    .then((data) => {
-      setDBData(data);
-      setShowEdit(false);
-      setRefresh(!refresh);
-    })
+    .then(async (response) => {
+      if(response.ok){
+        setErrorMessages({
+          name: '',
+          brand: '',
+        });
+        setDBData(data);
+        setShowEdit(false);
+        setRefresh(!refresh);
+      }else if(response.status === 400){
+        const data = await response.json();
+        const errors = data.errors || [];
+        const newErrorMessages = {
+          name: '',
+          brand: '',
+        };
+        errors.forEach((e: {field: string; message: string}) => {
+          if (e.field === 'name') newErrorMessages.name = e.message;
+          if (e.field === 'brand') newErrorMessages.brand = e.message;
+        });
+        console.log("estoy aca");
+        setErrorMessages(newErrorMessages);
+        setIsIncorrect(true);
+      }})
     .catch((error) => {
       setError(error.message);
     })
@@ -177,16 +200,17 @@ export default function product_modal() {
         ): DBData && ShowEdit ?
         (
           <View style={{gap:5, alignItems: 'center'}}>
+            {Object.values(errorMessages).some((msg) => msg) && <Text style={styles.errorMessage}>{Object.values(errorMessages).join('\n')}</Text>}
             <TextInput
             placeholder='Product Name' 
-            style={styles.input} 
+            style={[errorMessages.name ? styles.inputIncorrect : styles.input]} 
             placeholderTextColor="#666"
             value={DBData.name}
             onChange={(e) => setDBData({ ...DBData, name: e.nativeEvent.text })}
             />
               <TextInput
             placeholder='Product Brand' 
-            style={styles.input} 
+            style={[errorMessages.brand ? styles.inputIncorrect : styles.input]} 
             placeholderTextColor="#666"
             value={DBData.brand}
             onChange={(e) => setDBData({ ...DBData, brand: e.nativeEvent.text })}
@@ -280,5 +304,20 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 10,
     marginBottom: 10,
+  },
+  inputIncorrect: {
+    width: '100%',
+    height: 50,
+    borderBottomWidth: 1,
+    borderColor: "red",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginBottom: 20,
+  },
+  errorMessage: {
+    color: "red",
+    fontSize: 14,
+    marginBottom: 10,
+    textAlign: "center",
   },
 });
