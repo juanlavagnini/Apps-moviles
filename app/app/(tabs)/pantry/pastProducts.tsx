@@ -15,7 +15,8 @@ const pastProducts = () => {
   const [DATA, setDATA] = useState<any>([]);
   const { refresh, setRefresh } = useRefreshContext();
 
-  const handleRestoreProduct = (id: string) => {
+  const handleRestoreProduct = (id: string, name: string, brand: string) => {
+    console.log('Add product', id);
       fetch(`${URL}/houseProduct/addProduct`, {
         method: 'POST',
         headers: {
@@ -24,14 +25,17 @@ const pastProducts = () => {
         body: JSON.stringify({
           houseId: user?.houseId,
           productId: id,
+          name: name,
+          brand: brand,
           quantity: 1,
         }),
       })
+      console.log(brand);
       setRefresh(!refresh);
   }
 
 
-  const Item = ({ id, title, quantity }: { id: string; title: string; quantity: number }) => {
+  const Item = ({ id, title, brand, quantity }: { id: string; title: string; brand: string;quantity: number }) => {
       return (
         <View style={[styles.item, {backgroundColor: theme.lightOrange,
           borderBottomColor: theme.darkOrange,
@@ -39,7 +43,7 @@ const pastProducts = () => {
           <Text style={styles.title}>{title}</Text>
           <Text>Quantity: {quantity}</Text>
           <Pressable style={[styles.editButton, {backgroundColor: theme.lightOrange,
-    borderBottomColor: theme.darkOrange,}]} onPress={()=> handleRestoreProduct(id)}>
+    borderBottomColor: theme.darkOrange,}]} onPress={()=> handleRestoreProduct(id, title, brand)}>
             <Ionicons name="add" size={40} color="#666"/>
           </Pressable>
         </View>
@@ -55,8 +59,8 @@ const pastProducts = () => {
       })
         .then((response) => response.json())
         .then((data) => {
-          const DATA = data.map((item: { productId: number; name: string, quantity: number }) => {
-            return { id: item.productId, title: item.name, quantity: item.quantity };
+          const DATA = data.map((item: { productId: number; name: string, brand:string, quantity: number }) => {
+            return { id: item.productId, title: item.name, brand: item.brand,quantity: item.quantity };
           });
           setDATA(DATA);
         })
@@ -69,7 +73,7 @@ const pastProducts = () => {
     <View style={[styles.container, {backgroundColor: theme.background,}]}>
     <FlatList 
         data={DATA}
-        renderItem={({item}) => <Item title={item.title} quantity={item.quantity} id={item.id}/>}
+        renderItem={({item}) => <Item title={item.title} brand={item.brand} quantity={item.quantity} id={item.id}/>}
         keyExtractor={item => item.id}
     />
     </View>

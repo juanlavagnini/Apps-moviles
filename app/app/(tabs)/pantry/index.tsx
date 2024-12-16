@@ -43,7 +43,7 @@ const Pantry = () => {
     });
   };
 
-  const handleSwipeLeft = (id: string, swipeableRef: any) => {
+  const handleSwipeLeft = (id: string, name: string, brand:string, swipeableRef: any) => {
     fetch(`${URL}/houseProduct/addProduct`, {
       method: 'POST',
       headers: {
@@ -52,15 +52,18 @@ const Pantry = () => {
       body: JSON.stringify({
         houseId: user?.houseId,
         productId: id,
+        name: name,
+        brand: brand,
         quantity: 1,
       }),
     }).then(() => {
+      console.log('Add product', id);
       setRefresh(!refresh);
       swipeableRef.current?.close(); // Cierra el Swipeable después de la acción
     });
   };
 
-  const Item = ({ id, title, quantity }: { id: string; title: string; quantity: number }) => {
+  const Item = ({ id, title, brand, quantity }: { id: string; title: string; brand: string; quantity: number }) => {
     const swipeableRef = useRef(null); // Referencia para controlar el Swipeable
 
     return (
@@ -75,7 +78,7 @@ const Pantry = () => {
           </Pressable>
         )}
         renderLeftActions={() => (
-          <Pressable onPress={() => handleSwipeLeft(id, swipeableRef)}>
+          <Pressable onPress={() => handleSwipeLeft(id, title, brand, swipeableRef)}>
             <View style={styles.actionContainerLeft}>
               <Ionicons name="add" size={30} color="white" />
             </View>
@@ -113,8 +116,8 @@ const Pantry = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        const DATA = data.map((item: { productId: number; name: string; quantity: number }) => {
-          return { id: item.productId, title: item.name, quantity: item.quantity };
+        const DATA = data.map((item: { productId: number; name: string; brand: string ;quantity: number }) => {
+          return { id: item.productId, title: item.name, brand: item.brand ,quantity: item.quantity };
         });
         setDATA(DATA);
       })
@@ -130,7 +133,7 @@ const Pantry = () => {
           style={{ height: '100%' }}
           data={DATA}
           renderItem={({ item }) => (
-            <Item title={item.title} quantity={item.quantity} id={item.id} />
+            <Item title={item.title} quantity={item.quantity} id={item.id} brand={item.brand} />
           )}
           keyExtractor={(item) => item.id}
           ItemSeparatorComponent={() => <View style={styles.separator} />}
